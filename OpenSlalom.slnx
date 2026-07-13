@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="OpenSlalom.Data/OpenSlalom.Data.csproj" />
+  <Project Path="OpenSlalom.UI/OpenSlalom.UI.csproj" />
+</Solution>
