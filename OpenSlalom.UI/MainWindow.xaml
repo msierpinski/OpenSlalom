@@ -354,24 +354,44 @@
 
             <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="220" />
+                    <ColumnDefinition x:Name="SidebarColumn" Width="220" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
 
-                <Border Grid.Column="0" Background="White"  BorderBrush="LightGray" BorderThickness="0,0,1,0">
-                    <StackPanel x:Name="MenuPanel">
-                        <Button x:Name="MenuStartseite" Style="{StaticResource MenuButtonStyle}" Padding="12,10" HorizontalContentAlignment="Left" Content="Startseite" Tag="Startseite" Click="MenuButton_OnClick" />
-                        <Button x:Name="MenuTrainings" Style="{StaticResource MenuButtonStyle}" Padding="10,10" HorizontalContentAlignment="Left" Content="Trainings" Tag="Trainings" Click="MenuButton_OnClick" />
-                        <Button Style="{StaticResource MenuButtonStyle}" Padding="10,10" HorizontalContentAlignment="Left" Content="Meisterschaften" Tag="Meisterschaften" Click="MenuButton_OnClick" />
-                        <Button Style="{StaticResource MenuButtonStyle}" Padding="10,10" HorizontalContentAlignment="Left" Content="Vereine" Tag="Vereine" Click="MenuButton_OnClick" />
-                        <Button Style="{StaticResource MenuButtonStyle}" Padding="10,10" HorizontalContentAlignment="Left" Content="Disziplin" Tag="Disziplin" Click="MenuButton_OnClick" />
-                        <Button Style="{StaticResource MenuButtonStyle}" Padding="10,10" HorizontalContentAlignment="Left" Content="Fahrer" Tag="Fahrer" Click="MenuButton_OnClick" />
-                        <Button Style="{StaticResource MenuButtonStyle}" Padding="10,10" HorizontalContentAlignment="Left" Content="Karts" Tag="Karts" Click="MenuButton_OnClick" />
-                        <Button Style="{StaticResource MenuButtonStyle}" Padding="10,10" HorizontalContentAlignment="Left" Content="Wetter" Tag="Wetter" Click="MenuButton_OnClick" />
-                        <Button Style="{StaticResource MenuButtonStyle}" Padding="12,10" HorizontalContentAlignment="Left" Content="Statistiken" Tag="Statistiken" Click="MenuButton_OnClick" />
-                        <Button Style="{StaticResource MenuButtonStyle}" Padding="12,10" HorizontalContentAlignment="Left" Content="Einstellungen" Tag="Einstellungen" Click="MenuButton_OnClick" />
-                    </StackPanel>
-                </Border>
+                <Grid Grid.Column="0">
+                    <Border x:Name="SidebarBorder" Background="Transparent" BorderBrush="LightGray" BorderThickness="0,0,1,0">
+                        <StackPanel x:Name="MenuPanel">
+                            <Button x:Name="MenuStartseite" Style="{StaticResource MenuButtonStyle}" Padding="12,10" HorizontalContentAlignment="Left" Content="Startseite" Tag="Startseite" Click="MenuButton_OnClick" />
+                            <Button x:Name="MenuTrainings" Style="{StaticResource MenuButtonStyle}" Padding="10,10" HorizontalContentAlignment="Left" Content="Trainings" Tag="Trainings" Click="MenuButton_OnClick" />
+                            <Button Style="{StaticResource MenuButtonStyle}" Padding="10,10" HorizontalContentAlignment="Left" Content="Meisterschaften" Tag="Meisterschaften" Click="MenuButton_OnClick" />
+                            <Button Style="{StaticResource MenuButtonStyle}" Padding="10,10" HorizontalContentAlignment="Left" Content="Vereine" Tag="Vereine" Click="MenuButton_OnClick" />
+                            <Button Style="{StaticResource MenuButtonStyle}" Padding="10,10" HorizontalContentAlignment="Left" Content="Disziplin" Tag="Disziplin" Click="MenuButton_OnClick" />
+                            <Button Style="{StaticResource MenuButtonStyle}" Padding="10,10" HorizontalContentAlignment="Left" Content="Fahrer" Tag="Fahrer" Click="MenuButton_OnClick" />
+                            <Button Style="{StaticResource MenuButtonStyle}" Padding="10,10" HorizontalContentAlignment="Left" Content="Karts" Tag="Karts" Click="MenuButton_OnClick" />
+                            <Button Style="{StaticResource MenuButtonStyle}" Padding="10,10" HorizontalContentAlignment="Left" Content="Wetter" Tag="Wetter" Click="MenuButton_OnClick" />
+                            <Button Style="{StaticResource MenuButtonStyle}" Padding="12,10" HorizontalContentAlignment="Left" Content="Statistiken" Tag="Statistiken" Click="MenuButton_OnClick" />
+                            <Button Style="{StaticResource MenuButtonStyle}" Padding="12,10" HorizontalContentAlignment="Left" Content="Einstellungen" Tag="Einstellungen" Click="MenuButton_OnClick" />
+                        </StackPanel>
+                    </Border>
+
+                    <Button x:Name="SidebarToggleButton"
+                            Width="22"
+                            Height="86"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            Margin="0,0,-11,0"
+                            Background="White"
+                            BorderBrush="#CBD5E1"
+                            BorderThickness="1"
+                            Click="ToggleSidebar_OnClick"
+                            Panel.ZIndex="2">
+                        <TextBlock x:Name="SidebarToggleIcon"
+                                   FontSize="14"
+                                   FontWeight="SemiBold"
+                                   Foreground="#334155"
+                                   Text="◀" />
+                    </Button>
+                </Grid>
 
                 <Grid Grid.Column="1" Margin="5">
                     <Grid.RowDefinitions>
@@ -380,14 +400,14 @@
 
                     <Grid Grid.Row="2">
                        
-                        <Border x:Name="StartseitePage" Visibility="Visible" Background="#F8FAFC">
+                        <Border x:Name="StartseitePage" Visibility="Visible" Background="Transparent">
                             <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
                                 <Image x:Name="LogoImage" Height="320" Stretch="Uniform" Source="/icons/logo.png" ImageFailed="LogoImage_OnImageFailed" />
                                 <TextBlock Margin="0,20,0,0" FontSize="48" FontWeight="Bold" Foreground="#1F84DE" Text="openSlalom" HorizontalAlignment="Center"/>
                             </StackPanel>
                         </Border>
 
-                        <Border x:Name="TrainingsPage" Visibility="Collapsed" Background="#F8FAFC">
+                        <Border x:Name="TrainingsPage" Visibility="Collapsed" Background="Transparent">
                             <Grid Margin="14">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
@@ -523,7 +543,7 @@
                             </Grid>
                         </Border>
 
-                        <Border x:Name="TrainingStatisticsPage" Visibility="Collapsed" Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1" CornerRadius="10">
+                        <Border x:Name="TrainingStatisticsPage" Visibility="Collapsed" Background="Transparent" BorderBrush="#E2E8F0" BorderThickness="1" CornerRadius="10">
                             <ScrollViewer x:Name="TrainingStatisticsScrollViewer" VerticalScrollBarVisibility="Auto">
                                 <StackPanel Margin="20">
                                     <TextBlock x:Name="TrainingStatisticsTitleTextBlock" FontSize="24" FontWeight="Bold" Text="Training" />
@@ -627,7 +647,7 @@
                             </ScrollViewer>
                         </Border>
 
-                        <Border x:Name="TrainingDetailPage" Visibility="Collapsed" Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="0" CornerRadius="10">
+                        <Border x:Name="TrainingDetailPage" Visibility="Collapsed" Background="Transparent" BorderBrush="#E2E8F0" BorderThickness="0" CornerRadius="10">
                             <Grid  Margin="20">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
@@ -672,8 +692,8 @@
 
                                 <Grid Grid.Row="2" >
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="2*" />
-                                        <ColumnDefinition Width="1*" />
+                                        <ColumnDefinition Width="17*" />
+                                        <ColumnDefinition Width="10*" />
                                     </Grid.ColumnDefinitions>
 
 
@@ -1084,11 +1104,23 @@
                             </Grid>
                         </Border>
 
-                        <Border x:Name="MeisterschaftenPage" Visibility="Collapsed" Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="0" CornerRadius="10">
-                            <TextBlock Margin="20" FontSize="18" Text="Meisterschaften" />
+                        <Border x:Name="MeisterschaftenPage" Visibility="Collapsed" Background="Transparent" BorderBrush="#E2E8F0" BorderThickness="0" CornerRadius="10">
+                            <Grid>
+                                <Grid.RowDefinitions    >
+                                    <RowDefinition Height="100"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                            
+                            <TextBlock Grid.Row="0" Margin="20" FontSize="20" FontWeight="Bold" Text="Meisterschaften" />
+
+                                <StackPanel Grid.Row="1">
+                                    <Image x:Name="WorkerImage" Height="400" Stretch="Uniform" Source="/icons/baustelle.png" />
+                                    <TextBlock Margin="0,-40,0,0" FontSize="18" FontWeight="Bold" Text="Diese Funktion ist in der Software noch nicht implementiert." HorizontalAlignment="Center"/>
+                            </StackPanel>
+                            </Grid>
                         </Border>
 
-                        <Border x:Name="VereinePage" Visibility="Visible" Background="#F8FAFC">
+                        <Border x:Name="VereinePage" Visibility="Visible" Background="Transparent">
                             <Grid Margin="14">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
@@ -1195,7 +1227,7 @@
                             </Grid>
                         </Border>
 
-                        <Border x:Name="DisziplinPage" Visibility="Collapsed" Background="#F8FAFC">
+                        <Border x:Name="DisziplinPage" Visibility="Collapsed" Background="Transparent">
                             <Grid Margin="14">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
@@ -1410,7 +1442,7 @@
                             </Grid>
                         </Border>
 
-                        <Border x:Name="FahrerPage" Visibility="Collapsed" Background="#F8FAFC">
+                        <Border x:Name="FahrerPage" Visibility="Collapsed" Background="Transparent">
                             <Grid Margin="14">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
@@ -1552,7 +1584,7 @@
                             </Grid>
                         </Border>
 
-                        <Border x:Name="KartsPage" Visibility="Collapsed" Background="#F8FAFC">
+                        <Border x:Name="KartsPage" Visibility="Collapsed" Background="Transparent">
                             <Grid Margin="14">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
@@ -1674,7 +1706,7 @@
                             </Grid>
                         </Border>
 
-                        <Border x:Name="WetterPage" Visibility="Collapsed" Background="#F8FAFC">
+                        <Border x:Name="WetterPage" Visibility="Collapsed" Background="Transparent">
                             <Grid Margin="14">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
@@ -1777,7 +1809,7 @@
                             </Grid>
                         </Border>
 
-                        <Border x:Name="StatistikenPage" Visibility="Collapsed" Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="0" CornerRadius="10">
+                        <Border x:Name="StatistikenPage" Visibility="Collapsed" Background="Transparent" BorderBrush="#E2E8F0" BorderThickness="0" CornerRadius="10">
                             <Grid Margin="20">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
@@ -1893,7 +1925,7 @@
                             </Grid>
                         </Border>
 
-                        <Border x:Name="EinstellungenPage" Visibility="Collapsed" Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="0" CornerRadius="10">
+                        <Border x:Name="EinstellungenPage" Visibility="Collapsed" Background="Transparent" BorderBrush="#E2E8F0" BorderThickness="0" CornerRadius="10">
                             <Grid Margin="20">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="30" />
@@ -1953,3 +1985,5 @@
         </Grid>
     </Border>
 </Window>
+
+    

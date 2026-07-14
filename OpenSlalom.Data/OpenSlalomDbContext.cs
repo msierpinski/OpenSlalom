@@ -20,9 +20,17 @@ public class OpenSlalomDbContext : DbContext
 
     public DbSet<FahrerImTraining> FahrerImTrainings => Set<FahrerImTraining>();
 
+    public DbSet<FahrerInDerMeisterschaft> FahrerInDerMeisterschaften => Set<FahrerInDerMeisterschaft>();
+
     public DbSet<Kart> Karts => Set<Kart>();
 
     public DbSet<Training> Trainings => Set<Training>();
+
+    public DbSet<Meisterschaft> Meisterschaften => Set<Meisterschaft>();
+
+    public DbSet<Mrunde> Mrunden => Set<Mrunde>();
+
+    public DbSet<Mstint> Mstints => Set<Mstint>();
 
     public DbSet<Trunde> Trunden => Set<Trunde>();
 
@@ -342,6 +350,196 @@ public class OpenSlalomDbContext : DbContext
                 .HasForeignKey(x => x.WetterId)
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("FK_training_wetter");
+        });
+
+        modelBuilder.Entity<Meisterschaft>(entity =>
+        {
+            entity.ToTable("meisterschaften");
+            entity.HasKey(x => x.Id);
+
+            entity.Property(x => x.Id)
+                .HasColumnName("id")
+                .ValueGeneratedOnAdd();
+
+            entity.Property(x => x.GastgeberId)
+                .HasColumnName("fk_id_gastgeber")
+                .IsRequired();
+
+            entity.Property(x => x.DisziplinId)
+                .HasColumnName("fk_id_disziplin")
+                .IsRequired();
+
+            entity.Property(x => x.WetterId)
+                .HasColumnName("fk_id_wetter")
+                .IsRequired();
+
+            entity.Property(x => x.Name)
+                .HasColumnName("name")
+                .HasMaxLength(100)
+                .IsRequired();
+
+            entity.Property(x => x.Beschreibung)
+                .HasColumnName("beschreibung")
+                .HasMaxLength(250)
+                .IsRequired();
+
+            entity.Property(x => x.Zeitpunkt)
+                .HasColumnName("zeitpunkt")
+                .HasColumnType("date")
+                .IsRequired();
+
+            entity.Property(x => x.MeisterschaftAbgeschlossen)
+                .HasColumnName("meisterschaft_abgeschlossen")
+                .HasDefaultValue(false)
+                .IsRequired();
+
+            entity.Property(x => x.AktivAusgerichtet)
+                .HasColumnName("aktiv_ausgerichtet")
+                .HasDefaultValue(false)
+                .IsRequired();
+
+            ConfigureSyncEntity(entity);
+
+            entity.HasOne(x => x.Gastgeber)
+                .WithMany(x => x.Meisterschaften)
+                .HasForeignKey(x => x.GastgeberId)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_meisterschaften_vereine");
+
+            entity.HasOne(x => x.Disziplin)
+                .WithMany(x => x.Meisterschaften)
+                .HasForeignKey(x => x.DisziplinId)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_meisterschaften_disziplin");
+
+            entity.HasOne(x => x.Wetter)
+                .WithMany(x => x.Meisterschaften)
+                .HasForeignKey(x => x.WetterId)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_meisterschaften_wetter");
+        });
+
+        modelBuilder.Entity<FahrerInDerMeisterschaft>(entity =>
+        {
+            entity.ToTable("fahrer_inder_meisterschaft");
+            entity.HasKey(x => new { x.MeisterschaftId, x.FahrerId });
+
+            entity.Property(x => x.MeisterschaftId)
+                .HasColumnName("fk_id_meisterschaft")
+                .IsRequired();
+
+            entity.Property(x => x.FahrerId)
+                .HasColumnName("fk_id_fahrer")
+                .IsRequired();
+
+            entity.Property(x => x.Reihenfolge)
+                .HasColumnName("reihenfolge")
+                .HasDefaultValue(0)
+                .IsRequired();
+
+            entity.HasOne(x => x.Meisterschaft)
+                .WithMany(x => x.FahrerInDerMeisterschaften)
+                .HasForeignKey(x => x.MeisterschaftId)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_fahrer_inder_meisterschaft_meisterschaften");
+
+            entity.HasOne(x => x.Fahrer)
+                .WithMany(x => x.FahrerInDerMeisterschaften)
+                .HasForeignKey(x => x.FahrerId)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_fahrer_inder_meisterschaft_fahrer");
+
+            ConfigureSyncEntity(entity);
+        });
+
+        modelBuilder.Entity<Mstint>(entity =>
+        {
+            entity.ToTable("mstints");
+            entity.HasKey(x => x.Id);
+
+            entity.Property(x => x.Id)
+                .HasColumnName("id")
+                .ValueGeneratedOnAdd();
+
+            entity.Property(x => x.MeisterschaftId)
+                .HasColumnName("fk_id_meisterschaft")
+                .IsRequired();
+
+            entity.Property(x => x.FahrerId)
+                .HasColumnName("fk_id_fahrer")
+                .IsRequired();
+
+            entity.Property(x => x.KartId)
+                .HasColumnName("fk_id_kart");
+
+            entity.Property(x => x.AltersklasseSnapshot)
+                .HasColumnName("altersklasse_snapshot")
+                .HasMaxLength(100)
+                .HasDefaultValue(string.Empty)
+                .IsRequired();
+
+            entity.Property(x => x.Datum)
+                .HasColumnName("datum")
+                .HasColumnType("datetime")
+                .IsRequired();
+
+            ConfigureSyncEntity(entity);
+
+            entity.HasOne(x => x.Meisterschaft)
+                .WithMany(x => x.Mstints)
+                .HasForeignKey(x => x.MeisterschaftId)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_mstints_meisterschaften");
+
+            entity.HasOne(x => x.Fahrer)
+                .WithMany(x => x.Mstints)
+                .HasForeignKey(x => x.FahrerId)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_mstints_fahrer");
+
+            entity.HasOne(x => x.Kart)
+                .WithMany()
+                .HasForeignKey(x => x.KartId)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_mstints_karts");
+        });
+
+        modelBuilder.Entity<Mrunde>(entity =>
+        {
+            entity.ToTable("mrunden");
+            entity.HasKey(x => x.Id);
+
+            entity.Property(x => x.Id)
+                .HasColumnName("id")
+                .ValueGeneratedOnAdd();
+
+            entity.Property(x => x.MstintId)
+                .HasColumnName("fk_id_mstint");
+
+            entity.Property(x => x.Runde)
+                .HasColumnName("runde");
+
+            entity.Property(x => x.Rundenzeit)
+                .HasColumnName("rundenzeit");
+
+            entity.Property(x => x.Pf)
+                .HasColumnName("pf");
+
+            entity.Property(x => x.Tf)
+                .HasColumnName("tf");
+
+            entity.Property(x => x.Ungueltig)
+                .HasColumnName("ungueltig")
+                .HasDefaultValue(false)
+                .IsRequired();
+
+            entity.HasOne(x => x.Mstint)
+                .WithMany(x => x.Mrunden)
+                .HasForeignKey(x => x.MstintId)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_mrunden_mstints");
+
+            ConfigureSyncEntity(entity);
         });
 
         modelBuilder.Entity<Tstint>(entity =>

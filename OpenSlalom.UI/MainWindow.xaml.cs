@@ -48,6 +48,7 @@ public partial class MainWindow : Window
     private string _selectedMenuTag = "Startseite";
     private bool _syncInProgress;
     private bool _syncNeeded;
+    private bool _isSidebarCollapsed;
     private int? _editDisziplinId;
     private int? _deleteDisziplinId;
     private int? _editVereinId;
@@ -126,6 +127,7 @@ public partial class MainWindow : Window
         Loaded += OnLoaded;
         UpdateWindowChrome();
         UpdateMaximizeButtonIcon();
+        UpdateSidebarState();
     }
 
     private void SetVersionText()
@@ -1571,7 +1573,7 @@ public partial class MainWindow : Window
                         Kart = string.IsNullOrWhiteSpace(fastest.Row.KartName) ? "-" : fastest.Row.KartName!,
                         RundenzeitText = FormatTrainingTime(TimeSpan.FromSeconds(fastest.EffectiveSeconds)),
                         StrafenText = $"{fastest.Row.Pylonen}P {fastest.Row.Tore}T (+{FormatSecondsValue(fastest.PenaltySeconds)}s)",
-                        ZeitpunktText = fastest.Row.Zeitpunkt.ToString("dd.MM.yyyy HH:mm"),
+                        ZeitpunktText = fastest.Row.Zeitpunkt.ToString("HH:mm:ss"),
                         Runden = group.Count()
                     };
                 })
@@ -1659,6 +1661,22 @@ public partial class MainWindow : Window
         button.MouseLeave += MenuButton_OnMouseLeave;
         button.Background = DefaultMenuBackgroundBrush;
         button.Foreground = DefaultMenuForegroundBrush;
+    }
+
+    private void ToggleSidebar_OnClick(object sender, RoutedEventArgs e)
+    {
+        _isSidebarCollapsed = !_isSidebarCollapsed;
+        UpdateSidebarState();
+    }
+
+    private void UpdateSidebarState()
+    {
+        SidebarColumn.Width = new GridLength(_isSidebarCollapsed ? 22 : 220);
+        MenuPanel.Visibility = _isSidebarCollapsed ? Visibility.Collapsed : Visibility.Visible;
+        SidebarToggleIcon.Text = _isSidebarCollapsed ? "▶" : "◀";
+        SidebarToggleButton.Margin = _isSidebarCollapsed
+            ? new Thickness(0, 0, -11, 0)
+            : new Thickness(0, 0, -11, 0);
     }
 
     private IEnumerable<Button> GetMenuButtons()

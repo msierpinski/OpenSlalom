@@ -218,6 +218,45 @@ namespace OpenSlalom.Data.Migrations
                     b.ToTable("fahrer_im_training", (string)null);
                 });
 
+            modelBuilder.Entity("OpenSlalom.Data.Entities.FahrerInDerMeisterschaft", b =>
+                {
+                    b.Property<int>("MeisterschaftId")
+                        .HasColumnType("int")
+                        .HasColumnName("fk_id_meisterschaft");
+
+                    b.Property<int>("FahrerId")
+                        .HasColumnType("int")
+                        .HasColumnName("fk_id_fahrer");
+
+                    b.Property<DateTime?>("DeletedAtUtc")
+                        .HasColumnType("datetime")
+                        .HasColumnName("deleted_at_utc");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(false)
+                        .HasColumnName("is_deleted");
+
+                    b.Property<int>("Reihenfolge")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0)
+                        .HasColumnName("reihenfolge");
+
+                    b.Property<DateTime>("UpdatedAtUtc")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasColumnName("updated_at_utc")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.HasKey("MeisterschaftId", "FahrerId");
+
+                    b.HasIndex("FahrerId");
+
+                    b.ToTable("fahrer_inder_meisterschaft", (string)null);
+                });
+
             modelBuilder.Entity("OpenSlalom.Data.Entities.Kart", b =>
                 {
                     b.Property<int>("Id")
@@ -273,6 +312,200 @@ namespace OpenSlalom.Data.Migrations
                     b.HasIndex("VereinId");
 
                     b.ToTable("karts", (string)null);
+                });
+
+            modelBuilder.Entity("OpenSlalom.Data.Entities.Meisterschaft", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("AktivAusgerichtet")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(false)
+                        .HasColumnName("aktiv_ausgerichtet");
+
+                    b.Property<string>("Beschreibung")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("varchar(250)")
+                        .HasColumnName("beschreibung");
+
+                    b.Property<DateTime?>("DeletedAtUtc")
+                        .HasColumnType("datetime")
+                        .HasColumnName("deleted_at_utc");
+
+                    b.Property<int>("DisziplinId")
+                        .HasColumnType("int")
+                        .HasColumnName("fk_id_disziplin");
+
+                    b.Property<int>("GastgeberId")
+                        .HasColumnType("int")
+                        .HasColumnName("fk_id_gastgeber");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(false)
+                        .HasColumnName("is_deleted");
+
+                    b.Property<bool>("MeisterschaftAbgeschlossen")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(false)
+                        .HasColumnName("meisterschaft_abgeschlossen");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)")
+                        .HasColumnName("name");
+
+                    b.Property<DateTime>("UpdatedAtUtc")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasColumnName("updated_at_utc")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.Property<int>("WetterId")
+                        .HasColumnType("int")
+                        .HasColumnName("fk_id_wetter");
+
+                    b.Property<DateOnly>("Zeitpunkt")
+                        .HasColumnType("date")
+                        .HasColumnName("zeitpunkt");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DisziplinId");
+
+                    b.HasIndex("GastgeberId");
+
+                    b.HasIndex("WetterId");
+
+                    b.ToTable("meisterschaften", (string)null);
+                });
+
+            modelBuilder.Entity("OpenSlalom.Data.Entities.Mrunde", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("DeletedAtUtc")
+                        .HasColumnType("datetime")
+                        .HasColumnName("deleted_at_utc");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(false)
+                        .HasColumnName("is_deleted");
+
+                    b.Property<int?>("MstintId")
+                        .HasColumnType("int")
+                        .HasColumnName("fk_id_mstint");
+
+                    b.Property<int?>("Pf")
+                        .HasColumnType("int")
+                        .HasColumnName("pf");
+
+                    b.Property<int?>("Runde")
+                        .HasColumnType("int")
+                        .HasColumnName("runde");
+
+                    b.Property<double?>("Rundenzeit")
+                        .HasColumnType("double")
+                        .HasColumnName("rundenzeit");
+
+                    b.Property<int?>("Tf")
+                        .HasColumnType("int")
+                        .HasColumnName("tf");
+
+                    b.Property<bool>("Ungueltig")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(false)
+                        .HasColumnName("ungueltig");
+
+                    b.Property<DateTime>("UpdatedAtUtc")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasColumnName("updated_at_utc")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MstintId");
+
+                    b.ToTable("mrunden", (string)null);
+                });
+
+            modelBuilder.Entity("OpenSlalom.Data.Entities.Mstint", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AltersklasseSnapshot")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)")
+                        .HasDefaultValue("")
+                        .HasColumnName("altersklasse_snapshot");
+
+                    b.Property<DateTime>("Datum")
+                        .HasColumnType("datetime")
+                        .HasColumnName("datum");
+
+                    b.Property<DateTime?>("DeletedAtUtc")
+                        .HasColumnType("datetime")
+                        .HasColumnName("deleted_at_utc");
+
+                    b.Property<int>("FahrerId")
+                        .HasColumnType("int")
+                        .HasColumnName("fk_id_fahrer");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(false)
+                        .HasColumnName("is_deleted");
+
+                    b.Property<int?>("KartId")
+                        .HasColumnType("int")
+                        .HasColumnName("fk_id_kart");
+
+                    b.Property<int>("MeisterschaftId")
+                        .HasColumnType("int")
+                        .HasColumnName("fk_id_meisterschaft");
+
+                    b.Property<DateTime>("UpdatedAtUtc")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasColumnName("updated_at_utc")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FahrerId");
+
+                    b.HasIndex("KartId");
+
+                    b.HasIndex("MeisterschaftId");
+
+                    b.ToTable("mstints", (string)null);
                 });
 
             modelBuilder.Entity("OpenSlalom.Data.Entities.SyncState", b =>
@@ -606,6 +839,27 @@ namespace OpenSlalom.Data.Migrations
                     b.Navigation("Training");
                 });
 
+            modelBuilder.Entity("OpenSlalom.Data.Entities.FahrerInDerMeisterschaft", b =>
+                {
+                    b.HasOne("OpenSlalom.Data.Entities.Fahrer", "Fahrer")
+                        .WithMany("FahrerInDerMeisterschaften")
+                        .HasForeignKey("FahrerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("FK_fahrer_inder_meisterschaft_fahrer");
+
+                    b.HasOne("OpenSlalom.Data.Entities.Meisterschaft", "Meisterschaft")
+                        .WithMany("FahrerInDerMeisterschaften")
+                        .HasForeignKey("MeisterschaftId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("FK_fahrer_inder_meisterschaft_meisterschaften");
+
+                    b.Navigation("Fahrer");
+
+                    b.Navigation("Meisterschaft");
+                });
+
             modelBuilder.Entity("OpenSlalom.Data.Entities.Kart", b =>
                 {
                     b.HasOne("OpenSlalom.Data.Entities.Disziplin", "Disziplin")
@@ -625,6 +879,76 @@ namespace OpenSlalom.Data.Migrations
                     b.Navigation("Disziplin");
 
                     b.Navigation("Verein");
+                });
+
+            modelBuilder.Entity("OpenSlalom.Data.Entities.Meisterschaft", b =>
+                {
+                    b.HasOne("OpenSlalom.Data.Entities.Disziplin", "Disziplin")
+                        .WithMany("Meisterschaften")
+                        .HasForeignKey("DisziplinId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("FK_meisterschaften_disziplin");
+
+                    b.HasOne("OpenSlalom.Data.Entities.Verein", "Gastgeber")
+                        .WithMany("Meisterschaften")
+                        .HasForeignKey("GastgeberId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("FK_meisterschaften_vereine");
+
+                    b.HasOne("OpenSlalom.Data.Entities.Wetter", "Wetter")
+                        .WithMany("Meisterschaften")
+                        .HasForeignKey("WetterId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("FK_meisterschaften_wetter");
+
+                    b.Navigation("Disziplin");
+
+                    b.Navigation("Gastgeber");
+
+                    b.Navigation("Wetter");
+                });
+
+            modelBuilder.Entity("OpenSlalom.Data.Entities.Mrunde", b =>
+                {
+                    b.HasOne("OpenSlalom.Data.Entities.Mstint", "Mstint")
+                        .WithMany("Mrunden")
+                        .HasForeignKey("MstintId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasConstraintName("FK_mrunden_mstints");
+
+                    b.Navigation("Mstint");
+                });
+
+            modelBuilder.Entity("OpenSlalom.Data.Entities.Mstint", b =>
+                {
+                    b.HasOne("OpenSlalom.Data.Entities.Fahrer", "Fahrer")
+                        .WithMany("Mstints")
+                        .HasForeignKey("FahrerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("FK_mstints_fahrer");
+
+                    b.HasOne("OpenSlalom.Data.Entities.Kart", "Kart")
+                        .WithMany()
+                        .HasForeignKey("KartId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasConstraintName("FK_mstints_karts");
+
+                    b.HasOne("OpenSlalom.Data.Entities.Meisterschaft", "Meisterschaft")
+                        .WithMany("Mstints")
+                        .HasForeignKey("MeisterschaftId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("FK_mstints_meisterschaften");
+
+                    b.Navigation("Fahrer");
+
+                    b.Navigation("Kart");
+
+                    b.Navigation("Meisterschaft");
                 });
 
             modelBuilder.Entity("OpenSlalom.Data.Entities.Training", b =>
@@ -703,6 +1027,8 @@ namespace OpenSlalom.Data.Migrations
 
                     b.Navigation("Karts");
 
+                    b.Navigation("Meisterschaften");
+
                     b.Navigation("Trainings");
                 });
 
@@ -710,7 +1036,23 @@ namespace OpenSlalom.Data.Migrations
                 {
                     b.Navigation("FahrerImTrainings");
 
+                    b.Navigation("FahrerInDerMeisterschaften");
+
+                    b.Navigation("Mstints");
+
                     b.Navigation("Tstints");
+                });
+
+            modelBuilder.Entity("OpenSlalom.Data.Entities.Meisterschaft", b =>
+                {
+                    b.Navigation("FahrerInDerMeisterschaften");
+
+                    b.Navigation("Mstints");
+                });
+
+            modelBuilder.Entity("OpenSlalom.Data.Entities.Mstint", b =>
+                {
+                    b.Navigation("Mrunden");
                 });
 
             modelBuilder.Entity("OpenSlalom.Data.Entities.Training", b =>
@@ -731,11 +1073,15 @@ namespace OpenSlalom.Data.Migrations
 
                     b.Navigation("Karts");
 
+                    b.Navigation("Meisterschaften");
+
                     b.Navigation("Trainings");
                 });
 
             modelBuilder.Entity("OpenSlalom.Data.Entities.Wetter", b =>
                 {
+                    b.Navigation("Meisterschaften");
+
                     b.Navigation("Trainings");
                 });
 #pragma warning restore 612, 618

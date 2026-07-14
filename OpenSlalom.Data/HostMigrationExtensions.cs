@@ -20,10 +20,14 @@ public static class HostMigrationExtensions
         "wetter",
         "fahrer",
         "training",
+        "meisterschaften",
         "karts",
         "tstints",
+        "mstints",
         "fahrer_im_training",
-        "trunden"
+        "fahrer_inder_meisterschaft",
+        "trunden",
+        "mrunden"
     ];
 
     public static async Task ApplyOpenSlalomMigrationsAsync(this IHost host, CancellationToken cancellationToken = default)

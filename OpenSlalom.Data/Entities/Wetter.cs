@@ -8,6 +8,8 @@ public sealed class Wetter : ISyncEntity
 
     public ICollection<Training> Trainings { get; set; } = new List<Training>();
 
+    public ICollection<Meisterschaft> Meisterschaften { get; set; } = new List<Meisterschaft>();
+
     public DateTime UpdatedAtUtc { get; set; }
 
     public bool IsDeleted { get; set; }

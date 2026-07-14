@@ -18,7 +18,11 @@ public sealed class Fahrer : ISyncEntity
 
     public ICollection<FahrerImTraining> FahrerImTrainings { get; set; } = new List<FahrerImTraining>();
 
+    public ICollection<FahrerInDerMeisterschaft> FahrerInDerMeisterschaften { get; set; } = new List<FahrerInDerMeisterschaft>();
+
     public ICollection<Tstint> Tstints { get; set; } = new List<Tstint>();
+
+    public ICollection<Mstint> Mstints { get; set; } = new List<Mstint>();
 
     public DateTime UpdatedAtUtc { get; set; }
 

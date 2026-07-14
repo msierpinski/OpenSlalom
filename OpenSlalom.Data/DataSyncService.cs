@@ -216,6 +216,36 @@ public sealed class DataSyncService(
                     CopySyncFields(target, source);
                 }, cancellationToken);
 
+            await SyncByIntKeyAsync(localDb, remoteDb, localDb.Meisterschaften, remoteDb.Meisterschaften,
+                x => x.Id,
+                x => new Meisterschaft
+                {
+                    Id = x.Id,
+                    GastgeberId = x.GastgeberId,
+                    DisziplinId = x.DisziplinId,
+                    WetterId = x.WetterId,
+                    Name = x.Name,
+                    Beschreibung = x.Beschreibung,
+                    Zeitpunkt = x.Zeitpunkt,
+                    MeisterschaftAbgeschlossen = x.MeisterschaftAbgeschlossen,
+                    AktivAusgerichtet = x.AktivAusgerichtet,
+                    UpdatedAtUtc = x.UpdatedAtUtc,
+                    IsDeleted = x.IsDeleted,
+                    DeletedAtUtc = x.DeletedAtUtc
+                },
+                (target, source) =>
+                {
+                    target.GastgeberId = source.GastgeberId;
+                    target.DisziplinId = source.DisziplinId;
+                    target.WetterId = source.WetterId;
+                    target.Name = source.Name;
+                    target.Beschreibung = source.Beschreibung;
+                    target.Zeitpunkt = source.Zeitpunkt;
+                    target.MeisterschaftAbgeschlossen = source.MeisterschaftAbgeschlossen;
+                    target.AktivAusgerichtet = source.AktivAusgerichtet;
+                    CopySyncFields(target, source);
+                }, cancellationToken);
+
             await SyncByIntKeyAsync(localDb, remoteDb, localDb.Karts, remoteDb.Karts,
                 x => x.Id,
                 x => new Kart
@@ -267,7 +297,32 @@ public sealed class DataSyncService(
                     CopySyncFields(target, source);
                 }, cancellationToken);
 
+            await SyncByIntKeyAsync(localDb, remoteDb, localDb.Mstints, remoteDb.Mstints,
+                x => x.Id,
+                x => new Mstint
+                {
+                    Id = x.Id,
+                    MeisterschaftId = x.MeisterschaftId,
+                    FahrerId = x.FahrerId,
+                    KartId = x.KartId,
+                    AltersklasseSnapshot = x.AltersklasseSnapshot,
+                    Datum = x.Datum,
+                    UpdatedAtUtc = x.UpdatedAtUtc,
+                    IsDeleted = x.IsDeleted,
+                    DeletedAtUtc = x.DeletedAtUtc
+                },
+                (target, source) =>
+                {
+                    target.MeisterschaftId = source.MeisterschaftId;
+                    target.FahrerId = source.FahrerId;
+                    target.KartId = source.KartId;
+                    target.AltersklasseSnapshot = source.AltersklasseSnapshot;
+                    target.Datum = source.Datum;
+                    CopySyncFields(target, source);
+                }, cancellationToken);
+
             await SyncCompositeFahrerImTrainingAsync(localDb, remoteDb, cancellationToken);
+            await SyncCompositeFahrerInDerMeisterschaftAsync(localDb, remoteDb, cancellationToken);
 
             await localDb.SaveChangesAsync(cancellationToken);
             await remoteDb.SaveChangesAsync(cancellationToken);
@@ -290,6 +345,32 @@ public sealed class DataSyncService(
                 (target, source) =>
                 {
                     target.TstintId = source.TstintId;
+                    target.Runde = source.Runde;
+                    target.Rundenzeit = source.Rundenzeit;
+                    target.Pf = source.Pf;
+                    target.Tf = source.Tf;
+                    target.Ungueltig = source.Ungueltig;
+                    CopySyncFields(target, source);
+                }, cancellationToken);
+
+            await SyncByIntKeyAsync(localDb, remoteDb, localDb.Mrunden, remoteDb.Mrunden,
+                x => x.Id,
+                x => new Mrunde
+                {
+                    Id = x.Id,
+                    MstintId = x.MstintId,
+                    Runde = x.Runde,
+                    Rundenzeit = x.Rundenzeit,
+                    Pf = x.Pf,
+                    Tf = x.Tf,
+                    Ungueltig = x.Ungueltig,
+                    UpdatedAtUtc = x.UpdatedAtUtc,
+                    IsDeleted = x.IsDeleted,
+                    DeletedAtUtc = x.DeletedAtUtc
+                },
+                (target, source) =>
+                {
+                    target.MstintId = source.MstintId;
                     target.Runde = source.Runde;
                     target.Rundenzeit = source.Rundenzeit;
                     target.Pf = source.Pf;
@@ -334,10 +415,14 @@ public sealed class DataSyncService(
         total += await dbContext.Wetterlagen.IgnoreQueryFilters().CountAsync(x => x.UpdatedAtUtc > lastSyncUtc, cancellationToken);
         total += await dbContext.Fahrer.IgnoreQueryFilters().CountAsync(x => x.UpdatedAtUtc > lastSyncUtc, cancellationToken);
         total += await dbContext.Trainings.IgnoreQueryFilters().CountAsync(x => x.UpdatedAtUtc > lastSyncUtc, cancellationToken);
+        total += await dbContext.Meisterschaften.IgnoreQueryFilters().CountAsync(x => x.UpdatedAtUtc > lastSyncUtc, cancellationToken);
         total += await dbContext.Karts.IgnoreQueryFilters().CountAsync(x => x.UpdatedAtUtc > lastSyncUtc, cancellationToken);
         total += await dbContext.Tstints.IgnoreQueryFilters().CountAsync(x => x.UpdatedAtUtc > lastSyncUtc, cancellationToken);
+        total += await dbContext.Mstints.IgnoreQueryFilters().CountAsync(x => x.UpdatedAtUtc > lastSyncUtc, cancellationToken);
         total += await dbContext.FahrerImTrainings.IgnoreQueryFilters().CountAsync(x => x.UpdatedAtUtc > lastSyncUtc, cancellationToken);
+        total += await dbContext.FahrerInDerMeisterschaften.IgnoreQueryFilters().CountAsync(x => x.UpdatedAtUtc > lastSyncUtc, cancellationToken);
         total += await dbContext.Trunden.IgnoreQueryFilters().CountAsync(x => x.UpdatedAtUtc > lastSyncUtc, cancellationToken);
+        total += await dbContext.Mrunden.IgnoreQueryFilters().CountAsync(x => x.UpdatedAtUtc > lastSyncUtc, cancellationToken);
         return total;
     }
 
@@ -352,9 +437,12 @@ public sealed class DataSyncService(
             await HasIntKeyDriftAsync(localDb.Wetterlagen, remoteDb.Wetterlagen, x => x.Id, cancellationToken) ||
             await HasIntKeyDriftAsync(localDb.Fahrer, remoteDb.Fahrer, x => x.Id, cancellationToken) ||
             await HasIntKeyDriftAsync(localDb.Trainings, remoteDb.Trainings, x => x.Id, cancellationToken) ||
+            await HasIntKeyDriftAsync(localDb.Meisterschaften, remoteDb.Meisterschaften, x => x.Id, cancellationToken) ||
             await HasIntKeyDriftAsync(localDb.Karts, remoteDb.Karts, x => x.Id, cancellationToken) ||
             await HasIntKeyDriftAsync(localDb.Tstints, remoteDb.Tstints, x => x.Id, cancellationToken) ||
-            await HasIntKeyDriftAsync(localDb.Trunden, remoteDb.Trunden, x => x.Id, cancellationToken))
+            await HasIntKeyDriftAsync(localDb.Mstints, remoteDb.Mstints, x => x.Id, cancellationToken) ||
+            await HasIntKeyDriftAsync(localDb.Trunden, remoteDb.Trunden, x => x.Id, cancellationToken) ||
+            await HasIntKeyDriftAsync(localDb.Mrunden, remoteDb.Mrunden, x => x.Id, cancellationToken))
         {
             return true;
         }
@@ -382,7 +470,35 @@ public sealed class DataSyncService(
             .Select(x => (x.TrainingId, x.FahrerId))
             .ToHashSet();
 
-        return !localSet.SetEquals(remoteSet);
+        if (!localSet.SetEquals(remoteSet))
+        {
+            return true;
+        }
+
+        var localMeisterschaftKeys = await localDb.FahrerInDerMeisterschaften
+            .IgnoreQueryFilters()
+            .Select(x => new { x.MeisterschaftId, x.FahrerId })
+            .ToListAsync(cancellationToken);
+
+        var remoteMeisterschaftKeys = await remoteDb.FahrerInDerMeisterschaften
+            .IgnoreQueryFilters()
+            .Select(x => new { x.MeisterschaftId, x.FahrerId })
+            .ToListAsync(cancellationToken);
+
+        if (localMeisterschaftKeys.Count != remoteMeisterschaftKeys.Count)
+        {
+            return true;
+        }
+
+        var localMeisterschaftSet = localMeisterschaftKeys
+            .Select(x => (x.MeisterschaftId, x.FahrerId))
+            .ToHashSet();
+
+        var remoteMeisterschaftSet = remoteMeisterschaftKeys
+            .Select(x => (x.MeisterschaftId, x.FahrerId))
+            .ToHashSet();
+
+        return !localMeisterschaftSet.SetEquals(remoteMeisterschaftSet);
     }
 
     private static async Task<bool> HasIntKeyDriftAsync<TEntity>(
@@ -543,6 +659,69 @@ public sealed class DataSyncService(
                 remoteDb.FahrerImTrainings.Add(new FahrerImTraining
                 {
                     TrainingId = winner.TrainingId,
+                    FahrerId = winner.FahrerId,
+                    Reihenfolge = winner.Reihenfolge,
+                    UpdatedAtUtc = winner.UpdatedAtUtc,
+                    IsDeleted = winner.IsDeleted,
+                    DeletedAtUtc = winner.DeletedAtUtc
+                });
+            }
+            else
+            {
+                remoteItem.Reihenfolge = winner.Reihenfolge;
+                CopySyncFields(remoteItem, winner);
+            }
+        }
+    }
+
+    private static async Task SyncCompositeFahrerInDerMeisterschaftAsync(
+        LocalOpenSlalomDbContext localDb,
+        RemoteOpenSlalomDbContext remoteDb,
+        CancellationToken cancellationToken)
+    {
+        var localItems = await localDb.FahrerInDerMeisterschaften.IgnoreQueryFilters().ToListAsync(cancellationToken);
+        var remoteItems = await remoteDb.FahrerInDerMeisterschaften.IgnoreQueryFilters().ToListAsync(cancellationToken);
+
+        var localMap = localItems.ToDictionary(x => (x.MeisterschaftId, x.FahrerId));
+        var remoteMap = remoteItems.ToDictionary(x => (x.MeisterschaftId, x.FahrerId));
+
+        var allKeys = new HashSet<(int, int)>(localMap.Keys);
+        allKeys.UnionWith(remoteMap.Keys);
+
+        foreach (var key in allKeys)
+        {
+            localMap.TryGetValue(key, out var localItem);
+            remoteMap.TryGetValue(key, out var remoteItem);
+
+            var winner = ChooseWinner(localItem, remoteItem);
+            if (winner is null)
+            {
+                continue;
+            }
+
+            if (localItem is null)
+            {
+                localDb.FahrerInDerMeisterschaften.Add(new FahrerInDerMeisterschaft
+                {
+                    MeisterschaftId = winner.MeisterschaftId,
+                    FahrerId = winner.FahrerId,
+                    Reihenfolge = winner.Reihenfolge,
+                    UpdatedAtUtc = winner.UpdatedAtUtc,
+                    IsDeleted = winner.IsDeleted,
+                    DeletedAtUtc = winner.DeletedAtUtc
+                });
+            }
+            else
+            {
+                localItem.Reihenfolge = winner.Reihenfolge;
+                CopySyncFields(localItem, winner);
+            }
+
+            if (remoteItem is null)
+            {
+                remoteDb.FahrerInDerMeisterschaften.Add(new FahrerInDerMeisterschaft
+                {
+                    MeisterschaftId = winner.MeisterschaftId,
                     FahrerId = winner.FahrerId,
                     Reihenfolge = winner.Reihenfolge,
                     UpdatedAtUtc = winner.UpdatedAtUtc,
