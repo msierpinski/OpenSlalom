@@ -17,46 +17,65 @@ public partial class App : Application
     {
         base.OnStartup(e);
 
-        var appConfiguration = new ConfigurationBuilder()
-            .SetBasePath(AppContext.BaseDirectory)
-            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
-            .Build();
+        var splashWindow = new SplashWindow();
+        splashWindow.Show();
 
-        var remoteMySqlConnectionString = appConfiguration.GetConnectionString("OpenSlalomRemote")
-            ?? throw new InvalidOperationException("Connection string 'OpenSlalomRemote' fehlt.");
+        try
+        {
+            var appConfiguration = new ConfigurationBuilder()
+                .SetBasePath(AppContext.BaseDirectory)
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
+                .Build();
 
-        var localSqliteConnectionString = appConfiguration.GetConnectionString("OpenSlalomLocal")
-            ?? "Data Source=open_slalom_local.db";
+            var remoteMySqlConnectionString = appConfiguration.GetConnectionString("OpenSlalomRemote")
+                ?? throw new InvalidOperationException("Connection string 'OpenSlalomRemote' fehlt.");
 
-        _host = Host.CreateDefaultBuilder()
-            .ConfigureAppConfiguration(config =>
-            {
-                config.Sources.Clear();
-                config.AddConfiguration(appConfiguration);
-            })
-            .ConfigureLogging(logging =>
-            {
-                logging.ClearProviders();
-                logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Information);
-            })
-            .UseNLog()
-            .ConfigureServices((_, services) =>
-            {
-                services.AddOpenSlalomDualData(localSqliteConnectionString, remoteMySqlConnectionString);
-                services.AddSingleton<DatabaseRuntimeInfo>();
-                services.AddTransient<MainWindow>();
-            })
-            .Build();
+            var localSqliteConnectionString = appConfiguration.GetConnectionString("OpenSlalomLocal")
+                ?? "Data Source=open_slalom_local.db";
 
-        var initResult = await _host.InitializeOpenSlalomDualDatabasesAsync();
-        _host.Services.GetRequiredService<DatabaseRuntimeInfo>().Set(
-            initResult.LocalSqliteConnected,
-            initResult.RemoteMySqlConnected,
-            initResult.LocalSqliteError,
-            initResult.RemoteMySqlError);
+            _host = Host.CreateDefaultBuilder()
+                .ConfigureAppConfiguration(config =>
+                {
+                    config.Sources.Clear();
+                    config.AddConfiguration(appConfiguration);
+                })
+                .ConfigureLogging(logging =>
+                {
+                    logging.ClearProviders();
+                    logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Information);
+                })
+                .UseNLog()
+                .ConfigureServices((_, services) =>
+                {
+                    services.AddOpenSlalomDualData(localSqliteConnectionString, remoteMySqlConnectionString);
+                    services.AddSingleton<DatabaseRuntimeInfo>();
+                    services.AddTransient<MainWindow>();
+                })
+                .Build();
 
-        var mainWindow = _host.Services.GetRequiredService<MainWindow>();
-        mainWindow.Show();
+            var initResult = await _host.InitializeOpenSlalomDualDatabasesAsync();
+            _host.Services.GetRequiredService<DatabaseRuntimeInfo>().Set(
+                initResult.LocalSqliteConnected,
+                initResult.RemoteMySqlConnected,
+                initResult.LocalSqliteError,
+                initResult.RemoteMySqlError);
+
+            var mainWindow = _host.Services.GetRequiredService<MainWindow>();
+            mainWindow.Show();
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(
+                $"Start fehlgeschlagen: {ex.Message}",
+                "OpenSlalom",
+                MessageBoxButton.OK,
+                MessageBoxImage.Error);
+            Shutdown(-1);
+        }
+        finally
+        {
+            splashWindow.Close();
+        }
     }
 
     protected override async void OnExit(ExitEventArgs e)

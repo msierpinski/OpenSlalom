@@ -14,6 +14,8 @@ public class OpenSlalomDbContext : DbContext
 
     public DbSet<Disziplin> Disziplinen => Set<Disziplin>();
 
+    public DbSet<DisziplinAltersklasse> DisziplinAltersklassen => Set<DisziplinAltersklasse>();
+
     public DbSet<Fahrer> Fahrer => Set<Fahrer>();
 
     public DbSet<FahrerImTraining> FahrerImTrainings => Set<FahrerImTraining>();
@@ -87,6 +89,40 @@ public class OpenSlalomDbContext : DbContext
             ConfigureSyncEntity(entity);
         });
 
+        modelBuilder.Entity<DisziplinAltersklasse>(entity =>
+        {
+            entity.ToTable("disziplin_altersklassen");
+            entity.HasKey(x => x.Id);
+
+            entity.Property(x => x.Id)
+                .HasColumnName("id")
+                .ValueGeneratedOnAdd();
+
+            entity.Property(x => x.DisziplinId)
+                .HasColumnName("fk_id_disziplin")
+                .IsRequired();
+
+            entity.Property(x => x.Bezeichnung)
+                .HasColumnName("bezeichnung")
+                .HasMaxLength(100)
+                .IsRequired();
+
+            entity.Property(x => x.AlterVon)
+                .HasColumnName("alter_von")
+                .IsRequired();
+
+            entity.Property(x => x.AlterBis)
+                .HasColumnName("alter_bis");
+
+            ConfigureSyncEntity(entity);
+
+            entity.HasOne(x => x.Disziplin)
+                .WithMany(x => x.Altersklassen)
+                .HasForeignKey(x => x.DisziplinId)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_disziplin_altersklassen_disziplin");
+        });
+
         modelBuilder.Entity<Verein>(entity =>
         {
             entity.ToTable("vereine");
@@ -153,6 +189,12 @@ public class OpenSlalomDbContext : DbContext
             entity.Property(x => x.Geburtsdatum)
                 .HasColumnName("geburtsdatum")
                 .HasColumnType("date");
+
+            entity.Property(x => x.Geschlecht)
+                .HasColumnName("geschlecht")
+                .HasMaxLength(20)
+                .HasDefaultValue(string.Empty)
+                .IsRequired();
 
             ConfigureSyncEntity(entity);
 
@@ -321,6 +363,12 @@ public class OpenSlalomDbContext : DbContext
 
             entity.Property(x => x.KartId)
                 .HasColumnName("fk_id_kart");
+
+            entity.Property(x => x.AltersklasseSnapshot)
+                .HasColumnName("altersklasse_snapshot")
+                .HasMaxLength(100)
+                .HasDefaultValue(string.Empty)
+                .IsRequired();
 
             entity.Property(x => x.Datum)
                 .HasColumnName("datum")

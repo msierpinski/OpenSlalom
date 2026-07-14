@@ -105,6 +105,28 @@ public sealed class DataSyncService(
                     CopySyncFields(target, source);
                 }, cancellationToken);
 
+            await SyncByIntKeyAsync(localDb, remoteDb, localDb.DisziplinAltersklassen, remoteDb.DisziplinAltersklassen,
+                x => x.Id,
+                x => new DisziplinAltersklasse
+                {
+                    Id = x.Id,
+                    DisziplinId = x.DisziplinId,
+                    Bezeichnung = x.Bezeichnung,
+                    AlterVon = x.AlterVon,
+                    AlterBis = x.AlterBis,
+                    UpdatedAtUtc = x.UpdatedAtUtc,
+                    IsDeleted = x.IsDeleted,
+                    DeletedAtUtc = x.DeletedAtUtc
+                },
+                (target, source) =>
+                {
+                    target.DisziplinId = source.DisziplinId;
+                    target.Bezeichnung = source.Bezeichnung;
+                    target.AlterVon = source.AlterVon;
+                    target.AlterBis = source.AlterBis;
+                    CopySyncFields(target, source);
+                }, cancellationToken);
+
             await SyncByIntKeyAsync(localDb, remoteDb, localDb.Vereine, remoteDb.Vereine,
                 x => x.Id,
                 x => new Verein
@@ -151,6 +173,7 @@ public sealed class DataSyncService(
                     Vorname = x.Vorname,
                     Nachname = x.Nachname,
                     Geburtsdatum = x.Geburtsdatum,
+                    Geschlecht = x.Geschlecht,
                     UpdatedAtUtc = x.UpdatedAtUtc,
                     IsDeleted = x.IsDeleted,
                     DeletedAtUtc = x.DeletedAtUtc
@@ -161,6 +184,7 @@ public sealed class DataSyncService(
                     target.Vorname = source.Vorname;
                     target.Nachname = source.Nachname;
                     target.Geburtsdatum = source.Geburtsdatum;
+                    target.Geschlecht = source.Geschlecht;
                     CopySyncFields(target, source);
                 }, cancellationToken);
 
@@ -227,6 +251,7 @@ public sealed class DataSyncService(
                     TrainingId = x.TrainingId,
                     FahrerId = x.FahrerId,
                     KartId = x.KartId,
+                    AltersklasseSnapshot = x.AltersklasseSnapshot,
                     Datum = x.Datum,
                     UpdatedAtUtc = x.UpdatedAtUtc,
                     IsDeleted = x.IsDeleted,
@@ -237,6 +262,7 @@ public sealed class DataSyncService(
                     target.TrainingId = source.TrainingId;
                     target.FahrerId = source.FahrerId;
                     target.KartId = source.KartId;
+                    target.AltersklasseSnapshot = source.AltersklasseSnapshot;
                     target.Datum = source.Datum;
                     CopySyncFields(target, source);
                 }, cancellationToken);
@@ -303,6 +329,7 @@ public sealed class DataSyncService(
     {
         var total = 0;
         total += await dbContext.Disziplinen.IgnoreQueryFilters().CountAsync(x => x.UpdatedAtUtc > lastSyncUtc, cancellationToken);
+        total += await dbContext.DisziplinAltersklassen.IgnoreQueryFilters().CountAsync(x => x.UpdatedAtUtc > lastSyncUtc, cancellationToken);
         total += await dbContext.Vereine.IgnoreQueryFilters().CountAsync(x => x.UpdatedAtUtc > lastSyncUtc, cancellationToken);
         total += await dbContext.Wetterlagen.IgnoreQueryFilters().CountAsync(x => x.UpdatedAtUtc > lastSyncUtc, cancellationToken);
         total += await dbContext.Fahrer.IgnoreQueryFilters().CountAsync(x => x.UpdatedAtUtc > lastSyncUtc, cancellationToken);
@@ -320,6 +347,7 @@ public sealed class DataSyncService(
         CancellationToken cancellationToken)
     {
         if (await HasIntKeyDriftAsync(localDb.Disziplinen, remoteDb.Disziplinen, x => x.Id, cancellationToken) ||
+            await HasIntKeyDriftAsync(localDb.DisziplinAltersklassen, remoteDb.DisziplinAltersklassen, x => x.Id, cancellationToken) ||
             await HasIntKeyDriftAsync(localDb.Vereine, remoteDb.Vereine, x => x.Id, cancellationToken) ||
             await HasIntKeyDriftAsync(localDb.Wetterlagen, remoteDb.Wetterlagen, x => x.Id, cancellationToken) ||
             await HasIntKeyDriftAsync(localDb.Fahrer, remoteDb.Fahrer, x => x.Id, cancellationToken) ||

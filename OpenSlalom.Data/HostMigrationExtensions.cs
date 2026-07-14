@@ -15,6 +15,7 @@ public static class HostMigrationExtensions
     private static readonly string[] SyncTables =
     [
         "disziplin",
+        "disziplin_altersklassen",
         "vereine",
         "wetter",
         "fahrer",
@@ -89,6 +90,11 @@ public static class HostMigrationExtensions
         try
         {
             await using var migrationDbContext = await remoteMigrationFactory.CreateDbContextAsync(cancellationToken);
+            var connectionString = migrationDbContext.Database.GetConnectionString();
+            if (!string.IsNullOrWhiteSpace(connectionString) && !MySqlEndpointProbe.CanReach(connectionString))
+            {
+                return InitializationState.Failed("Remote-MySQL Host ist nicht erreichbar.");
+            }
 
             if (!await migrationDbContext.Database.CanConnectAsync(cancellationToken))
             {
@@ -146,8 +152,10 @@ public static class HostMigrationExtensions
     {
         await EnsureColumnAsync(localDbContext, "vereine", "mitglieds_nummer", "ALTER TABLE vereine ADD COLUMN mitglieds_nummer TEXT NOT NULL DEFAULT '';", cancellationToken);
         await EnsureColumnAsync(localDbContext, "fahrer", "geburtsdatum", "ALTER TABLE fahrer ADD COLUMN geburtsdatum TEXT NULL;", cancellationToken);
+        await EnsureColumnAsync(localDbContext, "fahrer", "geschlecht", "ALTER TABLE fahrer ADD COLUMN geschlecht TEXT NOT NULL DEFAULT '';", cancellationToken);
         await EnsureColumnAsync(localDbContext, "training", "training_abgeschlossen", "ALTER TABLE training ADD COLUMN training_abgeschlossen INTEGER NOT NULL DEFAULT 0;", cancellationToken);
         await EnsureColumnAsync(localDbContext, "fahrer_im_training", "reihenfolge", "ALTER TABLE fahrer_im_training ADD COLUMN reihenfolge INTEGER NOT NULL DEFAULT 0;", cancellationToken);
+        await EnsureColumnAsync(localDbContext, "tstints", "altersklasse_snapshot", "ALTER TABLE tstints ADD COLUMN altersklasse_snapshot TEXT NOT NULL DEFAULT '';", cancellationToken);
 
         await EnsureSyncMetadataColumnsAsync(localDbContext, cancellationToken);
 
@@ -162,6 +170,11 @@ public static class HostMigrationExtensions
     {
         foreach (var tableName in SyncTables)
         {
+            if (!await TableExistsAsync(localDbContext, tableName, cancellationToken))
+            {
+                continue;
+            }
+
             await EnsureColumnAsync(
                 localDbContext,
                 tableName,
@@ -275,6 +288,11 @@ public static class HostMigrationExtensions
     {
         foreach (var tableName in SyncTables)
         {
+            if (!await RemoteTableExistsAsync(remoteDbContext, tableName, cancellationToken))
+            {
+                continue;
+            }
+
             await EnsureRemoteColumnAsync(remoteDbContext, tableName, "updated_at_utc", "ALTER TABLE `{0}` ADD COLUMN `updated_at_utc` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP;", cancellationToken);
             await EnsureRemoteColumnAsync(remoteDbContext, tableName, "is_deleted", "ALTER TABLE `{0}` ADD COLUMN `is_deleted` tinyint(1) NOT NULL DEFAULT 0;", cancellationToken);
             await EnsureRemoteColumnAsync(remoteDbContext, tableName, "deleted_at_utc", "ALTER TABLE `{0}` ADD COLUMN `deleted_at_utc` datetime NULL;", cancellationToken);

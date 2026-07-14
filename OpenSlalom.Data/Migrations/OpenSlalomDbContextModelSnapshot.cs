@@ -70,6 +70,56 @@ namespace OpenSlalom.Data.Migrations
                     b.ToTable("disziplin", (string)null);
                 });
 
+            modelBuilder.Entity("OpenSlalom.Data.Entities.DisziplinAltersklasse", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("AlterBis")
+                        .HasColumnType("int")
+                        .HasColumnName("alter_bis");
+
+                    b.Property<int>("AlterVon")
+                        .HasColumnType("int")
+                        .HasColumnName("alter_von");
+
+                    b.Property<string>("Bezeichnung")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)")
+                        .HasColumnName("bezeichnung");
+
+                    b.Property<DateTime?>("DeletedAtUtc")
+                        .HasColumnType("datetime")
+                        .HasColumnName("deleted_at_utc");
+
+                    b.Property<int>("DisziplinId")
+                        .HasColumnType("int")
+                        .HasColumnName("fk_id_disziplin");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(false)
+                        .HasColumnName("is_deleted");
+
+                    b.Property<DateTime>("UpdatedAtUtc")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasColumnName("updated_at_utc")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DisziplinId");
+
+                    b.ToTable("disziplin_altersklassen", (string)null);
+                });
+
             modelBuilder.Entity("OpenSlalom.Data.Entities.Fahrer", b =>
                 {
                     b.Property<int>("Id")
@@ -86,6 +136,14 @@ namespace OpenSlalom.Data.Migrations
                     b.Property<DateOnly?>("Geburtsdatum")
                         .HasColumnType("date")
                         .HasColumnName("geburtsdatum");
+
+                    b.Property<string>("Geschlecht")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasDefaultValue("")
+                        .HasColumnName("geschlecht");
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
@@ -370,6 +428,14 @@ namespace OpenSlalom.Data.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("AltersklasseSnapshot")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)")
+                        .HasDefaultValue("")
+                        .HasColumnName("altersklasse_snapshot");
+
                     b.Property<DateTime>("Datum")
                         .HasColumnType("datetime")
                         .HasColumnName("datum");
@@ -493,6 +559,18 @@ namespace OpenSlalom.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("wetter", (string)null);
+                });
+
+            modelBuilder.Entity("OpenSlalom.Data.Entities.DisziplinAltersklasse", b =>
+                {
+                    b.HasOne("OpenSlalom.Data.Entities.Disziplin", "Disziplin")
+                        .WithMany("Altersklassen")
+                        .HasForeignKey("DisziplinId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("FK_disziplin_altersklassen_disziplin");
+
+                    b.Navigation("Disziplin");
                 });
 
             modelBuilder.Entity("OpenSlalom.Data.Entities.Fahrer", b =>
@@ -621,6 +699,8 @@ namespace OpenSlalom.Data.Migrations
 
             modelBuilder.Entity("OpenSlalom.Data.Entities.Disziplin", b =>
                 {
+                    b.Navigation("Altersklassen");
+
                     b.Navigation("Karts");
 
                     b.Navigation("Trainings");

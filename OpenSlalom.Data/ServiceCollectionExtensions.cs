@@ -7,6 +7,7 @@ namespace OpenSlalom.Data;
 public static class ServiceCollectionExtensions
 {
     private static readonly ConcurrentDictionary<string, ServerVersion> ServerVersionCache = new();
+    private static readonly ServerVersion FallbackServerVersion = new MySqlServerVersion(new Version(8, 0, 36));
 
     public static IServiceCollection AddOpenSlalomData(
         this IServiceCollection services,
@@ -56,6 +57,29 @@ public static class ServiceCollectionExtensions
 
     private static ServerVersion ResolveServerVersion(string connectionString)
     {
-        return ServerVersionCache.GetOrAdd(connectionString, ServerVersion.AutoDetect);
+        if (ServerVersionCache.TryGetValue(connectionString, out var cached))
+        {
+            return cached;
+        }
+
+        ServerVersion resolved;
+        if (!MySqlEndpointProbe.CanReach(connectionString))
+        {
+            resolved = FallbackServerVersion;
+        }
+        else
+        {
+            try
+            {
+                resolved = ServerVersion.AutoDetect(connectionString);
+            }
+            catch
+            {
+                resolved = FallbackServerVersion;
+            }
+        }
+
+        ServerVersionCache[connectionString] = resolved;
+        return resolved;
     }
 }

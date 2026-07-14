@@ -2,6 +2,7 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:local="clr-namespace:OpenSlalom.UI"
         xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
@@ -13,7 +14,8 @@
         ResizeMode="CanResize"
         WindowStyle="None"
         AllowsTransparency="False"
-        Background="#F8FAFC">
+        Background="#F8FAFC"
+        PreviewKeyDown="MainWindow_OnPreviewKeyDown">
     <shell:WindowChrome.WindowChrome>
         <shell:WindowChrome CaptionHeight="0"
                             ResizeBorderThickness="8"
@@ -22,6 +24,9 @@
                             UseAeroCaptionButtons="False" />
     </shell:WindowChrome.WindowChrome>
     <Window.Resources>
+        <local:GreaterThanZeroConverter x:Key="GreaterThanZeroConverter" />
+        <local:SvgResourceToImageSourceConverter x:Key="SvgResourceToImageSourceConverter" />
+        <local:ZeitstrafeConverter x:Key="ZeitstrafeConverter" />
         <Style x:Key="MenuButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="Foreground" Value="#0F172A" />
@@ -44,11 +49,10 @@
             </Setter>
         </Style>
         <Style x:Key="RoundedButton" TargetType="Button">
-            <Setter Property="Background" Value="#1F84DE"/>
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="FontSize" Value="14" />
             <Setter Property="BorderThickness" Value="0"/>
-            
+
 
 
             <Setter Property="Template">
@@ -57,13 +61,135 @@
                         <Border Background="{TemplateBinding Background}"
                             CornerRadius="4"
                             Padding="{TemplateBinding Padding}">
-                            <ContentPresenter HorizontalAlignment="Center"
-                                          VerticalAlignment="Center"/>
+                            <Grid>
+                                <ContentPresenter HorizontalAlignment="Center"
+             VerticalAlignment="Center"/>
+
+                                <Border x:Name="HoverOverlay"
+                               Background="Black"
+                               Opacity="0"
+                               IsHitTestVisible="False"/>
+                            </Grid>
                         </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="HoverOverlay"
+                                 Property="Opacity"
+                     Value="0.15"/>
+                            </Trigger>
+
+                        </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
         </Style>
+        <Style x:Key="Button" TargetType="Button">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="BorderThickness" Value="0"/>
+
+
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                            Padding="{TemplateBinding Padding}">
+
+                            <Grid>
+                                <ContentPresenter HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"/>
+
+                                <Border x:Name="HoverOverlay"
+                                Background="Black"
+                                Opacity="0"
+                                IsHitTestVisible="False"/>
+                            </Grid>
+                        </Border>
+
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="HoverOverlay"
+                                 Property="Opacity"
+                     Value="0.15"/>
+                            </Trigger>
+
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="RoundedButtonRight" TargetType="Button">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="BorderThickness" Value="0"/>
+
+
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                            CornerRadius="0,4,4,0"
+                            Padding="{TemplateBinding Padding}">
+                            <Grid>
+                                <ContentPresenter HorizontalAlignment="Center"
+               VerticalAlignment="Center"/>
+
+                                <Border x:Name="HoverOverlay"
+                                 Background="Black"
+                                 Opacity="0"
+                                 IsHitTestVisible="False"/>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="HoverOverlay"
+                                 Property="Opacity"
+                     Value="0.15"/>
+                            </Trigger>
+
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="RoundedButtonLeft" TargetType="Button">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="BorderThickness" Value="0"/>
+
+
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                      CornerRadius="4,0,0,4"
+                      Padding="{TemplateBinding Padding}">
+                            <Grid>
+                                <ContentPresenter HorizontalAlignment="Center"
+             VerticalAlignment="Center"/>
+
+                                <Border x:Name="HoverOverlay"
+                               Background="Black"
+                               Opacity="0"
+                               IsHitTestVisible="False"/>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="HoverOverlay"
+                                 Property="Opacity"
+                     Value="0.15"/>
+                            </Trigger>
+
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
         <Style x:Key="RoundedButtonSync" TargetType="Button">
             <Setter Property="Background" Value="#1F84DE"/>
             <Setter Property="Foreground" Value="White"/>
@@ -81,24 +207,6 @@
                             Padding="{TemplateBinding Padding}">
                             <ContentPresenter HorizontalAlignment="Center"
                                           />
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>        
-        <Style x:Key="TrainingToolbarButton" TargetType="Button">
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="FontSize" Value="14" />
-            <Setter Property="Cursor" Value="Hand" />
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Padding" Value="12,6"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}"
-                                CornerRadius="8"
-                                Padding="{TemplateBinding Padding}">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                     </ControlTemplate>
                 </Setter.Value>
@@ -131,7 +239,7 @@
                                 <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" ContentSource="Header" />
                             </Border>
 
-             
+
                         </Grid>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsSelected" Value="True">
@@ -142,6 +250,75 @@
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
+        </Style>
+        <Style x:Key="StandardDataGridHeaderStyle" TargetType="DataGridColumnHeader">
+            <Setter Property="Foreground" Value="Black" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="Padding" Value="8,6" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="DataGridColumnHeader">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                Padding="{TemplateBinding Padding}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="14" />
+                                </Grid.ColumnDefinitions>
+                                <ContentPresenter Grid.Column="0"
+                                                  HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center"
+                                                  RecognizesAccessKey="True" />
+                                <Path x:Name="SortArrow"
+                                      Grid.Column="1"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      Fill="Black"
+                                      Data="M 0 6 L 4 0 L 8 6 Z"
+                                      Visibility="Collapsed" />
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="SortDirection" Value="Ascending">
+                                <Setter TargetName="SortArrow" Property="Visibility" Value="Visible" />
+                                <Setter TargetName="SortArrow" Property="Data" Value="M 0 6 L 4 0 L 8 6 Z" />
+                            </Trigger>
+                            <Trigger Property="SortDirection" Value="Descending">
+                                <Setter TargetName="SortArrow" Property="Visibility" Value="Visible" />
+                                <Setter TargetName="SortArrow" Property="Data" Value="M 0 0 L 4 6 L 8 0 Z" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="StandardDataGridCellStyle" TargetType="DataGridCell">
+            <Setter Property="Foreground" Value="Black" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding" Value="8,5" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="TextBlock.TextAlignment" Value="Center" />
+        </Style>
+        <Style x:Key="StandardDataGridTextElementStyle" TargetType="TextBlock">
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="TextAlignment" Value="Center" />
+        </Style>
+        <Style x:Key="StandardDataGridRowStyle" TargetType="DataGridRow">
+            <Setter Property="Foreground" Value="Black" />
+            <Setter Property="Background" Value="Transparent" />
+            <Style.Triggers>
+                <Trigger Property="ItemsControl.AlternationIndex" Value="1">
+                    <Setter Property="Background" Value="#E0E0E0" />
+                </Trigger>
+            </Style.Triggers>
         </Style>
     </Window.Resources>
 
@@ -167,7 +344,7 @@
 
                     <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="0,0,5,0">
                         <Image Source="/icons/minimize.png" Width="30" HorizontalAlignment="Left" Margin="15,0,0,0" MouseLeftButtonDown="MinimizeButton_OnClick"/>
-                        <Image Source="/icons/maximize.png" Width="30" HorizontalAlignment="Left" Margin="15,0,0,0" MouseLeftButtonDown="MaximizeButton_OnClick"/>
+                        <Image x:Name="MaximizeRestoreImage" Source="/icons/maximize.png" Width="30" HorizontalAlignment="Left" Margin="15,0,0,0" MouseLeftButtonDown="MaximizeButton_OnClick"/>
                         <Image Source="/icons/close.png" Width="30" HorizontalAlignment="Left" Margin="15,0,0,0" MouseLeftButtonDown="CloseButton_OnClick"/>
                     </StackPanel>
                 </Grid>
@@ -202,7 +379,7 @@
                     </Grid.RowDefinitions>
 
                     <Grid Grid.Row="2">
-
+                       
                         <Border x:Name="StartseitePage" Visibility="Visible" Background="#F8FAFC">
                             <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
                                 <Image x:Name="LogoImage" Height="320" Stretch="Uniform" Source="/icons/logo.png" ImageFailed="LogoImage_OnImageFailed" />
@@ -225,110 +402,233 @@
                                     </Grid.ColumnDefinitions>
 
                                     <TextBlock FontWeight="Bold" FontSize="20" Text="Trainings" VerticalAlignment="Center" />
-                                    <Button Grid.Column="1" Style="{StaticResource RoundedButton}" Content="Training anlegen" Padding="14,8" Click="OpenCreateTrainingPage_OnClick" />
+
+                                    <Button Grid.Column="1" Background="#1F84DE" Style="{StaticResource RoundedButton}" Content="Training anlegen" Width="120"  Height="30" Click="OpenCreateTrainingPage_OnClick" />
                                 </Grid>
 
-                                <Border Grid.Row="2" Background="White" BorderBrush="#D1D5DB" BorderThickness="1" CornerRadius="8">
-                                    <Grid>
-                                        <DataGrid x:Name="TrainingsDataGrid"
+                                <Grid Grid.Row="2">
+                                    <DataGrid x:Name="TrainingsDataGrid"
                                                   ItemsSource="{Binding TrainingItems}"
+                                                  Background="Transparent"
                                                   AutoGenerateColumns="False"
                                                   CanUserAddRows="False"
                                                   IsReadOnly="True"
                                                   HeadersVisibility="Column"
-                                                  GridLinesVisibility="Horizontal"
+                                                  GridLinesVisibility="None"
                                                   BorderThickness="0"
                                                   RowHeaderWidth="0"
-                                                  SelectionMode="Single">
-                                            <DataGrid.Columns>
-                                                <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="170" />
-                                                <DataGridTextColumn Header="Beschreibung" Binding="{Binding Beschreibung}" Width="220" />
-                                                <DataGridTextColumn Header="Datum" Binding="{Binding ZeitpunktText}" Width="120" />
-                                                <DataGridTextColumn Header="Abgeschlossen" Binding="{Binding TrainingAbgeschlossenText}" Width="120" />
-                                                <DataGridTextColumn Header="Verein" Binding="{Binding VereinName}" Width="*" />
-                                                <DataGridTextColumn Header="Disziplin" Binding="{Binding DisziplinName}" Width="130" />
-                                                <DataGridTextColumn Header="Wetter" Binding="{Binding WetterName}" Width="120" />
-                                                <DataGridTemplateColumn Header="Aktionen" Width="140">
-                                                    <DataGridTemplateColumn.CellTemplate>
-                                                        <DataTemplate>
-                                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                                                <Button Width="32" Height="28" Margin="0,0,8,0" Tag="{Binding Id}" Click="OpenEditTrainingPage_OnClick">
-                                                                    <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE70F;" />
-                                                                </Button>
-                                                                <Button Width="32" Height="28" Tag="{Binding Id}" Click="OpenDeleteTrainingPage_OnClick">
-                                                                    <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE74D;" />
-                                                                </Button>
-                                                            </StackPanel>
-                                                        </DataTemplate>
-                                                    </DataGridTemplateColumn.CellTemplate>
-                                                </DataGridTemplateColumn>
-                                            </DataGrid.Columns>
-                                        </DataGrid>
+                                                  RowHeight="36"
+                                                  VerticalContentAlignment="Center"
+                                                  SelectionMode="Single"
+                                                  AlternationCount="2"
+                                                  ColumnHeaderStyle="{StaticResource StandardDataGridHeaderStyle}"
+                                                  CellStyle="{StaticResource StandardDataGridCellStyle}"
+                                                  RowStyle="{StaticResource StandardDataGridRowStyle}">
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header="Datum" Binding="{Binding ZeitpunktText}" Width="80" ElementStyle="{StaticResource StandardDataGridTextElementStyle}"/>
+                                            <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="16*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}"/>
+                                            <DataGridTextColumn Header="Beschreibung" Binding="{Binding Beschreibung}" Width="20*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                                            <DataGridTextColumn Header="Verein" Binding="{Binding VereinName}" Width="16*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                                            <DataGridTextColumn Header="Disziplin" Binding="{Binding DisziplinName}" Width="80" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                                            <DataGridTextColumn Header="Wetter" Binding="{Binding WetterName}" Width="120" ElementStyle="{StaticResource StandardDataGridTextElementStyle}"/>
+                                            <DataGridTextColumn Header="Finished" Binding="{Binding TrainingAbgeschlossenText}" Width="80" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                                            <DataGridTemplateColumn Header="Aktionen" Width="125">
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <Grid Height="32" VerticalAlignment="Center">
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="*"/>
+                                                                <ColumnDefinition Width="40"/>
+                                                                <ColumnDefinition Width="40"/>
+                                                                <ColumnDefinition Width="40"/>
+                                                                <ColumnDefinition Width="*"/>
+                                                                <ColumnDefinition Width="10"/>
+                                                            </Grid.ColumnDefinitions>
 
-                                        <Border x:Name="TrainingCreatePage" Visibility="Collapsed" Background="#F8FAFC" BorderBrush="#D1D5DB" BorderThickness="1" CornerRadius="8">
-                                            <StackPanel Margin="20">
-                                                <TextBlock FontWeight="Bold" FontSize="18" Text="Training anlegen" />
-                                                <TextBlock Margin="0,16,0,4" Text="Name" />
-                                                <TextBox x:Name="CreateTrainingNameTextBox" Height="30" />
-                                                <TextBlock Margin="0,12,0,4" Text="Beschreibung" />
-                                                <TextBox x:Name="CreateTrainingBeschreibungTextBox" Height="30" />
-                                                <TextBlock Margin="0,12,0,4" Text="Datum" />
-                                                <DatePicker x:Name="CreateTrainingZeitpunktPicker" Height="30" />
-                                                <TextBlock Margin="0,12,0,4" Text="Verein" />
-                                                <ComboBox x:Name="CreateTrainingVereinComboBox" Height="30" DisplayMemberPath="Name" SelectedValuePath="Id" />
-                                                <TextBlock Margin="0,12,0,4" Text="Disziplin" />
-                                                <ComboBox x:Name="CreateTrainingDisziplinComboBox" Height="30" DisplayMemberPath="Name" SelectedValuePath="Id" />
-                                                <TextBlock Margin="0,12,0,4" Text="Wetter" />
-                                                <ComboBox x:Name="CreateTrainingWetterComboBox" Height="30" DisplayMemberPath="Name" SelectedValuePath="Id" />
-                                                <CheckBox x:Name="CreateTrainingAbgeschlossenCheckBox" Margin="0,12,0,0" Content="Training abgeschlossen" />
-                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
-                                                    <Button Padding="12,6" Margin="0,0,8,0" Click="CancelTrainingPage_OnClick" Content="Abbrechen" />
-                                                    <Button Style="{StaticResource RoundedButton}" Padding="12,6" Click="SaveCreateTraining_OnClick" Content="Speichern" />
-                                                </StackPanel>
-                                            </StackPanel>
-                                        </Border>
+                                                            <Button Grid.Column="1" Height="28"  Style="{StaticResource RoundedButtonLeft}" Background="#1F84DE" Tag="{Binding Id}" Click="OpenDetailTrainingPage_OnClick">
+                                                                <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE721;" />
+                                                            </Button>
+                                                            <Button Grid.Column="2" Height="28"  Style="{StaticResource Button}" Background="#1F84DE" Tag="{Binding Id}" Click="OpenEditTrainingPage_OnClick">
+                                                                <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE70F;" />
+                                                            </Button>
+                                                            <Button Grid.Column="3"  Height="28" Style="{StaticResource RoundedButtonRight}" Background="Red"  Tag="{Binding Id}" Click="OpenDeleteTrainingPage_OnClick">
+                                                                <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE74D;" />
+                                                            </Button>
 
-                                        <Border x:Name="TrainingEditPage" Visibility="Collapsed" Background="#F8FAFC" BorderBrush="#D1D5DB" BorderThickness="1" CornerRadius="8">
-                                            <StackPanel Margin="20">
-                                                <TextBlock FontWeight="Bold" FontSize="18" Text="Training bearbeiten" />
-                                                <TextBlock Margin="0,16,0,4" Text="Name" />
-                                                <TextBox x:Name="EditTrainingNameTextBox" Height="30" />
-                                                <TextBlock Margin="0,12,0,4" Text="Beschreibung" />
-                                                <TextBox x:Name="EditTrainingBeschreibungTextBox" Height="30" />
-                                                <TextBlock Margin="0,12,0,4" Text="Datum" />
-                                                <DatePicker x:Name="EditTrainingZeitpunktPicker" Height="30" />
-                                                <TextBlock Margin="0,12,0,4" Text="Verein" />
-                                                <ComboBox x:Name="EditTrainingVereinComboBox" Height="30" DisplayMemberPath="Name" SelectedValuePath="Id" />
-                                                <TextBlock Margin="0,12,0,4" Text="Disziplin" />
-                                                <ComboBox x:Name="EditTrainingDisziplinComboBox" Height="30" DisplayMemberPath="Name" SelectedValuePath="Id" />
-                                                <TextBlock Margin="0,12,0,4" Text="Wetter" />
-                                                <ComboBox x:Name="EditTrainingWetterComboBox" Height="30" DisplayMemberPath="Name" SelectedValuePath="Id" />
-                                                <CheckBox x:Name="EditTrainingAbgeschlossenCheckBox" Margin="0,12,0,0" Content="Training abgeschlossen" />
-                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
-                                                    <Button Padding="12,6" Margin="0,0,8,0" Click="CancelTrainingPage_OnClick" Content="Abbrechen" />
-                                                    <Button Style="{StaticResource RoundedButton}" Padding="12,6" Click="SaveEditTraining_OnClick" Content="Speichern" />
-                                                </StackPanel>
-                                            </StackPanel>
-                                        </Border>
+                                                        </Grid>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+                                        </DataGrid.Columns>
+                                    </DataGrid>
 
-                                        <Border x:Name="TrainingDeletePage" Visibility="Collapsed" Background="#F8FAFC" BorderBrush="#D1D5DB" BorderThickness="1" CornerRadius="8">
-                                            <StackPanel Margin="20">
-                                                <TextBlock FontWeight="Bold" FontSize="18" Text="Training loeschen" />
-                                                <TextBlock Margin="0,16,0,0" Text="Soll dieses Training wirklich geloescht werden?" />
-                                                <TextBlock x:Name="DeleteTrainingTextBlock" Margin="0,10,0,0" FontWeight="SemiBold" />
-                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
-                                                    <Button Padding="12,6" Margin="0,0,8,0" Click="CancelTrainingPage_OnClick" Content="Abbrechen" />
-                                                    <Button Padding="12,6" Background="#DC2626" Foreground="White" BorderThickness="0" Click="ConfirmDeleteTraining_OnClick" Content="Loeschen" />
-                                                </StackPanel>
+                                    <Border x:Name="TrainingCreatePage" Visibility="Collapsed" Background="#F8FAFC" BorderBrush="#D1D5DB" BorderThickness="1" CornerRadius="8">
+                                        <StackPanel Margin="20">
+                                            <TextBlock FontWeight="Bold" FontSize="18" Text="Training anlegen" />
+                                            <TextBlock Margin="0,16,0,4" Text="Name" />
+                                            <TextBox x:Name="CreateTrainingNameTextBox" Height="30" />
+                                            <TextBlock Margin="0,12,0,4" Text="Beschreibung" />
+                                            <TextBox x:Name="CreateTrainingBeschreibungTextBox" Height="30" />
+                                            <TextBlock Margin="0,12,0,4" Text="Datum" />
+                                            <DatePicker x:Name="CreateTrainingZeitpunktPicker" Height="30" />
+                                            <TextBlock Margin="0,12,0,4" Text="Verein" />
+                                            <ComboBox x:Name="CreateTrainingVereinComboBox" Height="30" DisplayMemberPath="Name" SelectedValuePath="Id" />
+                                            <TextBlock Margin="0,12,0,4" Text="Disziplin" />
+                                            <ComboBox x:Name="CreateTrainingDisziplinComboBox" Height="30" DisplayMemberPath="Name" SelectedValuePath="Id" />
+                                            <TextBlock Margin="0,12,0,4" Text="Wetter" />
+                                            <ComboBox x:Name="CreateTrainingWetterComboBox" Height="30" DisplayMemberPath="Name" SelectedValuePath="Id" />
+                                            <CheckBox x:Name="CreateTrainingAbgeschlossenCheckBox" Margin="0,12,0,0" Content="Training abgeschlossen" />
+                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+                                                <Button Style="{StaticResource RoundedButton}" Background="#1F84DE" Width="120"  Height="30"  Margin="0,0,8,0" Click="CancelTrainingPage_OnClick" Content="Abbrechen" />
+                                                <Button Style="{StaticResource RoundedButton}" Background="green" Width="120" Height="30"  Click="SaveCreateTraining_OnClick" Content="Speichern" />
                                             </StackPanel>
-                                        </Border>
-                                    </Grid>
-                                </Border>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <Border x:Name="TrainingEditPage" Visibility="Collapsed" Background="#F8FAFC" BorderBrush="#D1D5DB" BorderThickness="1" CornerRadius="8">
+                                        <StackPanel Margin="20">
+                                            <TextBlock FontWeight="Bold" FontSize="18" Text="Training bearbeiten" />
+                                            <TextBlock Margin="0,16,0,4" Text="Name" />
+                                            <TextBox x:Name="EditTrainingNameTextBox" Height="30" />
+                                            <TextBlock Margin="0,12,0,4" Text="Beschreibung" />
+                                            <TextBox x:Name="EditTrainingBeschreibungTextBox" Height="30" />
+                                            <TextBlock Margin="0,12,0,4" Text="Datum" />
+                                            <DatePicker x:Name="EditTrainingZeitpunktPicker" Height="30" />
+                                            <TextBlock Margin="0,12,0,4" Text="Verein" />
+                                            <ComboBox x:Name="EditTrainingVereinComboBox" Height="30" DisplayMemberPath="Name" SelectedValuePath="Id" />
+                                            <TextBlock Margin="0,12,0,4" Text="Disziplin" />
+                                            <ComboBox x:Name="EditTrainingDisziplinComboBox" Height="30" DisplayMemberPath="Name" SelectedValuePath="Id" />
+                                            <TextBlock Margin="0,12,0,4" Text="Wetter" />
+                                            <ComboBox x:Name="EditTrainingWetterComboBox" Height="30" DisplayMemberPath="Name" SelectedValuePath="Id" />
+                                            <CheckBox x:Name="EditTrainingAbgeschlossenCheckBox" Margin="0,12,0,0" Content="Training abgeschlossen" />
+                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+                                                <Button Style="{StaticResource RoundedButton}" Background="#1F84DE" Width="120" Height="30"  Margin="0,0,8,0" Click="CancelTrainingPage_OnClick" Content="Abbrechen" />
+                                                <Button Style="{StaticResource RoundedButton}" Background="green" Width="120" Height="30"  Click="SaveEditTraining_OnClick" Content="Speichern" />
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <Border x:Name="TrainingDeletePage" Visibility="Collapsed" Background="#F8FAFC" BorderBrush="#D1D5DB" BorderThickness="1" CornerRadius="8">
+                                        <StackPanel Margin="20">
+                                            <TextBlock FontWeight="Bold" FontSize="18" Text="Training loeschen" />
+                                            <TextBlock Margin="0,16,0,0" Text="Soll dieses Training wirklich geloescht werden?" />
+                                            <TextBlock x:Name="DeleteTrainingTextBlock" Margin="0,10,0,0" FontWeight="SemiBold" />
+                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+                                                <Button  Width="120" Height="30" Margin="0,0,8,0" Click="CancelTrainingPage_OnClick" Content="Abbrechen" />
+                                                <Button  Width="120"  Height="30" Background="#DC2626" Foreground="White" BorderThickness="0" Click="ConfirmDeleteTraining_OnClick" Content="Loeschen" />
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Border>
+                                </Grid>
                             </Grid>
                         </Border>
 
-                        <Border x:Name="TrainingDetailPage" Visibility="Collapsed" Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1" CornerRadius="10">
-                            <Grid Margin="20">
+                        <Border x:Name="TrainingStatisticsPage" Visibility="Collapsed" Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1" CornerRadius="10">
+                            <ScrollViewer x:Name="TrainingStatisticsScrollViewer" VerticalScrollBarVisibility="Auto">
+                                <StackPanel Margin="20">
+                                    <TextBlock x:Name="TrainingStatisticsTitleTextBlock" FontSize="24" FontWeight="Bold" Text="Training" />
+
+                                        <Grid Margin="0,10,0,0">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="30" />
+                                                <RowDefinition Height="40" />
+                                            </Grid.RowDefinitions>
+                                            <TextBlock x:Name="TrainingStatisticsParticipantsTextBlock" Grid.Row="0" Text="Teilnehmer: -" FontSize="14" />
+                                        <TextBlock x:Name="TrainingStatisticsTimeRangeTextBlock" Grid.Row="1" Text="Uhrzeit: -" FontSize="18" Foreground="DarkGray"/>
+                                        </Grid>
+
+
+                                    <DataGrid x:Name="TrainingStatisticsBestLapsDataGrid"
+                                              Margin="0,14,0,0"
+                                              ItemsSource="{Binding TrainingStatisticsBestLapItems}"
+                                              PreviewMouseWheel="TrainingStatisticsDataGrid_OnPreviewMouseWheel"
+                                              Background="Transparent"
+                                              AutoGenerateColumns="False"
+                                              CanUserAddRows="False"
+                                              IsReadOnly="True"
+                                              HeadersVisibility="Column"
+                                              GridLinesVisibility="None"
+                                              BorderThickness="0"
+                                              RowHeaderWidth="0"
+                                              RowHeight="36"
+                                              VerticalContentAlignment="Center"
+                                              SelectionMode="Single"
+                                              AlternationCount="2"
+                                              ColumnHeaderStyle="{StaticResource StandardDataGridHeaderStyle}"
+                                              CellStyle="{StaticResource StandardDataGridCellStyle}"
+                                              RowStyle="{StaticResource StandardDataGridRowStyle}">
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header="#" Binding="{Binding Position}" Width="50" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                                            <DataGridTextColumn Header="Klasse" Binding="{Binding Klasse}" Width="10*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                                            <DataGridTextColumn Header="Fahrer" Binding="{Binding Fahrer}" Width="15*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                                            <DataGridTextColumn Header="Kart" Binding="{Binding Kart}" Width="11*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                                            <DataGridTextColumn Header="Bestzeit" Binding="{Binding Bestzeit}" Width="9*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                                            <DataGridTextColumn Header="Abstand" Binding="{Binding Abstand}" Width="9*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                                            <DataGridTextColumn Header="Ø-Zeit" Binding="{Binding Durchschnittszeit}" Width="12*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                                            <DataGridTextColumn Header="Runden" Binding="{Binding GefahreneRunden}" Width="10*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                                            <DataGridTextColumn Header="Zeitpunkt" Binding="{Binding ZeitpunktLetzteFahrt}" Width="12*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+
+                                    <TextBlock Margin="0,18,0,6" FontWeight="SemiBold" Foreground="#334155" Text="Runden pro Fahrer" />
+                                    <ItemsControl ItemsSource="{Binding TrainingStatisticsDriverSections}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border Margin="0,8,0,0" Padding="10" Background="White" BorderBrush="#D1D5DB" BorderThickness="1" CornerRadius="8">
+                                                    <StackPanel>
+                                                        <TextBlock FontWeight="SemiBold" Text="{Binding Titel}" />
+                                                        <DataGrid Margin="0,8,0,0"
+                                                                  ItemsSource="{Binding LapItems}"
+                                                                  PreviewMouseWheel="TrainingStatisticsDataGrid_OnPreviewMouseWheel"
+                                                                  Background="Transparent"
+                                                                  AutoGenerateColumns="False"
+                                                                  CanUserAddRows="False"
+                                                                  IsReadOnly="True"
+                                                                  HeadersVisibility="Column"
+                                                                  GridLinesVisibility="None"
+                                                                  BorderThickness="0"
+                                                                  RowHeaderWidth="0"
+                                                                  RowHeight="32"
+                                                                  VerticalContentAlignment="Center"
+                                                                  SelectionMode="Single"
+                                                                  AlternationCount="2"
+                                                                  ColumnHeaderStyle="{StaticResource StandardDataGridHeaderStyle}"
+                                                                  CellStyle="{StaticResource StandardDataGridCellStyle}"
+                                                                  RowStyle="{StaticResource StandardDataGridRowStyle}">
+                                                            <DataGrid.Columns>
+                                                                <DataGridTextColumn Header="#" Binding="{Binding Nummer}" Width="50" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                                                                <DataGridTextColumn Header="Stint" Binding="{Binding Stint}" Width="70" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                                                                <DataGridTextColumn Header="Runde" Binding="{Binding Runde}" Width="70" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                                                                <DataGridTextColumn Header="Kart" Binding="{Binding Kart}" Width="14*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                                                                <DataGridTextColumn Header="Zeit" Binding="{Binding Zeit}" Width="11*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                                                                <DataGridTextColumn Header="Strafe" Binding="{Binding StrafeText}" Width="11*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}">
+                                                                    <DataGridTextColumn.CellStyle>
+                                                                        <Style TargetType="DataGridCell" BasedOn="{StaticResource StandardDataGridCellStyle}">
+                                                                            <Style.Triggers>
+                                                                                <DataTrigger Value="True" Binding="{Binding StrafeSekunden, Converter={StaticResource GreaterThanZeroConverter}}">
+                                                                                    <Setter Property="Foreground" Value="Red" />
+                                                                                    <Setter Property="FontWeight" Value="Bold" />
+                                                                                </DataTrigger>
+                                                                            </Style.Triggers>
+                                                                        </Style>
+                                                                    </DataGridTextColumn.CellStyle>
+                                                                </DataGridTextColumn>
+                                                                <DataGridTextColumn Header="P" Binding="{Binding P}" Width="60" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                                                                <DataGridTextColumn Header="T" Binding="{Binding T}" Width="60" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                                                                <DataGridTextColumn Header="Zeitpunkt" Binding="{Binding Zeitpunkt}" Width="10*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                                                            </DataGrid.Columns>
+                                                        </DataGrid>
+                                                    </StackPanel>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+                            </ScrollViewer>
+                        </Border>
+
+                        <Border x:Name="TrainingDetailPage" Visibility="Collapsed" Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="0" CornerRadius="10">
+                            <Grid  Margin="20">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="16" />
@@ -347,7 +647,7 @@
                                         <TextBlock x:Name="TrainingDetailTitleTextBlock" FontSize="24" FontWeight="Bold" Text="Training" />
                                         <TextBlock x:Name="TrainingDetailSubtitleTextBlock" Margin="0,6,0,0" FontSize="13" Foreground="#475569" Text="Detailansicht" />
                                     </StackPanel>
-                                    
+
                                     <Border Grid.Column="1" Background="White" BorderBrush="#D1D5DB" BorderThickness="1" CornerRadius="8">
                                         <Grid Margin="10,2,5,2">
                                             <Grid.ColumnDefinitions>
@@ -367,7 +667,7 @@
                                             </StackPanel>
                                         </Grid>
                                     </Border>
-   
+
                                 </Grid>
 
                                 <Grid Grid.Row="2" >
@@ -383,7 +683,7 @@
                                             <RowDefinition Height="*"/>
                                             <RowDefinition Height="60"/>
                                         </Grid.RowDefinitions>
-                                        
+
                                         <Border Grid.Row="0" Background="White" BorderBrush="#D1D5DB" BorderThickness="1" CornerRadius="8" Margin="0,0,10,0">
                                             <Grid>
                                                 <Grid.ColumnDefinitions>
@@ -391,9 +691,23 @@
                                                     <ColumnDefinition Width ="*" />
                                                     <ColumnDefinition Width ="*" />
                                                 </Grid.ColumnDefinitions>
-                                                <Button x:Name="NextDriverButton" Grid.Column="0" Style="{StaticResource TrainingToolbarButton}" Background="#64748B" Content="Nächster Fahrer" Margin="8" IsEnabled="False" Click="NextTrainingDriver_OnClick"/>
-                                                <Button x:Name="SkipDriverButton" Grid.Column="1" Style="{StaticResource TrainingToolbarButton}" Background="#DC2626" Content="Fahrer überspringen" Margin="8" Click="SkipTrainingDriver_OnClick"/>
-                                                <Button x:Name="FinishTrainingButton" Grid.Column="2" Style="{StaticResource TrainingToolbarButton}" Background="#64748B" Content="Training beenden" Margin="8" Click="FinishTraining_OnClick"/>
+                                                <Button x:Name="NextDriverButton" Grid.Column="0" Style="{StaticResource RoundedButton}" Background="#64748B" Margin="8" IsEnabled="False" Click="NextTrainingDriver_OnClick">
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <TextBlock VerticalAlignment="Center" Text="Nächster Fahrer" />
+                                                        <Border Margin="8,0,0,0" Padding="6,1" CornerRadius="2" Background="White">
+                                                            <TextBlock Foreground="Black" FontSize="11" Text="Ctrl+S" />
+                                                        </Border>
+                                                    </StackPanel>
+                                                </Button>
+                                                <Button x:Name="SkipDriverButton" Grid.Column="1" Style="{StaticResource RoundedButton}" Background="#DC2626" Margin="8" Click="SkipTrainingDriver_OnClick">
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <TextBlock VerticalAlignment="Center" Text="Fahrer überspringen" />
+                                                        <Border Margin="8,0,0,0" Padding="6,1" CornerRadius="2" Background="White">
+                                                            <TextBlock Foreground="Black" FontSize="11" Text="Ctrl+D" />
+                                                        </Border>
+                                                    </StackPanel>
+                                                </Button>
+                                                <Button x:Name="FinishTrainingButton" Grid.Column="2" Style="{StaticResource RoundedButton}" Background="#DC2626" Content="Training beenden" Margin="8" Click="FinishTraining_OnClick"/>
                                             </Grid>
                                         </Border>
 
@@ -412,52 +726,46 @@
                                                 <Grid Margin="10">
                                                     <DataGrid x:Name="TrainingStarterDataGrid"
                                                               ItemsSource="{Binding TrainingStarterListItems}"
+                                                              Background="Transparent"
                                                               AutoGenerateColumns="False"
                                                               CanUserAddRows="False"
-                                                              IsReadOnly="False"
+                                                              IsReadOnly="True"
                                                               HeadersVisibility="Column"
-                                                              GridLinesVisibility="Horizontal"
+                                                              GridLinesVisibility="None"
                                                               BorderThickness="0"
                                                               RowHeaderWidth="0"
+                                                              RowHeight="36"
+                                                              VerticalContentAlignment="Center"
                                                               SelectionMode="Single"
-                                                              SelectionUnit="Cell"
-                                                              IsTabStop="False">
-                                                        <DataGrid.CellStyle>
-                                                            <Style TargetType="DataGridCell">
-                                                                <Setter Property="BorderThickness" Value="0" />
-                                                                <Style.Triggers>
-                                                                    <Trigger Property="IsSelected" Value="True">
-                                                                        <Setter Property="Background" Value="Transparent" />
-                                                                        <Setter Property="BorderBrush" Value="Transparent" />
-                                                                    </Trigger>
-                                                                </Style.Triggers>
-                                                            </Style>
-                                                        </DataGrid.CellStyle>
+                                                              AlternationCount="2"
+                                                              ColumnHeaderStyle="{StaticResource StandardDataGridHeaderStyle}"
+                                                              CellStyle="{StaticResource StandardDataGridCellStyle}">
                                                         <DataGrid.RowStyle>
-                                                            <Style TargetType="DataGridRow">
+                                                            <Style TargetType="DataGridRow" BasedOn="{StaticResource StandardDataGridRowStyle}">
                                                                 <Style.Triggers>
                                                                     <DataTrigger Binding="{Binding IsAktiv}" Value="True">
-                                                                        <Setter Property="Background" Value="#FEF3C7" />
+                                                                        <Setter Property="Background" Value="#00BB00" />
                                                                         <Setter Property="FontWeight" Value="SemiBold" />
                                                                     </DataTrigger>
                                                                 </Style.Triggers>
                                                             </Style>
                                                         </DataGrid.RowStyle>
                                                         <DataGrid.Columns>
-                                                            <DataGridTextColumn Header="#" Binding="{Binding Nummer}" Width="55" IsReadOnly="True" />
-                                                            <DataGridTextColumn Header="Vorname" Binding="{Binding Vorname}" Width="180" IsReadOnly="True" />
-                                                            <DataGridTextColumn Header="Nachname" Binding="{Binding Nachname}" Width="180" IsReadOnly="True" />
-                                                            <DataGridTextColumn Header="Verein" Binding="{Binding VereinName}" Width="*" IsReadOnly="True" />
-                                                            <DataGridTemplateColumn Header="Fahrer fährt" Width="120">
+                                                            <DataGridTextColumn Header="Nr." Binding="{Binding Nummer}" Width="50" IsReadOnly="True"  ElementStyle="{StaticResource StandardDataGridTextElementStyle}"  />
+                                                            <DataGridTextColumn Header="Vorname" Binding="{Binding Vorname}" Width="12*" IsReadOnly="True"  ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                                                            <DataGridTextColumn Header="Nachname" Binding="{Binding Nachname}" Width="12*" IsReadOnly="True" ElementStyle="{StaticResource StandardDataGridTextElementStyle}"  />
+                                                            <DataGridTextColumn Header="Klasse" Binding="{Binding Altersklasse}" Width="10*" IsReadOnly="True" ElementStyle="{StaticResource StandardDataGridTextElementStyle}"  />
+                                                            <DataGridTextColumn Header="Verein" Binding="{Binding VereinName}" Width="18*" IsReadOnly="True" ElementStyle="{StaticResource StandardDataGridTextElementStyle}"  />
+                                                            <DataGridTemplateColumn Header="Fahrer fährt" Width="100"  >
                                                                 <DataGridTemplateColumn.CellTemplate>
                                                                     <DataTemplate>
                                                                         <CheckBox HorizontalAlignment="Center"
                                                                                   IsChecked="{Binding FahrerFaehrt, Mode=TwoWay}"
-                                                                                  Click="TrainingStarterFaehrtCheckBox_OnClick" />
+                                                                                  Click="TrainingStarterFaehrtCheckBox_OnClick" Margin="0,10,0,0"/>
                                                                     </DataTemplate>
                                                                 </DataGridTemplateColumn.CellTemplate>
                                                             </DataGridTemplateColumn>
-                                                            <DataGridTemplateColumn Header="Kart" Width="220">
+                                                            <DataGridTemplateColumn Header="Kart" Width="16*">
                                                                 <DataGridTemplateColumn.CellTemplate>
                                                                     <DataTemplate>
                                                                         <ComboBox ItemsSource="{Binding DataContext.KartLookupItems, RelativeSource={RelativeSource AncestorType=Window}}"
@@ -467,7 +775,7 @@
                                                                                   IsEditable="True"
                                                                                   IsTextSearchEnabled="True"
                                                                                   StaysOpenOnEdit="True"
-                                                                                  SelectionChanged="TrainingStarterKartComboBox_OnSelectionChanged" />
+                                                                                  SelectionChanged="TrainingStarterKartComboBox_OnSelectionChanged" Height="28" Margin="0,0,10,0"/>
                                                                     </DataTemplate>
                                                                 </DataGridTemplateColumn.CellTemplate>
                                                             </DataGridTemplateColumn>
@@ -501,26 +809,31 @@
                                                 <Grid Margin="10">
                                                     <DataGrid x:Name="TrainingFastestLapsDataGrid"
                                                               ItemsSource="{Binding TrainingFastestLapItems}"
+                                                              Background="Transparent"
                                                               AutoGenerateColumns="False"
                                                               CanUserAddRows="False"
-                                                              CanUserDeleteRows="False"
                                                               IsReadOnly="True"
                                                               HeadersVisibility="Column"
-                                                              GridLinesVisibility="Horizontal"
+                                                              GridLinesVisibility="None"
                                                               BorderThickness="0"
                                                               RowHeaderWidth="0"
+                                                              RowHeight="36"
+                                                              VerticalContentAlignment="Center"
                                                               SelectionMode="Single"
-                                                              SelectionUnit="FullRow"
-                                                              IsTabStop="False">
+                                                              AlternationCount="2"
+                                                              ColumnHeaderStyle="{StaticResource StandardDataGridHeaderStyle}"
+                                                              CellStyle="{StaticResource StandardDataGridCellStyle}"
+                                                              RowStyle="{StaticResource StandardDataGridRowStyle}">
                                                         <DataGrid.Columns>
-                                                            <DataGridTextColumn Header="Position" Binding="{Binding Position}" Width="75" />
-                                                            <DataGridTextColumn Header="Fahrer" Binding="{Binding Fahrer}" Width="*" />
-                                                            <DataGridTextColumn Header="Kart" Binding="{Binding Kart}" Width="140" />
-                                                            <DataGridTextColumn Header="Rundenzeit" Binding="{Binding RundenzeitText}" Width="110" />
-                                                            <DataGridTextColumn Header="Diff." Binding="{Binding DiffText}" Width="90" />
-                                                            <DataGridTextColumn Header="Strafen" Binding="{Binding StrafenText}" Width="130" />
-                                                            <DataGridTextColumn Header="Zeitpunkt" Binding="{Binding ZeitpunktText}" Width="140" />
-                                                            <DataGridTextColumn Header="Runden" Binding="{Binding Runden}" Width="90" />
+                                                            <DataGridTextColumn Header="Pos." Binding="{Binding Position}" Width="55" ElementStyle="{StaticResource StandardDataGridTextElementStyle}"/>
+                                                            <DataGridTextColumn Header="Fahrer" Binding="{Binding Fahrer}" Width="10*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}"/>
+                                                            <DataGridTextColumn Header="Klasse" Binding="{Binding Altersklasse}" Width="9*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}"/>
+                                                            <DataGridTextColumn Header="Kart" Binding="{Binding Kart}" Width="140" ElementStyle="{StaticResource StandardDataGridTextElementStyle}"/>
+                                                            <DataGridTextColumn Header="Rundenzeit" Binding="{Binding RundenzeitText}" Width="95" ElementStyle="{StaticResource StandardDataGridTextElementStyle}"/>
+                                                            <DataGridTextColumn Header="Diff." Binding="{Binding DiffText}" Width="6*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}"/>
+                                                            <DataGridTextColumn Header="Strafen" Binding="{Binding StrafenText}" Width="13*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}"/>
+                                                            <DataGridTextColumn Header="Zeitpunkt" Binding="{Binding ZeitpunktText}" Width="11*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}"/>
+                                                            <DataGridTextColumn Header="Runden" Binding="{Binding Runden}" Width="80" ElementStyle="{StaticResource StandardDataGridTextElementStyle}"/>
                                                         </DataGrid.Columns>
                                                     </DataGrid>
                                                 </Grid>
@@ -556,7 +869,7 @@
                                         </TabControl>
 
                                         <Border Grid.Row="2" Background="White" BorderBrush="#D1D5DB" BorderThickness="1" CornerRadius="8" Margin="0,0,10,0">
-                                            <Button Style="{StaticResource TrainingToolbarButton}" Background="#1F84DE" Content="Fahrer hinzufügen" Margin="8" Click="OpenAddTrainingFahrerDialog_OnClick"/>
+                                            <Button Style="{StaticResource RoundedButton}" Background="#1F84DE" Content="Fahrer hinzufügen" Margin="8" Click="OpenAddTrainingFahrerDialog_OnClick"/>
                                         </Border>
                                     </Grid>
                                     <Grid Grid.Column="1">
@@ -565,7 +878,7 @@
                                             <Grid Margin="5">
                                                 <Grid.RowDefinitions>
                                                     <RowDefinition Height="40" />
-                                                    <RowDefinition Height="50" />
+                                                    <RowDefinition Height="85" />
                                                     <RowDefinition Height="40" />
                                                     <RowDefinition Height="50" />
                                                     <RowDefinition Height="30" />
@@ -578,13 +891,34 @@
                                                     <TextBlock x:Name="TrainingActiveDriverTextBlock" Margin="5,0,0,0" Foreground="Gray">-</TextBlock>
                                                 </StackPanel>
 
-                                                <TextBlock x:Name="TrainingStopwatchTextBlock" Grid.Row="1" HorizontalAlignment="Center" FontSize="30" FontWeight="Bold">00.000</TextBlock>
-                                                <TextBlock x:Name="TrainingLapCounterTextBlock" Grid.Row="2" HorizontalAlignment="Center">Runde: -/-</TextBlock>
+                                                <TextBlock x:Name="TrainingStopwatchTextBlock" Grid.Row="1" HorizontalAlignment="Center" FontSize="60" FontWeight="Bold" FontFamily="Consolas">00.000</TextBlock>
+                                                <TextBlock x:Name="TrainingLapCounterTextBlock" Grid.Row="2" HorizontalAlignment="Center" FontSize="16" >Runde: -/-</TextBlock>
 
                                                 <StackPanel Orientation="Horizontal" Grid.Row="3" Height="30" VerticalAlignment="Top">
-                                                    <Button x:Name="TrainingStopwatchStartButton" Content="Start" Click="TrainingStopwatchStart_OnClick" />
-                                                    <Button x:Name="TrainingStopwatchStopButton" Content="Runde" Click="TrainingStopwatchStop_OnClick" />
-                                                    <Button Content="Stint löschen" Click="ClearTrainingStint_OnClick" />
+                                                    <Button Style="{StaticResource RoundedButton}" Background="green" Width="115" x:Name="TrainingStopwatchStartButton" Click="TrainingStopwatchStart_OnClick" Margin="0,0,5,0">
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <TextBlock VerticalAlignment="Center" Text="⏱ Start" />
+                                                            <Border Margin="8,0,0,0" Padding="6,1" CornerRadius="2" Background="White">
+                                                                <TextBlock Foreground="Black" FontSize="11" Text="Q" />
+                                                            </Border>
+                                                        </StackPanel>
+                                                    </Button>
+                                                    <Button Style="{StaticResource RoundedButton}" Background="#1F84DE" Width="115" x:Name="TrainingStopwatchStopButton" Click="TrainingStopwatchStop_OnClick" Margin="0,0,5,0">
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <TextBlock VerticalAlignment="Center" Text="⭮ Runde" />
+                                                            <Border Margin="8,0,0,0" Padding="6,1" CornerRadius="2" Background="White">
+                                                                <TextBlock Foreground="Black" FontSize="11" Text="W" />
+                                                            </Border>
+                                                        </StackPanel>
+                                                    </Button>
+                                                    <Button x:Name="TrainingClearStintButton" Style="{StaticResource RoundedButton}" Background="#DC2626" Width="150" Click="ClearTrainingStint_OnClick">
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <TextBlock VerticalAlignment="Center" Text="🗑 Stint löschen" />
+                                                            <Border Margin="8,0,0,0" Padding="6,1" CornerRadius="2" Background="White">
+                                                                <TextBlock Foreground="Black" FontSize="11" Text="E" />
+                                                            </Border>
+                                                        </StackPanel>
+                                                    </Button>
                                                 </StackPanel>
 
                                                 <Grid Grid.Row="4" Margin="0,2,0,0">
@@ -607,40 +941,63 @@
                                                 <DataGrid x:Name="TrainingLapTimesDataGrid"
                                                           Grid.Row="5"
                                                           ItemsSource="{Binding TrainingLapTimeItems}"
-                                                          AutoGenerateColumns="False"
-                                                          CanUserAddRows="False"
-                                                          CanUserDeleteRows="False"
-                                                          IsReadOnly="False"
-                                                          HeadersVisibility="Column"
-                                                          GridLinesVisibility="Horizontal"
-                                                          BorderThickness="0"
-                                                          RowHeaderWidth="0"
-                                                          SelectionMode="Single"
-                                                          SelectionUnit="FullRow"
-                                                          IsTabStop="False"
-                                                          Margin="0,6,0,0">
+                                                        Background="Transparent"
+                                                        AutoGenerateColumns="False"
+                                                        CanUserAddRows="False"
+                                                        IsReadOnly="True"
+                                                        HeadersVisibility="Column"
+                                                        GridLinesVisibility="None"
+                                                        BorderThickness="0"
+                                                        RowHeaderWidth="0"
+                                                        RowHeight="36"
+                                                        VerticalContentAlignment="Center"
+                                                        SelectionMode="Single"
+                                                        AlternationCount="2"
+                                                        ColumnHeaderStyle="{StaticResource StandardDataGridHeaderStyle}"
+                                                        CellStyle="{StaticResource StandardDataGridCellStyle}"
+                                                        RowStyle="{StaticResource StandardDataGridRowStyle}">
                                                     <DataGrid.Columns>
-                                                        <DataGridTextColumn Header="#" Binding="{Binding Nummer}" Width="60" />
-                                                        <DataGridTextColumn Header="Rundenzeit" Binding="{Binding RundenzeitText}" Width="*" />
-                                                        <DataGridTextColumn Header="Zeitstrafe" Binding="{Binding ZeitstrafeSekunden, StringFormat={}{0:0.###}}" Width="110" IsReadOnly="True" />
-                                                        <DataGridTemplateColumn Header="Pylonen" Width="130">
+                                                        <DataGridTextColumn Header="#" Binding="{Binding Nummer}" Width="40" ElementStyle="{StaticResource StandardDataGridTextElementStyle}"/>
+                                                        <DataGridTextColumn Header="⭮ Zeit" Binding="{Binding RundenzeitText}" Width="8*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}"/>
+                                                        <DataGridTextColumn Header="Zeitstrafe" Binding="{Binding ZeitstrafeSekunden, Converter={StaticResource ZeitstrafeConverter}}" Width="10*" IsReadOnly="True" ElementStyle="{StaticResource StandardDataGridTextElementStyle}">
+                                                            <DataGridTextColumn.CellStyle>
+                                                                <Style TargetType="DataGridCell" BasedOn="{StaticResource StandardDataGridCellStyle}">
+                                                                    <Style.Triggers>
+                                                                        <Trigger Property="IsSelected" Value="True">
+                                                                            <Setter Property="Background" Value="Transparent" />
+                                                                            <Setter Property="BorderBrush" Value="Transparent" />
+                                                                            <Setter Property="Foreground" Value="Black" />
+                                                                        </Trigger>
+                                                                        <DataTrigger Value="True" Binding="{Binding ZeitstrafeSekunden, Converter={StaticResource GreaterThanZeroConverter}}">
+                                                                            <Setter Property="Foreground" Value="red" />
+                                                                            <Setter Property="FontWeight" Value="Bold" />
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </DataGridTextColumn.CellStyle>
+                                                        </DataGridTextColumn>
+                                                        <DataGridTemplateColumn Header="Pylonen" Width="9*">
                                                             <DataGridTemplateColumn.CellTemplate>
                                                                 <DataTemplate>
                                                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                                                        <Button Content="-" Width="24" Height="24" Padding="0" Tag="Pylonen:-1" Click="LapNumericAdjust_OnClick" />
-                                                                        <TextBlock Width="42" TextAlignment="Center" VerticalAlignment="Center" Text="{Binding Pylonen}" />
-                                                                        <Button Content="+" Width="24" Height="24" Padding="0" Tag="Pylonen:+1" Click="LapNumericAdjust_OnClick" />
+                                                                        <TextBlock Width="42" TextAlignment="Center" VerticalAlignment="Center" Text="{Binding Pylonen}" Margin="0,0,-10,0"/>
+                                                                        <StackPanel>
+                                                                            <Button Content="▲" Width="13" Height="18" Padding="0" BorderThickness="0" Background="Transparent" Tag="Pylonen:+1" Click="LapNumericAdjust_OnClick" />
+                                                                            <Button Content="▼" Width="13" Height="18" Padding="0" BorderThickness="0" Background="Transparent" Tag="Pylonen:-1" Click="LapNumericAdjust_OnClick" />
+                                                                        </StackPanel>
                                                                     </StackPanel>
                                                                 </DataTemplate>
                                                             </DataGridTemplateColumn.CellTemplate>
                                                         </DataGridTemplateColumn>
-                                                        <DataGridTemplateColumn Header="Tore" Width="130">
+                                                        <DataGridTemplateColumn Header="Tore" Width="8*">
                                                             <DataGridTemplateColumn.CellTemplate>
                                                                 <DataTemplate>
                                                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                                                        <Button Content="-" Width="24" Height="24" Padding="0" Tag="Tore:-1" Click="LapNumericAdjust_OnClick" />
                                                                         <TextBlock Width="42" TextAlignment="Center" VerticalAlignment="Center" Text="{Binding Tore}" />
-                                                                        <Button Content="+" Width="24" Height="24" Padding="0" Tag="Tore:+1" Click="LapNumericAdjust_OnClick" />
+                                                                        <StackPanel>
+                                                                            <Button Content="▲" Width="13" Height="18" Padding="0" Tag="Tore:+1" BorderThickness="0" Background="Transparent" Click="LapNumericAdjust_OnClick" />
+                                                                            <Button Content="▼" Width="13" Height="18" Padding="0" Tag="Tore:-1" BorderThickness="0" Background="Transparent" Click="LapNumericAdjust_OnClick" />
+                                                                        </StackPanel>
                                                                     </StackPanel>
                                                                 </DataTemplate>
                                                             </DataGridTemplateColumn.CellTemplate>
@@ -655,7 +1012,7 @@
                                                     </DataGrid.Columns>
                                                 </DataGrid>
                                             </Grid>
-                                            
+
                                         </Border>
                                     </Grid>
                                 </Grid>
@@ -715,19 +1072,19 @@
                                                              TextChanged="TrainingFahrerSearchTextBox_OnTextChanged"
                                                              ToolTip="Suche nach Fahrername oder Verein" />
                                                     <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
-                                                        <Button Padding="12,6" Margin="0,0,8,0" Content="Abbrechen" Click="CancelAddTrainingFahrerDialog_OnClick" />
-                                                        <Button Style="{StaticResource RoundedButton}" Padding="12,6" Content="Übernehmen" Click="SaveAddTrainingFahrerDialog_OnClick" />
+                                                        <Button Style="{StaticResource RoundedButton}" Background="#1F84DE" Width="130" Height="30" Margin="0,0,8,0" Content="Abbrechen" Click="CancelAddTrainingFahrerDialog_OnClick" />
+                                                        <Button Style="{StaticResource RoundedButton}" Background="#1F84DE" Width="130" Height="30" Content="Übernehmen" Click="SaveAddTrainingFahrerDialog_OnClick" />
                                                     </StackPanel>
                                                 </Grid>
                                             </Grid>
                                         </Border>
                                     </Grid>
                                 </Border>
-                                
+
                             </Grid>
                         </Border>
 
-                        <Border x:Name="MeisterschaftenPage" Visibility="Collapsed" Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1" CornerRadius="10">
+                        <Border x:Name="MeisterschaftenPage" Visibility="Collapsed" Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="0" CornerRadius="10">
                             <TextBlock Margin="20" FontSize="18" Text="Meisterschaften" />
                         </Border>
 
@@ -746,82 +1103,95 @@
                                     </Grid.ColumnDefinitions>
 
                                     <TextBlock FontWeight="Bold" FontSize="20" Text="Vereine" VerticalAlignment="Center" />
-                                    <Button Grid.Column="1" Style="{StaticResource RoundedButton}" Content="Verein anlegen" Padding="14,8" Click="OpenCreateVereinPage_OnClick" />
+                                    <Button Grid.Column="1"  Style="{StaticResource RoundedButton}" Background="#1F84DE"  Content="Verein anlegen" Width="120" Height="30"  Click="OpenCreateVereinPage_OnClick" />
                                 </Grid>
 
-                                <Border Grid.Row="2" Background="White" BorderBrush="#D1D5DB" BorderThickness="1" CornerRadius="8">
-                                    <Grid>
-                                        <DataGrid x:Name="VereineDataGrid"
+                                <Grid Grid.Row="2">
+                                    <DataGrid x:Name="VereineDataGrid"
                                                   ItemsSource="{Binding VereineItems}"
+                                                  Background="Transparent"
                                                   AutoGenerateColumns="False"
                                                   CanUserAddRows="False"
                                                   IsReadOnly="True"
                                                   HeadersVisibility="Column"
-                                                  GridLinesVisibility="Horizontal"
+                                                  GridLinesVisibility="None"
                                                   BorderThickness="0"
                                                   RowHeaderWidth="0"
-                                                  SelectionMode="Single">
-                                            <DataGrid.Columns>
-                                                <DataGridTextColumn Header="Mitgliedsnummer" Binding="{Binding MitgliedsNummer}" Width="220" />
-                                                <DataGridTextColumn Header="Vereinsname" Binding="{Binding Vereinsname}" Width="*" />
-                                                <DataGridTemplateColumn Header="Aktionen" Width="140">
-                                                    <DataGridTemplateColumn.CellTemplate>
-                                                        <DataTemplate>
-                                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                                                <Button Width="32" Height="28" Margin="0,0,8,0" Tag="{Binding Id}" Click="OpenEditVereinPage_OnClick">
-                                                                    <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE70F;" />
-                                                                </Button>
-                                                                <Button Width="32" Height="28" Tag="{Binding Id}" Click="OpenDeleteVereinPage_OnClick">
-                                                                    <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE74D;" />
-                                                                </Button>
-                                                            </StackPanel>
-                                                        </DataTemplate>
-                                                    </DataGridTemplateColumn.CellTemplate>
-                                                </DataGridTemplateColumn>
-                                            </DataGrid.Columns>
-                                        </DataGrid>
+                                                  RowHeight="36"
+                                                  VerticalContentAlignment="Center"
+                                                  SelectionMode="Single"
+                                                  AlternationCount="2"
+                                                  ColumnHeaderStyle="{StaticResource StandardDataGridHeaderStyle}"
+                                                  CellStyle="{StaticResource StandardDataGridCellStyle}"
+                                                  RowStyle="{StaticResource StandardDataGridRowStyle}">
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header="Mitgliedsnummer" Binding="{Binding MitgliedsNummer}" Width="220" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                                            <DataGridTextColumn Header="Vereinsname" Binding="{Binding Vereinsname}" Width="*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                                            <DataGridTemplateColumn Header="Aktionen" Width="140">
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <Grid Height="32" VerticalAlignment="Center">
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="*"/>
+                                                                <ColumnDefinition Width="40"/>
+                                                                <ColumnDefinition Width="40"/>
+                                                                <ColumnDefinition Width="*"/>
+                                                                <ColumnDefinition Width="10"/>
+                                                            </Grid.ColumnDefinitions>
 
-                                        <Border x:Name="VereinCreatePage" Visibility="Collapsed" Background="#F8FAFC" BorderBrush="#D1D5DB" BorderThickness="1" CornerRadius="8">
-                                            <StackPanel Margin="20">
-                                                <TextBlock FontWeight="Bold" FontSize="18" Text="Verein anlegen" />
-                                                <TextBlock Margin="0,16,0,4" Text="Mitgliedsnummer" />
-                                                <TextBox x:Name="CreateMitgliedsNummerTextBox" Height="30" />
-                                                <TextBlock Margin="0,12,0,4" Text="Vereinsname" />
-                                                <TextBox x:Name="CreateVereinsnameTextBox" Height="30" />
-                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
-                                                    <Button Padding="12,6" Margin="0,0,8,0" Click="CancelVereinPage_OnClick" Content="Abbrechen" />
-                                                    <Button Style="{StaticResource RoundedButton}" Padding="12,6" Click="SaveCreateVerein_OnClick" Content="Speichern" />
-                                                </StackPanel>
-                                            </StackPanel>
-                                        </Border>
+                                                            <Button Grid.Column="1" Height="28"  Style="{StaticResource RoundedButtonLeft}" Background="#1F84DE" Tag="{Binding Id}" Click="OpenEditVereinPage_OnClick">
+                                                                <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE70F;" />
+                                                            </Button>
+                                                            <Button Grid.Column="2"  Height="28" Style="{StaticResource RoundedButtonRight}" Background="Red"  Tag="{Binding Id}" Click="OpenDeleteVereinPage_OnClick">
+                                                                <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE74D;" />
+                                                            </Button>
+                                                        </Grid>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+                                        </DataGrid.Columns>
+                                    </DataGrid>
 
-                                        <Border x:Name="VereinEditPage" Visibility="Collapsed" Background="#F8FAFC" BorderBrush="#D1D5DB" BorderThickness="1" CornerRadius="8">
-                                            <StackPanel Margin="20">
-                                                <TextBlock FontWeight="Bold" FontSize="18" Text="Verein bearbeiten" />
-                                                <TextBlock Margin="0,16,0,4" Text="Mitgliedsnummer" />
-                                                <TextBox x:Name="EditMitgliedsNummerTextBox" Height="30" />
-                                                <TextBlock Margin="0,12,0,4" Text="Vereinsname" />
-                                                <TextBox x:Name="EditVereinsnameTextBox" Height="30" />
-                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
-                                                    <Button Padding="12,6" Margin="0,0,8,0" Click="CancelVereinPage_OnClick" Content="Abbrechen" />
-                                                    <Button Style="{StaticResource RoundedButton}" Padding="12,6" Click="SaveEditVerein_OnClick" Content="Speichern" />
-                                                </StackPanel>
+                                    <Border x:Name="VereinCreatePage" Visibility="Collapsed" Background="#F8FAFC" BorderBrush="#D1D5DB" BorderThickness="1" CornerRadius="8">
+                                        <StackPanel Margin="20">
+                                            <TextBlock FontWeight="Bold" FontSize="18" Text="Verein anlegen" />
+                                            <TextBlock Margin="0,16,0,4" Text="Mitgliedsnummer" />
+                                            <TextBox x:Name="CreateMitgliedsNummerTextBox" Height="30" />
+                                            <TextBlock Margin="0,12,0,4" Text="Vereinsname" />
+                                            <TextBox x:Name="CreateVereinsnameTextBox" Height="30" />
+                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+                                                <Button   Style="{StaticResource RoundedButton}" Background="#1F84DE"  Width="120" Height="30"  Margin="0,0,8,0" Click="CancelVereinPage_OnClick" Content="Abbrechen" />
+                                                <Button Style="{StaticResource RoundedButton}" Background="green"  Width="120" Height="30"  Click="SaveCreateVerein_OnClick" Content="Speichern" />
                                             </StackPanel>
-                                        </Border>
+                                        </StackPanel>
+                                    </Border>
 
-                                        <Border x:Name="VereinDeletePage" Visibility="Collapsed" Background="#F8FAFC" BorderBrush="#D1D5DB" BorderThickness="1" CornerRadius="8">
-                                            <StackPanel Margin="20">
-                                                <TextBlock FontWeight="Bold" FontSize="18" Text="Verein loeschen" />
-                                                <TextBlock Margin="0,16,0,0" Text="Soll dieser Verein wirklich geloescht werden?" />
-                                                <TextBlock x:Name="DeleteVereinTextBlock" Margin="0,10,0,0" FontWeight="SemiBold" />
-                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
-                                                    <Button Padding="12,6" Margin="0,0,8,0" Click="CancelVereinPage_OnClick" Content="Abbrechen" />
-                                                    <Button Padding="12,6" Background="#DC2626" Foreground="White" BorderThickness="0" Click="ConfirmDeleteVerein_OnClick" Content="Loeschen" />
-                                                </StackPanel>
+                                    <Border x:Name="VereinEditPage" Visibility="Collapsed" Background="#F8FAFC" BorderBrush="#D1D5DB" BorderThickness="1" CornerRadius="8">
+                                        <StackPanel Margin="20">
+                                            <TextBlock FontWeight="Bold" FontSize="18" Text="Verein bearbeiten" />
+                                            <TextBlock Margin="0,16,0,4" Text="Mitgliedsnummer" />
+                                            <TextBox x:Name="EditMitgliedsNummerTextBox" Height="30" />
+                                            <TextBlock Margin="0,12,0,4" Text="Vereinsname" />
+                                            <TextBox x:Name="EditVereinsnameTextBox" Height="30" />
+                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+                                                <Button Style="{StaticResource RoundedButton}" Background="#1F84DE" Width="120" Height="30"  Margin="0,0,8,0" Click="CancelVereinPage_OnClick" Content="Abbrechen" />
+                                                <Button  Style="{StaticResource RoundedButton}" Background="green"  Width="120" Height="30"  Click="SaveEditVerein_OnClick" Content="Speichern" />
                                             </StackPanel>
-                                        </Border>
-                                    </Grid>
-                                </Border>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <Border x:Name="VereinDeletePage" Visibility="Collapsed" Background="#F8FAFC" BorderBrush="#D1D5DB" BorderThickness="1" CornerRadius="8">
+                                        <StackPanel Margin="20">
+                                            <TextBlock FontWeight="Bold" FontSize="18" Text="Verein loeschen" />
+                                            <TextBlock Margin="0,16,0,0" Text="Soll dieser Verein wirklich geloescht werden?" />
+                                            <TextBlock x:Name="DeleteVereinTextBlock" Margin="0,10,0,0" FontWeight="SemiBold" />
+                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+                                                <Button Width="120" Height="30"   Style="{StaticResource RoundedButton}" Background="#1F84DE"  Margin="0,0,8,0" Click="CancelVereinPage_OnClick" Content="Abbrechen" />
+                                                <Button Width="120" Height="30"  Style="{StaticResource RoundedButton}" Background="red"  Foreground="White" BorderThickness="0" Click="ConfirmDeleteVerein_OnClick" Content="Loeschen" />
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Border>
+                                </Grid>
                             </Grid>
                         </Border>
 
@@ -840,87 +1210,203 @@
                                     </Grid.ColumnDefinitions>
 
                                     <TextBlock FontWeight="Bold" FontSize="20" Text="Disziplin" VerticalAlignment="Center" />
-                                    <Button Grid.Column="1" Style="{StaticResource RoundedButton}" Content="Disziplin anlegen" Padding="14,8" Click="OpenCreateDisziplinPage_OnClick" />
+                                    <Button Grid.Column="1" Style="{StaticResource RoundedButton}" Background="#1F84DE"  Content="Disziplin anlegen" Width="120" Height="30" Click="OpenCreateDisziplinPage_OnClick" />
                                 </Grid>
 
-                                <Border Grid.Row="2" Background="White" BorderBrush="#D1D5DB" BorderThickness="1" CornerRadius="8">
-                                    <Grid>
-                                        <DataGrid x:Name="DisziplinenDataGrid"
+                                <Grid Grid.Row="2">
+                                    <DataGrid x:Name="DisziplinenDataGrid"
                                                   ItemsSource="{Binding DisziplinItems}"
+                                                  Background="Transparent"
                                                   AutoGenerateColumns="False"
                                                   CanUserAddRows="False"
                                                   IsReadOnly="True"
                                                   HeadersVisibility="Column"
-                                                  GridLinesVisibility="Horizontal"
+                                                  GridLinesVisibility="None"
                                                   BorderThickness="0"
                                                   RowHeaderWidth="0"
-                                                  SelectionMode="Single">
-                                            <DataGrid.Columns>
-                                                <DataGridTextColumn Header="Disziplin" Binding="{Binding Name}" Width="*" />
-                                                <DataGridTextColumn Header="Zeitstrafe Torfehler (tf)" Binding="{Binding ZeitstrafeTorfehlerText}" Width="180" />
-                                                <DataGridTextColumn Header="Zeitstrafe Pylonenfehler (pf)" Binding="{Binding ZeitstrafePylonenfehlerText}" Width="200" />
-                                                <DataGridTemplateColumn Header="Aktionen" Width="140">
-                                                    <DataGridTemplateColumn.CellTemplate>
-                                                        <DataTemplate>
-                                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                                                <Button Width="32" Height="28" Margin="0,0,8,0" Tag="{Binding Id}" Click="OpenEditDisziplinPage_OnClick">
-                                                                    <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE70F;" />
-                                                                </Button>
-                                                                <Button Width="32" Height="28" Tag="{Binding Id}" Click="OpenDeleteDisziplinPage_OnClick">
-                                                                    <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE74D;" />
-                                                                </Button>
-                                                            </StackPanel>
-                                                        </DataTemplate>
-                                                    </DataGridTemplateColumn.CellTemplate>
-                                                </DataGridTemplateColumn>
-                                            </DataGrid.Columns>
-                                        </DataGrid>
+                                                  RowHeight="36"
+                                                  VerticalContentAlignment="Center"
+                                                  SelectionMode="Single"
+                                                  AlternationCount="2"
+                                                  ColumnHeaderStyle="{StaticResource StandardDataGridHeaderStyle}"
+                                                  CellStyle="{StaticResource StandardDataGridCellStyle}"
+                                                  RowStyle="{StaticResource StandardDataGridRowStyle}">
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header="Disziplin" Binding="{Binding Name}" Width="23*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                                            <DataGridTextColumn Header="Zeitstrafe TF" Binding="{Binding ZeitstrafeTorfehlerText}" Width="11*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                                            <DataGridTextColumn Header="Zeitstrafe PF" Binding="{Binding ZeitstrafePylonenfehlerText}" Width="11*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                                            <DataGridTextColumn Header="Altersklassen" Binding="{Binding AltersklassenText}" Width="46*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                                            <DataGridTemplateColumn Header="Aktionen" Width="140">
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <Grid Height="32" VerticalAlignment="Center">
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="*"/>
+                                                                <ColumnDefinition Width="40"/>
+                                                                <ColumnDefinition Width="40"/>
+                                                                <ColumnDefinition Width="*"/>
+                                                                <ColumnDefinition Width="10"/>
+                                                            </Grid.ColumnDefinitions>
 
-                                        <Border x:Name="DisziplinCreatePage" Visibility="Collapsed" Background="#F8FAFC" BorderBrush="#D1D5DB" BorderThickness="1" CornerRadius="8">
-                                            <StackPanel Margin="20">
-                                                <TextBlock FontWeight="Bold" FontSize="18" Text="Disziplin anlegen" />
-                                                <TextBlock Margin="0,16,0,4" Text="Name" />
-                                                <TextBox x:Name="CreateDisziplinNameTextBox" Height="30" />
-                                                <TextBlock Margin="0,12,0,4" Text="Zeitstrafe Torfehler (tf) in Sekunden" />
-                                                <TextBox x:Name="CreateDisziplinTfTextBox" Height="30" />
-                                                <TextBlock Margin="0,12,0,4" Text="Zeitstrafe Pylonenfehler (pf) in Sekunden" />
-                                                <TextBox x:Name="CreateDisziplinPfTextBox" Height="30" />
-                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
-                                                    <Button Padding="12,6" Margin="0,0,8,0" Click="CancelDisziplinPage_OnClick" Content="Abbrechen" />
-                                                    <Button Style="{StaticResource RoundedButton}" Padding="12,6" Click="SaveCreateDisziplin_OnClick" Content="Speichern" />
-                                                </StackPanel>
-                                            </StackPanel>
-                                        </Border>
+                                                            <Button Grid.Column="1" Height="28"  Style="{StaticResource RoundedButtonLeft}" Background="#1F84DE" Tag="{Binding Id}" Click="OpenEditDisziplinPage_OnClick">
+                                                                <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE70F;" />
+                                                            </Button>
+                                                            <Button Grid.Column="2"  Height="28" Style="{StaticResource RoundedButtonRight}" Background="Red"  Tag="{Binding Id}" Click="OpenDeleteDisziplinPage_OnClick">
+                                                                <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE74D;" />
+                                                            </Button>
+                                                        </Grid>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+                                        </DataGrid.Columns>
+                                    </DataGrid>
 
-                                        <Border x:Name="DisziplinEditPage" Visibility="Collapsed" Background="#F8FAFC" BorderBrush="#D1D5DB" BorderThickness="1" CornerRadius="8">
-                                            <StackPanel Margin="20">
-                                                <TextBlock FontWeight="Bold" FontSize="18" Text="Disziplin bearbeiten" />
-                                                <TextBlock Margin="0,16,0,4" Text="Name" />
-                                                <TextBox x:Name="EditDisziplinNameTextBox" Height="30" />
-                                                <TextBlock Margin="0,12,0,4" Text="Zeitstrafe Torfehler (tf) in Sekunden" />
-                                                <TextBox x:Name="EditDisziplinTfTextBox" Height="30" />
-                                                <TextBlock Margin="0,12,0,4" Text="Zeitstrafe Pylonenfehler (pf) in Sekunden" />
-                                                <TextBox x:Name="EditDisziplinPfTextBox" Height="30" />
-                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
-                                                    <Button Padding="12,6" Margin="0,0,8,0" Click="CancelDisziplinPage_OnClick" Content="Abbrechen" />
-                                                    <Button Style="{StaticResource RoundedButton}" Padding="12,6" Click="SaveEditDisziplin_OnClick" Content="Speichern" />
-                                                </StackPanel>
+                                    <Border x:Name="DisziplinCreatePage" Visibility="Collapsed" Background="#F8FAFC" BorderBrush="#D1D5DB" BorderThickness="1" CornerRadius="8">
+                                        <StackPanel Margin="20">
+                                            <TextBlock FontWeight="Bold" FontSize="18" Text="Disziplin anlegen" />
+                                            <TextBlock Margin="0,16,0,4" Text="Name" />
+                                            <TextBox x:Name="CreateDisziplinNameTextBox" Height="30" />
+                                            <TextBlock Margin="0,12,0,4" Text="Zeitstrafe Torfehler (tf) in Sekunden" />
+                                            <TextBox x:Name="CreateDisziplinTfTextBox" Height="30" />
+                                            <TextBlock Margin="0,12,0,4" Text="Zeitstrafe Pylonenfehler (pf) in Sekunden" />
+                                            <TextBox x:Name="CreateDisziplinPfTextBox" Height="30" />
+                                            <TextBlock Margin="0,16,0,4" FontWeight="SemiBold" Text="Altersklassen" />
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="2*" />
+                                                    <ColumnDefinition Width="8" />
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="8" />
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="8" />
+                                                    <ColumnDefinition Width="Auto" />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBox x:Name="CreateDisziplinKlasseBezeichnungTextBox" Grid.Column="0" Height="30" ToolTip="Bezeichnung" />
+                                                <TextBox x:Name="CreateDisziplinKlasseAlterVonTextBox" Grid.Column="2" Height="30" ToolTip="Alter von" />
+                                                <TextBox x:Name="CreateDisziplinKlasseAlterBisTextBox" Grid.Column="4" Height="30" ToolTip="Alter bis (optional)" />
+                                                <Button Grid.Column="6" Style="{StaticResource RoundedButton}" Background="#1F84DE" Width="130" Height="30" Click="AddCreateDisziplinAltersklasse_OnClick" Content="Klasse hinzufuegen" />
+                                            </Grid>
+                                            <DataGrid ItemsSource="{Binding CreateDisziplinAltersklassenItems}"
+                                                      Margin="0,10,0,0"
+                                                      Background="Transparent"
+                                                      AutoGenerateColumns="False"
+                                                      CanUserAddRows="False"
+                                                      IsReadOnly="True"
+                                                      HeadersVisibility="Column"
+                                                      GridLinesVisibility="None"
+                                                      BorderThickness="0"
+                                                      RowHeaderWidth="0"
+                                                      RowHeight="32"
+                                                      VerticalContentAlignment="Center"
+                                                      SelectionMode="Single"
+                                                      AlternationCount="2"
+                                                      ColumnHeaderStyle="{StaticResource StandardDataGridHeaderStyle}"
+                                                      CellStyle="{StaticResource StandardDataGridCellStyle}"
+                                                      RowStyle="{StaticResource StandardDataGridRowStyle}">
+                                                <DataGrid.Columns>
+                                                    <DataGridTextColumn Header="Bezeichnung" Binding="{Binding Bezeichnung}" Width="*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                                                    <DataGridTextColumn Header="Alter von" Binding="{Binding AlterVon}" Width="120" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                                                    <DataGridTextColumn Header="Alter bis" Binding="{Binding AlterBisText}" Width="120" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                                                    <DataGridTemplateColumn Header="Aktion" Width="100">
+                                                        <DataGridTemplateColumn.CellTemplate>
+                                                            <DataTemplate>
+                                                                <Button Width="90"
+                                                                        Height="24"
+                                                                        Style="{StaticResource RoundedButton}"
+                                                                        Background="#DC2626"
+                                                                        Click="RemoveCreateDisziplinAltersklasse_OnClick"
+                                                                        Content="Entfernen" />
+                                                            </DataTemplate>
+                                                        </DataGridTemplateColumn.CellTemplate>
+                                                    </DataGridTemplateColumn>
+                                                </DataGrid.Columns>
+                                            </DataGrid>
+                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+                                                <Button Style="{StaticResource RoundedButton}" Background="#1F84DE"  Width="120" Height="30"  Margin="0,0,8,0" Click="CancelDisziplinPage_OnClick" Content="Abbrechen" />
+                                                <Button Style="{StaticResource RoundedButton}" Background="Green"  Width="120" Height="30"  Click="SaveCreateDisziplin_OnClick" Content="Speichern" />
                                             </StackPanel>
-                                        </Border>
+                                        </StackPanel>
+                                    </Border>
 
-                                        <Border x:Name="DisziplinDeletePage" Visibility="Collapsed" Background="#F8FAFC" BorderBrush="#D1D5DB" BorderThickness="1" CornerRadius="8">
-                                            <StackPanel Margin="20">
-                                                <TextBlock FontWeight="Bold" FontSize="18" Text="Disziplin loeschen" />
-                                                <TextBlock Margin="0,16,0,0" Text="Soll diese Disziplin wirklich geloescht werden?" />
-                                                <TextBlock x:Name="DeleteDisziplinTextBlock" Margin="0,10,0,0" FontWeight="SemiBold" />
-                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
-                                                    <Button Padding="12,6" Margin="0,0,8,0" Click="CancelDisziplinPage_OnClick" Content="Abbrechen" />
-                                                    <Button Padding="12,6" Background="#DC2626" Foreground="White" BorderThickness="0" Click="ConfirmDeleteDisziplin_OnClick" Content="Loeschen" />
-                                                </StackPanel>
+                                    <Border x:Name="DisziplinEditPage" Visibility="Collapsed" Background="#F8FAFC" BorderBrush="#D1D5DB" BorderThickness="1" CornerRadius="8">
+                                        <StackPanel Margin="20">
+                                            <TextBlock FontWeight="Bold" FontSize="18" Text="Disziplin bearbeiten" />
+                                            <TextBlock Margin="0,16,0,4" Text="Name" />
+                                            <TextBox x:Name="EditDisziplinNameTextBox" Height="30" />
+                                            <TextBlock Margin="0,12,0,4" Text="Zeitstrafe Torfehler (tf) in Sekunden" />
+                                            <TextBox x:Name="EditDisziplinTfTextBox" Height="30" />
+                                            <TextBlock Margin="0,12,0,4" Text="Zeitstrafe Pylonenfehler (pf) in Sekunden" />
+                                            <TextBox x:Name="EditDisziplinPfTextBox" Height="30" />
+                                            <TextBlock Margin="0,16,0,4" FontWeight="SemiBold" Text="Altersklassen" />
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="2*" />
+                                                    <ColumnDefinition Width="8" />
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="8" />
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="8" />
+                                                    <ColumnDefinition Width="Auto" />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBox x:Name="EditDisziplinKlasseBezeichnungTextBox" Grid.Column="0" Height="30" ToolTip="Bezeichnung" />
+                                                <TextBox x:Name="EditDisziplinKlasseAlterVonTextBox" Grid.Column="2" Height="30" ToolTip="Alter von" />
+                                                <TextBox x:Name="EditDisziplinKlasseAlterBisTextBox" Grid.Column="4" Height="30" ToolTip="Alter bis (optional)" />
+                                                <Button Grid.Column="6" Style="{StaticResource RoundedButton}" Background="#1F84DE" Width="130" Height="30" Click="AddEditDisziplinAltersklasse_OnClick" Content="Klasse hinzufuegen" />
+                                            </Grid>
+                                            <DataGrid ItemsSource="{Binding EditDisziplinAltersklassenItems}"
+                                                      Margin="0,10,0,0"
+                                                      Background="Transparent"
+                                                      AutoGenerateColumns="False"
+                                                      CanUserAddRows="False"
+                                                      IsReadOnly="True"
+                                                      HeadersVisibility="Column"
+                                                      GridLinesVisibility="None"
+                                                      BorderThickness="0"
+                                                      RowHeaderWidth="0"
+                                                      RowHeight="32"
+                                                      VerticalContentAlignment="Center"
+                                                      SelectionMode="Single"
+                                                      AlternationCount="2"
+                                                      ColumnHeaderStyle="{StaticResource StandardDataGridHeaderStyle}"
+                                                      CellStyle="{StaticResource StandardDataGridCellStyle}"
+                                                      RowStyle="{StaticResource StandardDataGridRowStyle}">
+                                                <DataGrid.Columns>
+                                                    <DataGridTextColumn Header="Bezeichnung" Binding="{Binding Bezeichnung}" Width="*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                                                    <DataGridTextColumn Header="Alter von" Binding="{Binding AlterVon}" Width="120" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                                                    <DataGridTextColumn Header="Alter bis" Binding="{Binding AlterBisText}" Width="120" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                                                    <DataGridTemplateColumn Header="Aktion" Width="100">
+                                                        <DataGridTemplateColumn.CellTemplate>
+                                                            <DataTemplate>
+                                                                <Button Width="90"
+                                                                        Height="24"
+                                                                        Style="{StaticResource RoundedButton}"
+                                                                        Background="#DC2626"
+                                                                        Click="RemoveEditDisziplinAltersklasse_OnClick"
+                                                                        Content="Entfernen" />
+                                                            </DataTemplate>
+                                                        </DataGridTemplateColumn.CellTemplate>
+                                                    </DataGridTemplateColumn>
+                                                </DataGrid.Columns>
+                                            </DataGrid>
+                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+                                                <Button  Style="{StaticResource RoundedButton}" Background="#1F84DE"  Width="120" Height="30"  Margin="0,0,8,0" Click="CancelDisziplinPage_OnClick" Content="Abbrechen" />
+                                                <Button  Style="{StaticResource RoundedButton}" Background="Green"  Width="120" Height="30"  Click="SaveEditDisziplin_OnClick" Content="Speichern" />
                                             </StackPanel>
-                                        </Border>
-                                    </Grid>
-                                </Border>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <Border x:Name="DisziplinDeletePage" Visibility="Collapsed" Background="#F8FAFC" BorderBrush="#D1D5DB" BorderThickness="1" CornerRadius="8">
+                                        <StackPanel Margin="20">
+                                            <TextBlock FontWeight="Bold" FontSize="18" Text="Disziplin loeschen" />
+                                            <TextBlock Margin="0,16,0,0" Text="Soll diese Disziplin wirklich geloescht werden?" />
+                                            <TextBlock x:Name="DeleteDisziplinTextBlock" Margin="0,10,0,0" FontWeight="SemiBold" />
+                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+                                                <Button  Style="{StaticResource RoundedButton}" Background="#1F84DE"  Width="120" Height="30"  Margin="0,0,8,0" Click="CancelDisziplinPage_OnClick" Content="Abbrechen" />
+                                                <Button Width="120" Height="30"  Background="#DC2626" Foreground="White" BorderThickness="0" Click="ConfirmDeleteDisziplin_OnClick" Content="Loeschen" />
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Border>
+                                </Grid>
                             </Grid>
                         </Border>
 
@@ -939,92 +1425,130 @@
                                     </Grid.ColumnDefinitions>
 
                                     <TextBlock FontWeight="Bold" FontSize="20" Text="Fahrer" VerticalAlignment="Center" />
-                                    <Button Grid.Column="1" Style="{StaticResource RoundedButton}" Content="Fahrer anlegen" Padding="14,8" Click="OpenCreateFahrerPage_OnClick" />
+                                    <Button Grid.Column="1" Style="{StaticResource RoundedButton}" Background="#1F84DE" Content="Fahrer anlegen" Width="120" Height="30" Click="OpenCreateFahrerPage_OnClick" />
                                 </Grid>
 
-                                <Border Grid.Row="2" Background="White" BorderBrush="#D1D5DB" BorderThickness="1" CornerRadius="8">
-                                    <Grid>
-                                        <DataGrid x:Name="FahrerDataGrid"
+
+                                <Grid Grid.Row="2">
+                                    <DataGrid x:Name="FahrerDataGrid"
                                                   ItemsSource="{Binding FahrerItems}"
+                                                  Background="Transparent"
                                                   AutoGenerateColumns="False"
                                                   CanUserAddRows="False"
                                                   IsReadOnly="True"
                                                   HeadersVisibility="Column"
-                                                  GridLinesVisibility="Horizontal"
+                                                  GridLinesVisibility="None"
                                                   BorderThickness="0"
                                                   RowHeaderWidth="0"
-                                                  SelectionMode="Single">
-                                            <DataGrid.Columns>
-                                                <DataGridTextColumn Header="Vorname" Binding="{Binding Vorname}" Width="180" />
-                                                <DataGridTextColumn Header="Nachname" Binding="{Binding Nachname}" Width="180" />
-                                                <DataGridTextColumn Header="Geburtsdatum" Binding="{Binding GeburtsdatumText}" Width="130" />
-                                                <DataGridTextColumn Header="Verein" Binding="{Binding VereinName}" Width="*" />
-                                                <DataGridTemplateColumn Header="Aktionen" Width="140">
-                                                    <DataGridTemplateColumn.CellTemplate>
-                                                        <DataTemplate>
-                                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                                                <Button Width="32" Height="28" Margin="0,0,8,0" Tag="{Binding Id}" Click="OpenEditFahrerPage_OnClick">
-                                                                    <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE70F;" />
-                                                                </Button>
-                                                                <Button Width="32" Height="28" Tag="{Binding Id}" Click="OpenDeleteFahrerPage_OnClick">
-                                                                    <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE74D;" />
-                                                                </Button>
-                                                            </StackPanel>
-                                                        </DataTemplate>
-                                                    </DataGridTemplateColumn.CellTemplate>
-                                                </DataGridTemplateColumn>
-                                            </DataGrid.Columns>
-                                        </DataGrid>
+                                                  RowHeight="36"
+                                                  VerticalContentAlignment="Center"
+                                                  SelectionMode="Single"
+                                                  AlternationCount="2"
+                                                  ColumnHeaderStyle="{StaticResource StandardDataGridHeaderStyle}"
+                                                  CellStyle="{StaticResource StandardDataGridCellStyle}"
+                                                  RowStyle="{StaticResource StandardDataGridRowStyle}">
+                                        <DataGrid.Columns>
+                                            
+                                            <DataGridTextColumn Header="Vorname" Binding="{Binding Vorname}" Width="19*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                                            <DataGridTextColumn Header="Nachname" Binding="{Binding Nachname}" Width="19*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                                            <DataGridTextColumn Header="Geburtsdatum" Binding="{Binding GeburtsdatumText}" Width="14*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                                            <DataGridTemplateColumn Header="Geschlecht" Width="10*">
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <Image Width="20"
+                                                               Height="20"
+                                                               Stretch="Uniform"
+                                                               Source="{Binding GeschlechtIconPath, Converter={StaticResource SvgResourceToImageSourceConverter}}" />
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+                                            <DataGridTextColumn Header="Verein" Binding="{Binding VereinName}" Width="28*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                                            <DataGridTemplateColumn Header="Aktionen" Width="140">
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <Grid Height="32" VerticalAlignment="Center">
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="*"/>
+                                                                <ColumnDefinition Width="40"/>
+                                                                <ColumnDefinition Width="40"/>
+                                                                <ColumnDefinition Width="*"/>
+                                                                <ColumnDefinition Width="10"/>
+                                                            </Grid.ColumnDefinitions>
 
-                                        <Border x:Name="FahrerCreatePage" Visibility="Collapsed" Background="#F8FAFC" BorderBrush="#D1D5DB" BorderThickness="1" CornerRadius="8">
-                                            <StackPanel Margin="20">
-                                                <TextBlock FontWeight="Bold" FontSize="18" Text="Fahrer anlegen" />
-                                                <TextBlock Margin="0,16,0,4" Text="Vorname" />
-                                                <TextBox x:Name="CreateFahrerVornameTextBox" Height="30" />
-                                                <TextBlock Margin="0,12,0,4" Text="Nachname" />
-                                                <TextBox x:Name="CreateFahrerNachnameTextBox" Height="30" />
-                                                <TextBlock Margin="0,12,0,4" Text="Geburtsdatum" />
-                                                <DatePicker x:Name="CreateFahrerGeburtsdatumPicker" Height="30" />
-                                                <TextBlock Margin="0,12,0,4" Text="Verein" />
-                                                <ComboBox x:Name="CreateFahrerVereinComboBox" Height="30" DisplayMemberPath="Name" SelectedValuePath="Id" />
-                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
-                                                    <Button Padding="12,6" Margin="0,0,8,0" Click="CancelFahrerPage_OnClick" Content="Abbrechen" />
-                                                    <Button Style="{StaticResource RoundedButton}" Padding="12,6" Click="SaveCreateFahrer_OnClick" Content="Speichern" />
-                                                </StackPanel>
-                                            </StackPanel>
-                                        </Border>
+                                                            <Button Grid.Column="1" Height="28"  Style="{StaticResource RoundedButtonLeft}" Background="#1F84DE" Tag="{Binding Id}" Click="OpenEditFahrerPage_OnClick">
+                                                                <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE70F;" />
+                                                            </Button>
+                                                            <Button Grid.Column="2"  Height="28" Style="{StaticResource RoundedButtonRight}" Background="Red"  Tag="{Binding Id}" Click="OpenDeleteFahrerPage_OnClick">
+                                                                <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE74D;" />
+                                                            </Button>
+                                                        </Grid>
 
-                                        <Border x:Name="FahrerEditPage" Visibility="Collapsed" Background="#F8FAFC" BorderBrush="#D1D5DB" BorderThickness="1" CornerRadius="8">
-                                            <StackPanel Margin="20">
-                                                <TextBlock FontWeight="Bold" FontSize="18" Text="Fahrer bearbeiten" />
-                                                <TextBlock Margin="0,16,0,4" Text="Vorname" />
-                                                <TextBox x:Name="EditFahrerVornameTextBox" Height="30" />
-                                                <TextBlock Margin="0,12,0,4" Text="Nachname" />
-                                                <TextBox x:Name="EditFahrerNachnameTextBox" Height="30" />
-                                                <TextBlock Margin="0,12,0,4" Text="Geburtsdatum" />
-                                                <DatePicker x:Name="EditFahrerGeburtsdatumPicker" Height="30" />
-                                                <TextBlock Margin="0,12,0,4" Text="Verein" />
-                                                <ComboBox x:Name="EditFahrerVereinComboBox" Height="30" DisplayMemberPath="Name" SelectedValuePath="Id" />
-                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
-                                                    <Button Padding="12,6" Margin="0,0,8,0" Click="CancelFahrerPage_OnClick" Content="Abbrechen" />
-                                                    <Button Style="{StaticResource RoundedButton}" Padding="12,6" Click="SaveEditFahrer_OnClick" Content="Speichern" />
-                                                </StackPanel>
-                                            </StackPanel>
-                                        </Border>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+                                        </DataGrid.Columns>
+                                    </DataGrid>
 
-                                        <Border x:Name="FahrerDeletePage" Visibility="Collapsed" Background="#F8FAFC" BorderBrush="#D1D5DB" BorderThickness="1" CornerRadius="8">
-                                            <StackPanel Margin="20">
-                                                <TextBlock FontWeight="Bold" FontSize="18" Text="Fahrer loeschen" />
-                                                <TextBlock Margin="0,16,0,0" Text="Soll dieser Fahrer wirklich geloescht werden?" />
-                                                <TextBlock x:Name="DeleteFahrerTextBlock" Margin="0,10,0,0" FontWeight="SemiBold" />
-                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
-                                                    <Button Padding="12,6" Margin="0,0,8,0" Click="CancelFahrerPage_OnClick" Content="Abbrechen" />
-                                                    <Button Padding="12,6" Background="#DC2626" Foreground="White" BorderThickness="0" Click="ConfirmDeleteFahrer_OnClick" Content="Loeschen" />
-                                                </StackPanel>
+                                    <Border x:Name="FahrerCreatePage" Visibility="Collapsed" Background="#F8FAFC" BorderBrush="#D1D5DB" BorderThickness="1" CornerRadius="8">
+                                        <StackPanel Margin="20">
+                                            <TextBlock FontWeight="Bold" FontSize="18" Text="Fahrer anlegen" />
+                                            <TextBlock Margin="0,16,0,4" Text="Vorname" />
+                                            <TextBox x:Name="CreateFahrerVornameTextBox" Height="30" />
+                                            <TextBlock Margin="0,12,0,4" Text="Nachname" />
+                                            <TextBox x:Name="CreateFahrerNachnameTextBox" Height="30" />
+                                            <TextBlock Margin="0,12,0,4" Text="Geburtsdatum" />
+                                            <DatePicker x:Name="CreateFahrerGeburtsdatumPicker" Height="30" />
+                                            <TextBlock Margin="0,12,0,4" Text="Geschlecht" />
+                                            <ComboBox x:Name="CreateFahrerGeschlechtComboBox" Height="30" SelectedValuePath="Tag">
+                                                <ComboBoxItem Content="Maennlich" Tag="m" />
+                                                <ComboBoxItem Content="Weiblich" Tag="w" />
+                                                <ComboBoxItem Content="Divers" Tag="d" />
+                                            </ComboBox>
+                                            <TextBlock Margin="0,12,0,4" Text="Verein" />
+                                            <ComboBox x:Name="CreateFahrerVereinComboBox" Height="30" DisplayMemberPath="Name" SelectedValuePath="Id" />
+                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+                                                <Button Style="{StaticResource RoundedButton}" Background="#1F84DE" Width="120" Height="30"  Margin="0,0,8,0" Click="CancelFahrerPage_OnClick" Content="Abbrechen" />
+                                                <Button Style="{StaticResource RoundedButton}" Background="green" Width="120"  Height="30" Click="SaveCreateFahrer_OnClick" Content="Speichern" />
                                             </StackPanel>
-                                        </Border>
-                                    </Grid>
-                                </Border>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <Border x:Name="FahrerEditPage" Visibility="Collapsed" Background="#F8FAFC" BorderBrush="#D1D5DB" BorderThickness="1" CornerRadius="8">
+                                        <StackPanel Margin="20">
+                                            <TextBlock FontWeight="Bold" FontSize="18" Text="Fahrer bearbeiten" />
+                                            <TextBlock Margin="0,16,0,4" Text="Vorname" />
+                                            <TextBox x:Name="EditFahrerVornameTextBox" Height="30" />
+                                            <TextBlock Margin="0,12,0,4" Text="Nachname" />
+                                            <TextBox x:Name="EditFahrerNachnameTextBox" Height="30" />
+                                            <TextBlock Margin="0,12,0,4" Text="Geburtsdatum" />
+                                            <DatePicker x:Name="EditFahrerGeburtsdatumPicker" Height="30" />
+                                            <TextBlock Margin="0,12,0,4" Text="Geschlecht" />
+                                            <ComboBox x:Name="EditFahrerGeschlechtComboBox" Height="30" SelectedValuePath="Tag">
+                                                <ComboBoxItem Content="Maennlich" Tag="m" />
+                                                <ComboBoxItem Content="Weiblich" Tag="w" />
+                                                <ComboBoxItem Content="Divers" Tag="d" />
+                                            </ComboBox>
+                                            <TextBlock Margin="0,12,0,4" Text="Verein" />
+                                            <ComboBox x:Name="EditFahrerVereinComboBox" Height="30" DisplayMemberPath="Name" SelectedValuePath="Id" />
+                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+                                                <Button Style="{StaticResource RoundedButton}" Background="#1F84DE" Width="120" Height="30"  Margin="0,0,8,0" Click="CancelFahrerPage_OnClick" Content="Abbrechen" />
+                                                <Button Style="{StaticResource RoundedButton}" Background="green" Width="120" Height="30"  Click="SaveEditFahrer_OnClick" Content="Speichern" />
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <Border x:Name="FahrerDeletePage" Visibility="Collapsed" Background="#F8FAFC" BorderBrush="#D1D5DB" BorderThickness="1" CornerRadius="8">
+                                        <StackPanel Margin="20">
+                                            <TextBlock FontWeight="Bold" FontSize="18" Text="Fahrer loeschen" />
+                                            <TextBlock Margin="0,16,0,0" Text="Soll dieser Fahrer wirklich geloescht werden?" />
+                                            <TextBlock x:Name="DeleteFahrerTextBlock" Margin="0,10,0,0" FontWeight="SemiBold" />
+                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+                                                <Button Width="120" Height="30"  Margin="0,0,8,0" Click="CancelFahrerPage_OnClick" Content="Abbrechen" />
+                                                <Button Width="120" Height="30"  Background="#DC2626" Foreground="White" BorderThickness="0" Click="ConfirmDeleteFahrer_OnClick" Content="Loeschen" />
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Border>
+                                </Grid>
                             </Grid>
                         </Border>
 
@@ -1043,97 +1567,110 @@
                                     </Grid.ColumnDefinitions>
 
                                     <TextBlock FontWeight="Bold" FontSize="20" Text="Karts" VerticalAlignment="Center" />
-                                    <Button Grid.Column="1" Style="{StaticResource RoundedButton}" Content="Kart anlegen" Padding="14,8" Click="OpenCreateKartPage_OnClick" />
+                                    <Button Grid.Column="1" Style="{StaticResource RoundedButton}" Background="#1F84DE" Content="Kart anlegen" Width="120" Height="30" Click="OpenCreateKartPage_OnClick" />
                                 </Grid>
 
-                                <Border Grid.Row="2" Background="White" BorderBrush="#D1D5DB" BorderThickness="1" CornerRadius="8">
-                                    <Grid>
-                                        <DataGrid x:Name="KartsDataGrid"
+                                <Grid Grid.Row="2">
+                                    <DataGrid x:Name="KartsDataGrid"
                                                   ItemsSource="{Binding KartItems}"
+                                                  Background="Transparent"
                                                   AutoGenerateColumns="False"
                                                   CanUserAddRows="False"
                                                   IsReadOnly="True"
                                                   HeadersVisibility="Column"
-                                                  GridLinesVisibility="Horizontal"
+                                                  GridLinesVisibility="None"
                                                   BorderThickness="0"
                                                   RowHeaderWidth="0"
-                                                  SelectionMode="Single">
-                                            <DataGrid.Columns>
-                                                <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="160" />
-                                                <DataGridTextColumn Header="Motor" Binding="{Binding Motor}" Width="160" />
-                                                <DataGridTextColumn Header="Chassis" Binding="{Binding Chassis}" Width="160" />
-                                                <DataGridTextColumn Header="Verein" Binding="{Binding VereinName}" Width="*" />
-                                                <DataGridTextColumn Header="Disziplin" Binding="{Binding DisziplinName}" Width="140" />
-                                                <DataGridTemplateColumn Header="Aktionen" Width="140">
-                                                    <DataGridTemplateColumn.CellTemplate>
-                                                        <DataTemplate>
-                                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                                                <Button Width="32" Height="28" Margin="0,0,8,0" Tag="{Binding Id}" Click="OpenEditKartPage_OnClick">
-                                                                    <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE70F;" />
-                                                                </Button>
-                                                                <Button Width="32" Height="28" Tag="{Binding Id}" Click="OpenDeleteKartPage_OnClick">
-                                                                    <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE74D;" />
-                                                                </Button>
-                                                            </StackPanel>
-                                                        </DataTemplate>
-                                                    </DataGridTemplateColumn.CellTemplate>
-                                                </DataGridTemplateColumn>
-                                            </DataGrid.Columns>
-                                        </DataGrid>
+                                                  RowHeight="36"
+                                                  VerticalContentAlignment="Center"
+                                                  SelectionMode="Single"
+                                                  AlternationCount="2"
+                                                  ColumnHeaderStyle="{StaticResource StandardDataGridHeaderStyle}"
+                                                  CellStyle="{StaticResource StandardDataGridCellStyle}"
+                                                  RowStyle="{StaticResource StandardDataGridRowStyle}">
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="160" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                                            <DataGridTextColumn Header="Motor" Binding="{Binding Motor}" Width="160" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                                            <DataGridTextColumn Header="Chassis" Binding="{Binding Chassis}" Width="160" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                                            <DataGridTextColumn Header="Verein" Binding="{Binding VereinName}" Width="*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                                            <DataGridTextColumn Header="Disziplin" Binding="{Binding DisziplinName}" Width="140" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                                            <DataGridTemplateColumn Header="Aktionen" Width="140">
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <Grid Height="32" VerticalAlignment="Center">
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="*"/>
+                                                                <ColumnDefinition Width="40"/>
+                                                                <ColumnDefinition Width="40"/>
+                                                                <ColumnDefinition Width="*"/>
+                                                                <ColumnDefinition Width="10"/>
+                                                            </Grid.ColumnDefinitions>
 
-                                        <Border x:Name="KartCreatePage" Visibility="Collapsed" Background="#F8FAFC" BorderBrush="#D1D5DB" BorderThickness="1" CornerRadius="8">
-                                            <StackPanel Margin="20">
-                                                <TextBlock FontWeight="Bold" FontSize="18" Text="Kart anlegen" />
-                                                <TextBlock Margin="0,16,0,4" Text="Name" />
-                                                <TextBox x:Name="CreateKartNameTextBox" Height="30" />
-                                                <TextBlock Margin="0,12,0,4" Text="Motor" />
-                                                <TextBox x:Name="CreateKartMotorTextBox" Height="30" />
-                                                <TextBlock Margin="0,12,0,4" Text="Chassis" />
-                                                <TextBox x:Name="CreateKartChassisTextBox" Height="30" />
-                                                <TextBlock Margin="0,12,0,4" Text="Verein" />
-                                                <ComboBox x:Name="CreateKartVereinComboBox" Height="30" DisplayMemberPath="Name" SelectedValuePath="Id" />
-                                                <TextBlock Margin="0,12,0,4" Text="Disziplin" />
-                                                <ComboBox x:Name="CreateKartDisziplinComboBox" Height="30" DisplayMemberPath="Name" SelectedValuePath="Id" />
-                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
-                                                    <Button Padding="12,6" Margin="0,0,8,0" Click="CancelKartPage_OnClick" Content="Abbrechen" />
-                                                    <Button Style="{StaticResource RoundedButton}" Padding="12,6" Click="SaveCreateKart_OnClick" Content="Speichern" />
-                                                </StackPanel>
-                                            </StackPanel>
-                                        </Border>
+                                                            <Button Grid.Column="1" Height="28"  Style="{StaticResource RoundedButtonLeft}" Background="#1F84DE" Tag="{Binding Id}" Click="OpenEditKartPage_OnClick">
+                                                                <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE70F;" />
+                                                            </Button>
+                                                            <Button Grid.Column="2"  Height="28" Style="{StaticResource RoundedButtonRight}" Background="Red"  Tag="{Binding Id}" Click="OpenDeleteKartPage_OnClick">
+                                                                <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE74D;" />
+                                                            </Button>
+                                                        </Grid>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+                                        </DataGrid.Columns>
+                                    </DataGrid>
 
-                                        <Border x:Name="KartEditPage" Visibility="Collapsed" Background="#F8FAFC" BorderBrush="#D1D5DB" BorderThickness="1" CornerRadius="8">
-                                            <StackPanel Margin="20">
-                                                <TextBlock FontWeight="Bold" FontSize="18" Text="Kart bearbeiten" />
-                                                <TextBlock Margin="0,16,0,4" Text="Name" />
-                                                <TextBox x:Name="EditKartNameTextBox" Height="30" />
-                                                <TextBlock Margin="0,12,0,4" Text="Motor" />
-                                                <TextBox x:Name="EditKartMotorTextBox" Height="30" />
-                                                <TextBlock Margin="0,12,0,4" Text="Chassis" />
-                                                <TextBox x:Name="EditKartChassisTextBox" Height="30" />
-                                                <TextBlock Margin="0,12,0,4" Text="Verein" />
-                                                <ComboBox x:Name="EditKartVereinComboBox" Height="30" DisplayMemberPath="Name" SelectedValuePath="Id" />
-                                                <TextBlock Margin="0,12,0,4" Text="Disziplin" />
-                                                <ComboBox x:Name="EditKartDisziplinComboBox" Height="30" DisplayMemberPath="Name" SelectedValuePath="Id" />
-                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
-                                                    <Button Padding="12,6" Margin="0,0,8,0" Click="CancelKartPage_OnClick" Content="Abbrechen" />
-                                                    <Button Style="{StaticResource RoundedButton}" Padding="12,6" Click="SaveEditKart_OnClick" Content="Speichern" />
-                                                </StackPanel>
+                                    <Border x:Name="KartCreatePage" Visibility="Collapsed" Background="#F8FAFC" BorderBrush="#D1D5DB" BorderThickness="1" CornerRadius="8">
+                                        <StackPanel Margin="20">
+                                            <TextBlock FontWeight="Bold" FontSize="18" Text="Kart anlegen" />
+                                            <TextBlock Margin="0,16,0,4" Text="Name" />
+                                            <TextBox x:Name="CreateKartNameTextBox" Height="30" />
+                                            <TextBlock Margin="0,12,0,4" Text="Motor" />
+                                            <TextBox x:Name="CreateKartMotorTextBox" Height="30" />
+                                            <TextBlock Margin="0,12,0,4" Text="Chassis" />
+                                            <TextBox x:Name="CreateKartChassisTextBox" Height="30" />
+                                            <TextBlock Margin="0,12,0,4" Text="Verein" />
+                                            <ComboBox x:Name="CreateKartVereinComboBox" Height="30" DisplayMemberPath="Name" SelectedValuePath="Id" />
+                                            <TextBlock Margin="0,12,0,4" Text="Disziplin" />
+                                            <ComboBox x:Name="CreateKartDisziplinComboBox" Height="30" DisplayMemberPath="Name" SelectedValuePath="Id" />
+                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+                                                <Button Style="{StaticResource RoundedButton}" Background="#1F84DE" Width="120" Height="30"  Margin="0,0,8,0" Click="CancelKartPage_OnClick" Content="Abbrechen" />
+                                                <Button Style="{StaticResource RoundedButton}" Background="green" Width="120" Height="30"  Click="SaveCreateKart_OnClick" Content="Speichern" />
                                             </StackPanel>
-                                        </Border>
+                                        </StackPanel>
+                                    </Border>
 
-                                        <Border x:Name="KartDeletePage" Visibility="Collapsed" Background="#F8FAFC" BorderBrush="#D1D5DB" BorderThickness="1" CornerRadius="8">
-                                            <StackPanel Margin="20">
-                                                <TextBlock FontWeight="Bold" FontSize="18" Text="Kart loeschen" />
-                                                <TextBlock Margin="0,16,0,0" Text="Soll dieses Kart wirklich geloescht werden?" />
-                                                <TextBlock x:Name="DeleteKartTextBlock" Margin="0,10,0,0" FontWeight="SemiBold" />
-                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
-                                                    <Button Padding="12,6" Margin="0,0,8,0" Click="CancelKartPage_OnClick" Content="Abbrechen" />
-                                                    <Button Padding="12,6" Background="#DC2626" Foreground="White" BorderThickness="0" Click="ConfirmDeleteKart_OnClick" Content="Loeschen" />
-                                                </StackPanel>
+                                    <Border x:Name="KartEditPage" Visibility="Collapsed" Background="#F8FAFC" BorderBrush="#D1D5DB" BorderThickness="1" CornerRadius="8">
+                                        <StackPanel Margin="20">
+                                            <TextBlock FontWeight="Bold" FontSize="18" Text="Kart bearbeiten" />
+                                            <TextBlock Margin="0,16,0,4" Text="Name" />
+                                            <TextBox x:Name="EditKartNameTextBox" Height="30" />
+                                            <TextBlock Margin="0,12,0,4" Text="Motor" />
+                                            <TextBox x:Name="EditKartMotorTextBox" Height="30" />
+                                            <TextBlock Margin="0,12,0,4" Text="Chassis" />
+                                            <TextBox x:Name="EditKartChassisTextBox" Height="30" />
+                                            <TextBlock Margin="0,12,0,4" Text="Verein" />
+                                            <ComboBox x:Name="EditKartVereinComboBox" Height="30" DisplayMemberPath="Name" SelectedValuePath="Id" />
+                                            <TextBlock Margin="0,12,0,4" Text="Disziplin" />
+                                            <ComboBox x:Name="EditKartDisziplinComboBox" Height="30" DisplayMemberPath="Name" SelectedValuePath="Id" />
+                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+                                                <Button Style="{StaticResource RoundedButton}" Background="#1F84DE" Width="120" Height="30"  Margin="0,0,8,0" Click="CancelKartPage_OnClick" Content="Abbrechen" />
+                                                <Button Style="{StaticResource RoundedButton}" Background="green" Width="120" Height="30"  Click="SaveEditKart_OnClick" Content="Speichern" />
                                             </StackPanel>
-                                        </Border>
-                                    </Grid>
-                                </Border>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <Border x:Name="KartDeletePage" Visibility="Collapsed" Background="#F8FAFC" BorderBrush="#D1D5DB" BorderThickness="1" CornerRadius="8">
+                                        <StackPanel Margin="20">
+                                            <TextBlock FontWeight="Bold" FontSize="18" Text="Kart loeschen" />
+                                            <TextBlock Margin="0,16,0,0" Text="Soll dieses Kart wirklich geloescht werden?" />
+                                            <TextBlock x:Name="DeleteKartTextBlock" Margin="0,10,0,0" FontWeight="SemiBold" />
+                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+                                                <Button Width="120" Height="30"  Margin="0,0,8,0" Click="CancelKartPage_OnClick" Content="Abbrechen" />
+                                                <Button Width="120"  Height="30" Background="#DC2626" Foreground="White" BorderThickness="0" Click="ConfirmDeleteKart_OnClick" Content="Loeschen" />
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Border>
+                                </Grid>
                             </Grid>
                         </Border>
 
@@ -1152,114 +1689,252 @@
                                     </Grid.ColumnDefinitions>
 
                                     <TextBlock FontWeight="Bold" FontSize="20" Text="Wetter" VerticalAlignment="Center" />
-                                    <Button Grid.Column="1" Style="{StaticResource RoundedButton}" Content="Wetter anlegen" Padding="14,8" Click="OpenCreateWetterPage_OnClick" />
+                                    <Button Grid.Column="1" Style="{StaticResource RoundedButton}" Background="#1F84DE" Content="Wetter anlegen" Width="120" Height="30" Click="OpenCreateWetterPage_OnClick" />
                                 </Grid>
 
-                                <Border Grid.Row="2" Background="White" BorderBrush="#D1D5DB" BorderThickness="1" CornerRadius="8">
-                                    <Grid>
-                                        <DataGrid x:Name="WetterDataGrid"
+                                <Grid Grid.Row="2">
+                                    <DataGrid x:Name="WetterDataGrid"
                                                   ItemsSource="{Binding WetterItems}"
+                                                  Background="Transparent"
                                                   AutoGenerateColumns="False"
                                                   CanUserAddRows="False"
                                                   IsReadOnly="True"
                                                   HeadersVisibility="Column"
-                                                  GridLinesVisibility="Horizontal"
+                                                  GridLinesVisibility="None"
                                                   BorderThickness="0"
                                                   RowHeaderWidth="0"
-                                                  SelectionMode="Single">
-                                            <DataGrid.Columns>
-                                                <DataGridTextColumn Header="Wetter" Binding="{Binding Name}" Width="*" />
-                                                <DataGridTemplateColumn Header="Aktionen" Width="140">
-                                                    <DataGridTemplateColumn.CellTemplate>
-                                                        <DataTemplate>
-                                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                                                <Button Width="32" Height="28" Margin="0,0,8,0" Tag="{Binding Id}" Click="OpenEditWetterPage_OnClick">
-                                                                    <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE70F;" />
-                                                                </Button>
-                                                                <Button Width="32" Height="28" Tag="{Binding Id}" Click="OpenDeleteWetterPage_OnClick">
-                                                                    <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE74D;" />
-                                                                </Button>
-                                                            </StackPanel>
-                                                        </DataTemplate>
-                                                    </DataGridTemplateColumn.CellTemplate>
-                                                </DataGridTemplateColumn>
-                                            </DataGrid.Columns>
-                                        </DataGrid>
+                                                  RowHeight="36"
+                                                  VerticalContentAlignment="Center"
+                                                  SelectionMode="Single"
+                                                  AlternationCount="2"
+                                                  ColumnHeaderStyle="{StaticResource StandardDataGridHeaderStyle}"
+                                                  CellStyle="{StaticResource StandardDataGridCellStyle}"
+                                                  RowStyle="{StaticResource StandardDataGridRowStyle}">
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header="Wetter" Binding="{Binding Name}" Width="*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                                            <DataGridTemplateColumn Header="Aktionen" Width="140">
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <Grid Height="32" VerticalAlignment="Center">
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="*"/>
+                                                                <ColumnDefinition Width="40"/>
+                                                                <ColumnDefinition Width="40"/>
+                                                                <ColumnDefinition Width="*"/>
+                                                                <ColumnDefinition Width="10"/>
+                                                            </Grid.ColumnDefinitions>
 
-                                        <Border x:Name="WetterCreatePage" Visibility="Collapsed" Background="#F8FAFC" BorderBrush="#D1D5DB" BorderThickness="1" CornerRadius="8">
-                                            <StackPanel Margin="20">
-                                                <TextBlock FontWeight="Bold" FontSize="18" Text="Wetter anlegen" />
-                                                <TextBlock Margin="0,16,0,4" Text="Wetter" />
-                                                <TextBox x:Name="CreateWetterNameTextBox" Height="30" />
-                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
-                                                    <Button Padding="12,6" Margin="0,0,8,0" Click="CancelWetterPage_OnClick" Content="Abbrechen" />
-                                                    <Button Style="{StaticResource RoundedButton}" Padding="12,6" Click="SaveCreateWetter_OnClick" Content="Speichern" />
-                                                </StackPanel>
-                                            </StackPanel>
-                                        </Border>
+                                                            <Button Grid.Column="1" Height="28"  Style="{StaticResource RoundedButtonLeft}" Background="#1F84DE" Tag="{Binding Id}" Click="OpenEditWetterPage_OnClick">
+                                                                <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE70F;" />
+                                                            </Button>
+                                                            <Button Grid.Column="2"  Height="28" Style="{StaticResource RoundedButtonRight}" Background="Red"  Tag="{Binding Id}" Click="OpenDeleteWetterPage_OnClick">
+                                                                <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE74D;" />
+                                                            </Button>
+                                                        </Grid>
 
-                                        <Border x:Name="WetterEditPage" Visibility="Collapsed" Background="#F8FAFC" BorderBrush="#D1D5DB" BorderThickness="1" CornerRadius="8">
-                                            <StackPanel Margin="20">
-                                                <TextBlock FontWeight="Bold" FontSize="18" Text="Wetter bearbeiten" />
-                                                <TextBlock Margin="0,16,0,4" Text="Wetter" />
-                                                <TextBox x:Name="EditWetterNameTextBox" Height="30" />
-                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
-                                                    <Button Padding="12,6" Margin="0,0,8,0" Click="CancelWetterPage_OnClick" Content="Abbrechen" />
-                                                    <Button Style="{StaticResource RoundedButton}" Padding="12,6" Click="SaveEditWetter_OnClick" Content="Speichern" />
-                                                </StackPanel>
-                                            </StackPanel>
-                                        </Border>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+                                        </DataGrid.Columns>
+                                    </DataGrid>
 
-                                        <Border x:Name="WetterDeletePage" Visibility="Collapsed" Background="#F8FAFC" BorderBrush="#D1D5DB" BorderThickness="1" CornerRadius="8">
-                                            <StackPanel Margin="20">
-                                                <TextBlock FontWeight="Bold" FontSize="18" Text="Wetter loeschen" />
-                                                <TextBlock Margin="0,16,0,0" Text="Soll dieser Wettereintrag wirklich geloescht werden?" />
-                                                <TextBlock x:Name="DeleteWetterTextBlock" Margin="0,10,0,0" FontWeight="SemiBold" />
-                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
-                                                    <Button Padding="12,6" Margin="0,0,8,0" Click="CancelWetterPage_OnClick" Content="Abbrechen" />
-                                                    <Button Padding="12,6" Background="#DC2626" Foreground="White" BorderThickness="0" Click="ConfirmDeleteWetter_OnClick" Content="Loeschen" />
-                                                </StackPanel>
+                                    <Border x:Name="WetterCreatePage" Visibility="Collapsed" Background="#F8FAFC" BorderBrush="#D1D5DB" BorderThickness="1" CornerRadius="8">
+                                        <StackPanel Margin="20">
+                                            <TextBlock FontWeight="Bold" FontSize="18" Text="Wetter anlegen" />
+                                            <TextBlock Margin="0,16,0,4" Text="Wetter" />
+                                            <TextBox x:Name="CreateWetterNameTextBox" Height="30" />
+                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+                                                <Button Style="{StaticResource RoundedButton}" Background="#1F84DE" Width="120" Height="30"  Margin="0,0,8,0" Click="CancelWetterPage_OnClick" Content="Abbrechen" />
+                                                <Button Style="{StaticResource RoundedButton}" Background="green" Width="120" Height="30"  Click="SaveCreateWetter_OnClick" Content="Speichern" />
                                             </StackPanel>
-                                        </Border>
-                                    </Grid>
-                                </Border>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <Border x:Name="WetterEditPage" Visibility="Collapsed" Background="#F8FAFC" BorderBrush="#D1D5DB" BorderThickness="1" CornerRadius="8">
+                                        <StackPanel Margin="20">
+                                            <TextBlock FontWeight="Bold" FontSize="18" Text="Wetter bearbeiten" />
+                                            <TextBlock Margin="0,16,0,4" Text="Wetter" />
+                                            <TextBox x:Name="EditWetterNameTextBox" Height="30" />
+                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+                                                <Button Style="{StaticResource RoundedButton}" Background="#1F84DE" Width="120" Height="30"  Margin="0,0,8,0" Click="CancelWetterPage_OnClick" Content="Abbrechen" />
+                                                <Button Style="{StaticResource RoundedButton}" Background="green" Width="120" Height="30"  Click="SaveEditWetter_OnClick" Content="Speichern" />
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <Border x:Name="WetterDeletePage" Visibility="Collapsed" Background="#F8FAFC" BorderBrush="#D1D5DB" BorderThickness="1" CornerRadius="8">
+                                        <StackPanel Margin="20">
+                                            <TextBlock FontWeight="Bold" FontSize="18" Text="Wetter loeschen" />
+                                            <TextBlock Margin="0,16,0,0" Text="Soll dieser Wettereintrag wirklich geloescht werden?" />
+                                            <TextBlock x:Name="DeleteWetterTextBlock" Margin="0,10,0,0" FontWeight="SemiBold" />
+                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+                                                <Button Width="120"  Height="30" Margin="0,0,8,0" Click="CancelWetterPage_OnClick" Content="Abbrechen" />
+                                                <Button Width="120"  Height="30" Background="#DC2626" Foreground="White" BorderThickness="0" Click="ConfirmDeleteWetter_OnClick" Content="Loeschen" />
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Border>
+                                </Grid>
                             </Grid>
                         </Border>
 
-                        <Border x:Name="StatistikenPage" Visibility="Collapsed" Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1" CornerRadius="10">
-                            <TextBlock Margin="20" FontSize="18" Text="Statistiken" />
-                        </Border>
-
-                        <Border x:Name="EinstellungenPage" Visibility="Collapsed" Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1" CornerRadius="10">
+                        <Border x:Name="StatistikenPage" Visibility="Collapsed" Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="0" CornerRadius="10">
                             <Grid Margin="20">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="20" />
+                                    <RowDefinition Height="12" />
                                     <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="12" />
+                                    <RowDefinition Height="*" />
                                 </Grid.RowDefinitions>
 
-                                <TextBlock FontSize="24" FontWeight="Bold" Text="Einstellungen" />
+                                <TextBlock Grid.Row="0" FontSize="24" FontWeight="Bold" Text="Statistiken" />
 
-                                <Border Grid.Row="2" Background="White" BorderBrush="#D1D5DB" BorderThickness="1" CornerRadius="8" Padding="16">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="300" />
-                                            <ColumnDefinition Width="Auto" />
-                                        </Grid.ColumnDefinitions>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto" />
-                                            <RowDefinition Height="Auto" />
-                                        </Grid.RowDefinitions>
-
-                                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Default Rundenanzahl pro Stint" VerticalAlignment="Center" />
-                                        <TextBox x:Name="DefaultStintRoundsTextBox" Grid.Row="1" Grid.Column="0" Margin="0,8,0,0" Height="30" Width="120" />
-                                        <Button Grid.Row="1" Grid.Column="1" Margin="12,8,0,0" Padding="12,6" Style="{StaticResource RoundedButton}" Content="Speichern" Click="SaveSettings_OnClick" />
-                                    </Grid>
+                                <Border Grid.Row="2" Background="White" BorderBrush="#D1D5DB" BorderThickness="1" CornerRadius="8" Padding="12">
+                                    <UniformGrid Columns="3">
+                                        <Border Margin="4" Padding="8" Background="#F8FAFC" CornerRadius="6">
+                                            <StackPanel>
+                                                <TextBlock x:Name="StatsFahrerCountTextBlock" FontSize="16" FontWeight="Bold" TextAlignment="Center" Text="-" />
+                                                <TextBlock Margin="0,3,0,0" FontSize="13" Foreground="#475569" TextAlignment="Center" Text="Anzahl Fahrer" />
+                                            </StackPanel>
+                                        </Border>
+                                        <Border Margin="4" Padding="8" Background="#F8FAFC" CornerRadius="6">
+                                            <StackPanel>
+                                                <TextBlock x:Name="StatsKartsCountTextBlock" FontSize="16" FontWeight="Bold" TextAlignment="Center" Text="-" />
+                                                <TextBlock Margin="0,3,0,0" FontSize="13" Foreground="#475569" TextAlignment="Center" Text="Anzahl Karts" />
+                                            </StackPanel>
+                                        </Border>
+                                        <Border Margin="4" Padding="8" Background="#F8FAFC" CornerRadius="6">
+                                            <StackPanel>
+                                                <TextBlock x:Name="StatsTrainingsCountTextBlock" FontSize="16" FontWeight="Bold" TextAlignment="Center" Text="-" />
+                                                <TextBlock Margin="0,3,0,0" FontSize="13" Foreground="#475569" TextAlignment="Center" Text="Anzahl Trainings" />
+                                            </StackPanel>
+                                        </Border>
+                                        <Border Margin="4" Padding="8" Background="#F8FAFC" CornerRadius="6">
+                                            <StackPanel>
+                                                <TextBlock x:Name="StatsRundenCountTextBlock" FontSize="16" FontWeight="Bold" TextAlignment="Center" Text="-" />
+                                                <TextBlock Margin="0,3,0,0" FontSize="13" Foreground="#475569" TextAlignment="Center" Text="Anzahl Runden" />
+                                            </StackPanel>
+                                        </Border>
+                                        <Border Margin="4" Padding="8" Background="#F8FAFC" CornerRadius="6">
+                                            <StackPanel>
+                                                <TextBlock x:Name="StatsStintsCountTextBlock" FontSize="16" FontWeight="Bold" TextAlignment="Center" Text="-" />
+                                                <TextBlock Margin="0,3,0,0" FontSize="13" Foreground="#475569" TextAlignment="Center" Text="Anzahl Stints" />
+                                            </StackPanel>
+                                        </Border>
+                                        <Border Margin="4" Padding="8" Background="#F8FAFC" CornerRadius="6">
+                                            <StackPanel>
+                                                <TextBlock x:Name="StatsGesamteFahrzeitTextBlock" FontSize="16" FontWeight="Bold" TextAlignment="Center" Text="-" />
+                                                <TextBlock Margin="0,3,0,0" FontSize="13" Foreground="#475569" TextAlignment="Center" Text="Gesamte Fahrzeit" />
+                                            </StackPanel>
+                                        </Border>
+                                        <Border Margin="4" Padding="8" Background="#F8FAFC" CornerRadius="6">
+                                            <StackPanel>
+                                                <TextBlock x:Name="StatsPylonenfehlerCountTextBlock" FontSize="16" FontWeight="Bold" TextAlignment="Center" Text="-" />
+                                                <TextBlock Margin="0,3,0,0" FontSize="13" Foreground="#475569" TextAlignment="Center" Text="Anzahl Pylonenfehler" />
+                                            </StackPanel>
+                                        </Border>
+                                        <Border Margin="4" Padding="8" Background="#F8FAFC" CornerRadius="6">
+                                            <StackPanel>
+                                                <TextBlock x:Name="StatsTorfehlerCountTextBlock" FontSize="16" FontWeight="Bold" TextAlignment="Center" Text="-" />
+                                                <TextBlock Margin="0,3,0,0" FontSize="13" Foreground="#475569" TextAlignment="Center" Text="Anzahl Torfehler" />
+                                            </StackPanel>
+                                        </Border>
+                                        <Border Margin="4" Padding="8" Background="#F8FAFC" CornerRadius="6">
+                                            <StackPanel>
+                                                <TextBlock x:Name="StatsAvgPylonenTextBlock" FontSize="16" FontWeight="Bold" TextAlignment="Center" Text="-" />
+                                                <TextBlock Margin="0,3,0,0" FontSize="13" Foreground="#475569" TextAlignment="Center" Text="Durchschnitt Pylonen pro Runde" />
+                                            </StackPanel>
+                                        </Border>
+                                        <Border Margin="4" Padding="8" Background="#F8FAFC" CornerRadius="6">
+                                            <StackPanel>
+                                                <TextBlock x:Name="StatsAvgTorfehlerTextBlock" FontSize="16" FontWeight="Bold" TextAlignment="Center" Text="-" />
+                                                <TextBlock Margin="0,3,0,0" FontSize="13" Foreground="#475569" TextAlignment="Center" Text="Durchschnitt Torfehler pro Runde" />
+                                            </StackPanel>
+                                        </Border>
+                                        <Border Margin="4" Padding="8" Background="#F8FAFC" CornerRadius="6">
+                                            <StackPanel>
+                                                <TextBlock x:Name="StatsFehlerfreieRundenPercentTextBlock" FontSize="16" FontWeight="Bold" TextAlignment="Center" Text="-" />
+                                                <TextBlock Margin="0,3,0,0" FontSize="13" Foreground="#475569" TextAlignment="Center" Text="Fehlerfreie Runden in Prozent" />
+                                            </StackPanel>
+                                        </Border>
+                                    </UniformGrid>
                                 </Border>
 
-                                <TextBlock x:Name="SettingsFeedbackTextBlock" Grid.Row="3" Margin="0,12,0,0" Foreground="#475569" Text="" />
+                                <DataGrid Grid.Row="4"
+                                          ItemsSource="{Binding DriverStatisticsItems}"
+                                          Background="Transparent"
+                                          AutoGenerateColumns="False"
+                                          CanUserAddRows="False"
+                                          IsReadOnly="True"
+                                          HeadersVisibility="Column"
+                                          GridLinesVisibility="None"
+                                          BorderThickness="0"
+                                          RowHeaderWidth="0"
+                                          RowHeight="36"
+                                          VerticalContentAlignment="Center"
+                                          SelectionMode="Single"
+                                          AlternationCount="2"
+                                          ColumnHeaderStyle="{StaticResource StandardDataGridHeaderStyle}"
+                                          CellStyle="{StaticResource StandardDataGridCellStyle}"
+                                          RowStyle="{StaticResource StandardDataGridRowStyle}">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Fahrer" Binding="{Binding Fahrer}" Width="18*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                                        <DataGridTextColumn Header="Fahrzeit" Binding="{Binding Fahrzeit}" Width="11*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                                        <DataGridTextColumn Header="Trainings" Binding="{Binding Trainings}" Width="8*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                                        <DataGridTextColumn Header="Runden" Binding="{Binding Runden}" Width="8*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                                        <DataGridTextColumn Header="Fehlerfreie Runden" Binding="{Binding FehlerfreieRunden}" Width="14*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                                        <DataGridTextColumn Header="Stints" Binding="{Binding Stints}" Width="8*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                                        <DataGridTextColumn Header="Pylonenfehler" Binding="{Binding Pylonenfehler}" Width="10*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                                        <DataGridTextColumn Header="Torfehler" Binding="{Binding Torfehler}" Width="8*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                                        <DataGridTextColumn Header="Durchschnitt Pylonen pro Runde" Binding="{Binding DurchschnittPylonenProRunde}" Width="12*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                                        <DataGridTextColumn Header="Durchschnitt Torfehler pro Runde" Binding="{Binding DurchschnittTorfehlerProRunde}" Width="12*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </Grid>
+                        </Border>
+
+                        <Border x:Name="EinstellungenPage" Visibility="Collapsed" Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="0" CornerRadius="10">
+                            <Grid Margin="20">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="30" />
+                                    <RowDefinition Height="20" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="20" />
+                                    <RowDefinition Height="30" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="200" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                    <TextBlock Grid.Row="0" FontSize="24" FontWeight="Bold" Text="Einstellungen" />
+
+
+                                <Grid Grid.Row="2" Grid.ColumnSpan="2">
+
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="30" />
+                                        <RowDefinition Height="30" />
+                                        <RowDefinition Height="30" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="200" />
+                                        <ColumnDefinition Width="150" />
+                                    </Grid.ColumnDefinitions>
+
+
+                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Default Rundenanzahl pro Stint" VerticalAlignment="Center" />
+                                    <TextBox Grid.Row="0" Grid.Column="1" x:Name="DefaultStintRoundsTextBox"  Height="25" Width="50" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" />
+
+                                    <Button Grid.Row="2" Grid.ColumnSpan="2" Width="220" Height="30" HorizontalAlignment="Left" Background="#0EA5E9" Style="{StaticResource RoundedButton}" Content="Remote Verbindung neu aufbauen" Click="ReconnectRemote_OnClick" />
+                                </Grid>
+
+
+
+
+                                <Button Grid.Row="4"  Width="120"  Height="30" HorizontalAlignment="Left" Background="#1F84DE" Style="{StaticResource RoundedButton}" Content="Speichern" Click="SaveSettings_OnClick" />
+                                <TextBlock Grid.Row="4" Grid.Column="1" x:Name="SettingsFeedbackTextBlock" VerticalAlignment="Center" />
+
                             </Grid>
                         </Border>
                     </Grid>
@@ -1267,7 +1942,7 @@
             </Grid>
 
             <!-- Footer -->
-            <Border Grid.Row="2" Padding="10,8" Background="#1E293B" CornerRadius="0,0,12,12">
+            <Border Grid.Row="2" Padding="10,8" Background="#1E293B" CornerRadius="0,0,0,0">
                 <DockPanel LastChildFill="False">
                     <TextBlock x:Name="FooterVersionTextBlock" Foreground="#E2E8F0" DockPanel.Dock="Left" FontSize="12" Text="Version -" Margin="0,0,25,0" />
                     <TextBlock x:Name="FooterDbStatusTextBlock" Foreground="#E2E8F0" DockPanel.Dock="Left" FontSize="12" Text="SQLite: - | MySQL: -" />

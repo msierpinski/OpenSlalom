@@ -9,12 +9,17 @@ using System.Text.Json;
 using System.ComponentModel;
 using System.Globalization;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Windows.Data;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Shell;
 using System.Windows.Threading;
 
 namespace OpenSlalom.UI;
@@ -30,8 +35,13 @@ public partial class MainWindow : Window
     private static readonly Color MenuFallbackBackgroundColor = Colors.White;
     private const double HoverDarkenFactor = 0.15;
     private const string TrainingDetailTagPrefix = "TrainingDetail:";
+    private const string TrainingStatisticsTagPrefix = "TrainingStatistics:";
+    private const int WmGetMinMaxInfo = 0x0024;
+    private const int MonitorDefaultToNearest = 0x00000002;
 
     private readonly IDbContextFactory<LocalOpenSlalomDbContext> _localDbContextFactory;
+    private readonly IDbContextFactory<OpenSlalomDbContext> _remoteMigrationDbContextFactory;
+    private readonly IDbContextFactory<RemoteOpenSlalomDbContext> _remoteDbContextFactory;
     private readonly DataSyncService _dataSyncService;
     private readonly DatabaseRuntimeInfo _databaseRuntimeInfo;
     private readonly string _uiSettingsFilePath;
@@ -75,18 +85,27 @@ public partial class MainWindow : Window
     public ObservableCollection<TrainingStarterListItem> TrainingStarterListItems { get; } = new();
     public ObservableCollection<TrainingLapTimeListItem> TrainingLapTimeItems { get; } = new();
     public ObservableCollection<TrainingFastestLapListItem> TrainingFastestLapItems { get; } = new();
+    public ObservableCollection<TrainingStatisticsBestLapListItem> TrainingStatisticsBestLapItems { get; } = new();
+    public ObservableCollection<TrainingStatisticsDriverSectionItem> TrainingStatisticsDriverSections { get; } = new();
+    public ObservableCollection<DriverStatisticsListItem> DriverStatisticsItems { get; } = new();
     public ObservableCollection<TrainingDriverSelectionItem> TrainingDriverSelectionItems { get; } = new();
     public ObservableCollection<LookupItem> KartLookupItems { get; } = new();
     public ObservableCollection<LookupItem> VereinLookupItems { get; } = new();
     public ObservableCollection<LookupItem> DisziplinLookupItems { get; } = new();
     public ObservableCollection<LookupItem> WetterLookupItems { get; } = new();
+    public ObservableCollection<CreateDisziplinAltersklasseItem> CreateDisziplinAltersklassenItems { get; } = new();
+    public ObservableCollection<EditDisziplinAltersklasseItem> EditDisziplinAltersklassenItems { get; } = new();
 
     public MainWindow(
         IDbContextFactory<LocalOpenSlalomDbContext> localDbContextFactory,
+        IDbContextFactory<OpenSlalomDbContext> remoteMigrationDbContextFactory,
+        IDbContextFactory<RemoteOpenSlalomDbContext> remoteDbContextFactory,
         DataSyncService dataSyncService,
         DatabaseRuntimeInfo databaseRuntimeInfo)
     {
         _localDbContextFactory = localDbContextFactory;
+        _remoteMigrationDbContextFactory = remoteMigrationDbContextFactory;
+        _remoteDbContextFactory = remoteDbContextFactory;
         _dataSyncService = dataSyncService;
         _databaseRuntimeInfo = databaseRuntimeInfo;
         _uiSettingsFilePath = Path.Combine(
@@ -94,6 +113,7 @@ public partial class MainWindow : Window
             "OpenSlalom",
             "ui-settings.json");
         InitializeComponent();
+        WindowState = WindowState.Maximized;
         DataContext = this;
         ConfigureMenuButtons();
         SetVersionText();
@@ -102,8 +122,10 @@ public partial class MainWindow : Window
         UpdateTrainingStopwatchButtonsState();
         NavigateTo("Startseite");
         StateChanged += OnWindowStateChanged;
+        SourceInitialized += OnSourceInitialized;
         Loaded += OnLoaded;
         UpdateWindowChrome();
+        UpdateMaximizeButtonIcon();
     }
 
     private void SetVersionText()
@@ -130,12 +152,127 @@ public partial class MainWindow : Window
     private void OnWindowStateChanged(object? sender, EventArgs e)
     {
         UpdateWindowChrome();
+        UpdateMaximizeButtonIcon();
+    }
+
+    private void UpdateMaximizeButtonIcon()
+    {
+        if (MaximizeRestoreImage is null)
+        {
+            return;
+        }
+
+        var iconPath = WindowState == WindowState.Maximized
+            ? "pack://application:,,,/icons/window.png"
+            : "pack://application:,,,/icons/maximize.png";
+        MaximizeRestoreImage.Source = new BitmapImage(new Uri(iconPath, UriKind.Absolute));
+    }
+
+    private void OnSourceInitialized(object? sender, EventArgs e)
+    {
+        if (PresentationSource.FromVisual(this) is HwndSource source)
+        {
+            source.AddHook(WindowProc);
+        }
     }
 
     private void UpdateWindowChrome()
     {
         WindowRootBorder.Margin = new Thickness(0);
         WindowRootBorder.CornerRadius = new CornerRadius(0);
+
+        var chrome = WindowChrome.GetWindowChrome(this);
+        if (chrome is not null)
+        {
+            chrome.ResizeBorderThickness = WindowState == WindowState.Maximized
+                ? new Thickness(0)
+                : new Thickness(8);
+        }
+
+        if (WindowState == WindowState.Maximized)
+        {
+            return;
+        }
+    }
+
+    private IntPtr WindowProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
+    {
+        if (msg == WmGetMinMaxInfo)
+        {
+            WmGetMinMaxInfoForWindow(hwnd, lParam);
+            handled = true;
+        }
+
+        return IntPtr.Zero;
+    }
+
+    private static void WmGetMinMaxInfoForWindow(IntPtr hwnd, IntPtr lParam)
+    {
+        var monitor = MonitorFromWindow(hwnd, MonitorDefaultToNearest);
+        if (monitor == IntPtr.Zero)
+        {
+            return;
+        }
+
+        var monitorInfo = new MonitorInfo();
+        monitorInfo.CbSize = Marshal.SizeOf<MonitorInfo>();
+        if (!GetMonitorInfo(monitor, ref monitorInfo))
+        {
+            return;
+        }
+
+        var minMaxInfo = Marshal.PtrToStructure<MinMaxInfo>(lParam);
+        var workArea = monitorInfo.RcWork;
+        var monitorArea = monitorInfo.RcMonitor;
+
+        minMaxInfo.PtMaxPosition.X = Math.Abs(workArea.Left - monitorArea.Left);
+        minMaxInfo.PtMaxPosition.Y = Math.Abs(workArea.Top - monitorArea.Top);
+        minMaxInfo.PtMaxSize.X = Math.Abs(workArea.Right - workArea.Left);
+        minMaxInfo.PtMaxSize.Y = Math.Abs(workArea.Bottom - workArea.Top);
+
+        Marshal.StructureToPtr(minMaxInfo, lParam, true);
+    }
+
+    [DllImport("user32.dll")]
+    private static extern IntPtr MonitorFromWindow(IntPtr hwnd, int dwFlags);
+
+    [DllImport("user32.dll", CharSet = CharSet.Auto)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static extern bool GetMonitorInfo(IntPtr hMonitor, ref MonitorInfo lpmi);
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct Point
+    {
+        public int X;
+        public int Y;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct MinMaxInfo
+    {
+        public Point PtReserved;
+        public Point PtMaxSize;
+        public Point PtMaxPosition;
+        public Point PtMinTrackSize;
+        public Point PtMaxTrackSize;
+    }
+
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
+    private struct MonitorInfo
+    {
+        public int CbSize;
+        public RectInt RcMonitor;
+        public RectInt RcWork;
+        public int DwFlags;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct RectInt
+    {
+        public int Left;
+        public int Top;
+        public int Right;
+        public int Bottom;
     }
 
     private async Task LoadVereineAsync()
@@ -175,20 +312,23 @@ public partial class MainWindow : Window
 
             var disziplinen = await dbContext.Disziplinen
                 .AsNoTracking()
+                .Include(x => x.Altersklassen)
                 .OrderBy(x => x.Name)
-                .Select(x => new DisziplinListItem
-                {
-                    Id = x.Id,
-                    Name = x.Name,
-                    ZeitstrafeTorfehler = x.ZeitstrafeTorfehler,
-                    ZeitstrafePylonenfehler = x.ZeitstrafePylonenfehler,
-                    ZeitstrafeTorfehlerText = FormatSecondsValue(x.ZeitstrafeTorfehler),
-                    ZeitstrafePylonenfehlerText = FormatSecondsValue(x.ZeitstrafePylonenfehler)
-                })
                 .ToListAsync();
 
+            var items = disziplinen.Select(x => new DisziplinListItem
+            {
+                Id = x.Id,
+                Name = x.Name,
+                ZeitstrafeTorfehler = x.ZeitstrafeTorfehler,
+                ZeitstrafePylonenfehler = x.ZeitstrafePylonenfehler,
+                ZeitstrafeTorfehlerText = FormatSecondsValue(x.ZeitstrafeTorfehler),
+                ZeitstrafePylonenfehlerText = FormatSecondsValue(x.ZeitstrafePylonenfehler),
+                AltersklassenText = FormatAltersklassenText(x.Altersklassen)
+            }).ToList();
+
             DisziplinItems.Clear();
-            foreach (var item in disziplinen)
+            foreach (var item in items)
             {
                 DisziplinItems.Add(item);
             }
@@ -214,6 +354,8 @@ public partial class MainWindow : Window
                 {
                     Id = x.Id,
                     VereinId = x.VereinId,
+                    Geschlecht = x.Geschlecht,
+                    GeschlechtIconPath = GetGeschlechtIconPath(x.Geschlecht),
                     Vorname = x.Vorname,
                     Nachname = x.Nachname ?? string.Empty,
                     Geburtsdatum = x.Geburtsdatum,
@@ -731,7 +873,7 @@ public partial class MainWindow : Window
         var localStatus = _databaseRuntimeInfo.LocalSqliteConnected ? "Verbunden" : "Nicht verbunden";
         var remoteStatus = _databaseRuntimeInfo.RemoteMySqlConnected ? "Verbunden" : "Nicht verbunden";
 
-        FooterDbStatusTextBlock.Text = $"SQLite: {localStatus} | MySQL: {remoteStatus}";
+        FooterDbStatusTextBlock.Text = $"Local DB: {localStatus} | Remote DB: {remoteStatus}";
 
         if (!_databaseRuntimeInfo.LocalSqliteConnected && !string.IsNullOrWhiteSpace(_databaseRuntimeInfo.LocalSqliteError))
         {
@@ -741,7 +883,7 @@ public partial class MainWindow : Window
 
         if (!_databaseRuntimeInfo.RemoteMySqlConnected && !string.IsNullOrWhiteSpace(_databaseRuntimeInfo.RemoteMySqlError))
         {
-            FooterDbStatusTextBlock.ToolTip = $"SQLite: {_databaseRuntimeInfo.LocalSqliteError}\nMySQL: {_databaseRuntimeInfo.RemoteMySqlError}";
+            FooterDbStatusTextBlock.ToolTip = $"Local DB: {_databaseRuntimeInfo.LocalSqliteError}\nRemote DB: {_databaseRuntimeInfo.RemoteMySqlError}";
         }
     }
 
@@ -798,9 +940,12 @@ public partial class MainWindow : Window
         CloseTrainingDriverSelectionDialog();
         TrainingStarterListItems.Clear();
         TrainingFastestLapItems.Clear();
+        TrainingStatisticsBestLapItems.Clear();
+        TrainingStatisticsDriverSections.Clear();
         ResetTrainingStopwatchView();
         StartseitePage.Visibility = Visibility.Collapsed;
         TrainingsPage.Visibility = Visibility.Collapsed;
+        TrainingStatisticsPage.Visibility = Visibility.Collapsed;
         TrainingDetailPage.Visibility = Visibility.Collapsed;
         MeisterschaftenPage.Visibility = Visibility.Collapsed;
         VereinePage.Visibility = Visibility.Collapsed;
@@ -845,6 +990,7 @@ public partial class MainWindow : Window
                 break;
             case "Statistiken":
                 StatistikenPage.Visibility = Visibility.Visible;
+                _ = LoadGeneralStatisticsAsync();
                 break;
             case "Einstellungen":
                 EinstellungenPage.Visibility = Visibility.Visible;
@@ -856,6 +1002,13 @@ public partial class MainWindow : Window
                     _selectedTrainingDetailId = trainingId;
                     TrainingDetailPage.Visibility = Visibility.Visible;
                     _ = LoadTrainingDetailAsync(trainingId);
+                    break;
+                }
+
+                if (TryParseTrainingStatisticsTag(page, out var trainingStatisticsId))
+                {
+                    TrainingStatisticsPage.Visibility = Visibility.Visible;
+                    _ = LoadTrainingStatisticsAsync(trainingStatisticsId);
                     break;
                 }
 
@@ -877,6 +1030,76 @@ public partial class MainWindow : Window
         }
 
         return int.TryParse(value[TrainingDetailTagPrefix.Length..], out trainingId);
+    }
+
+    private static bool TryParseTrainingStatisticsTag(string value, out int trainingId)
+    {
+        trainingId = 0;
+        if (!value.StartsWith(TrainingStatisticsTagPrefix, StringComparison.Ordinal))
+        {
+            return false;
+        }
+
+        return int.TryParse(value[TrainingStatisticsTagPrefix.Length..], out trainingId);
+    }
+
+    private static string ResolveAltersklasse(DateOnly? geburtsdatum, DateOnly? trainingDate, IReadOnlyList<DisziplinAltersklasse> altersklassen)
+    {
+        if (!geburtsdatum.HasValue || !trainingDate.HasValue || altersklassen.Count == 0)
+        {
+            return "-";
+        }
+
+        var age = trainingDate.Value.Year - geburtsdatum.Value.Year;
+        if (trainingDate.Value < geburtsdatum.Value.AddYears(age))
+        {
+            age--;
+        }
+
+        if (age < 0)
+        {
+            return "-";
+        }
+
+        var klasse = altersklassen.FirstOrDefault(x => age >= x.AlterVon && (!x.AlterBis.HasValue || age <= x.AlterBis.Value));
+        return string.IsNullOrWhiteSpace(klasse?.Bezeichnung) ? "-" : klasse.Bezeichnung;
+    }
+
+    private static string NormalizeAltersklasseSnapshot(string? altersklasse)
+    {
+        if (string.IsNullOrWhiteSpace(altersklasse) || altersklasse == "-")
+        {
+            return string.Empty;
+        }
+
+        return altersklasse.Trim();
+    }
+
+    private static async Task<(DateOnly Zeitpunkt, List<DisziplinAltersklasse> Altersklassen)?> LoadTrainingAltersklassenContextAsync(OpenSlalomDbContext dbContext, int trainingId)
+    {
+        var trainingMeta = await dbContext.Trainings
+            .AsNoTracking()
+            .Where(x => x.Id == trainingId)
+            .Select(x => new
+            {
+                x.Zeitpunkt,
+                x.DisziplinId
+            })
+            .FirstOrDefaultAsync();
+
+        if (trainingMeta is null)
+        {
+            return null;
+        }
+
+        var altersklassen = await dbContext.DisziplinAltersklassen
+            .AsNoTracking()
+            .Where(x => x.DisziplinId == trainingMeta.DisziplinId)
+            .OrderBy(x => x.AlterVon)
+            .ThenBy(x => x.AlterBis ?? int.MaxValue)
+            .ToListAsync();
+
+        return (trainingMeta.Zeitpunkt, altersklassen);
     }
 
     private async Task LoadTrainingDetailAsync(int trainingId)
@@ -946,12 +1169,240 @@ public partial class MainWindow : Window
         }
     }
 
+    private async Task LoadTrainingStatisticsAsync(int trainingId)
+    {
+        try
+        {
+            await using var dbContext = await _localDbContextFactory.CreateDbContextAsync();
+
+            var training = await dbContext.Trainings
+                .AsNoTracking()
+                .Include(x => x.Disziplin)
+                .FirstOrDefaultAsync(x => x.Id == trainingId);
+
+            if (training is null)
+            {
+                TrainingStatisticsTitleTextBlock.Text = "Training nicht gefunden";
+                TrainingStatisticsParticipantsTextBlock.Text = "Teilnehmer: -";
+                TrainingStatisticsTimeRangeTextBlock.Text = "Uhrzeit: -";
+                TrainingStatisticsBestLapItems.Clear();
+                TrainingStatisticsDriverSections.Clear();
+                return;
+            }
+
+            TrainingStatisticsTitleTextBlock.Text = $"{training.Name} ({training.Zeitpunkt:dd.MM.yyyy})";
+
+            var allStints = await dbContext.Tstints
+                .AsNoTracking()
+                .Where(x => x.TrainingId == trainingId)
+                .Select(x => new
+                {
+                    x.FahrerId,
+                    x.Datum
+                })
+                .ToListAsync();
+
+            var participantsCount = allStints.Select(x => x.FahrerId).Distinct().Count();
+            var minTime = allStints.Count > 0 ? allStints.Min(x => x.Datum) : (DateTime?)null;
+            var maxTime = allStints.Count > 0 ? allStints.Max(x => x.Datum) : (DateTime?)null;
+
+            TrainingStatisticsParticipantsTextBlock.Text = $"Teilnehmer: {participantsCount}";
+            TrainingStatisticsTimeRangeTextBlock.Text = minTime.HasValue && maxTime.HasValue
+                ? $"Gestartet: {minTime.Value:HH:mm:ss} - Beendet: {maxTime.Value:HH:mm:ss}"
+                : "";
+
+            var tfPenalty = training.Disziplin.ZeitstrafeTorfehler;
+            var pfPenalty = training.Disziplin.ZeitstrafePylonenfehler;
+
+            var lapRows = await dbContext.Trunden
+                .AsNoTracking()
+                .Where(x => x.Tstint != null && x.Tstint.TrainingId == trainingId)
+                .Select(x => new
+                {
+                    FahrerId = x.Tstint!.FahrerId,
+                    StintId = x.Tstint.Id,
+                    x.Tstint.Fahrer.Vorname,
+                    Nachname = x.Tstint.Fahrer.Nachname ?? string.Empty,
+                    KartName = x.Tstint.Kart != null ? x.Tstint.Kart.Name : null,
+                    Altersklasse = x.Tstint.AltersklasseSnapshot,
+                    Zeitpunkt = x.Tstint.Datum,
+                    Runde = x.Runde,
+                    Rundenzeit = x.Rundenzeit,
+                    Pylonen = x.Pf ?? 0,
+                    Tore = x.Tf ?? 0,
+                    x.Ungueltig
+                })
+                .ToListAsync();
+
+            var perDriver = lapRows
+                .GroupBy(x => x.FahrerId)
+                .Select(group =>
+                {
+                    var driverRows = group.ToList();
+                    var validLaps = group
+                        .Where(x => !x.Ungueltig && x.Rundenzeit.HasValue && x.Rundenzeit.Value > 0)
+                        .Select(x => new
+                        {
+                            Row = x,
+                            EffectiveSeconds = x.Rundenzeit!.Value + Math.Max(0d, (x.Tore * tfPenalty) + (x.Pylonen * pfPenalty))
+                        })
+                        .OrderBy(x => x.EffectiveSeconds)
+                        .ThenBy(x => x.Row.Zeitpunkt)
+                        .ToList();
+
+                    if (validLaps.Count == 0)
+                    {
+                        return null;
+                    }
+
+                    var best = validLaps[0];
+                    var avg = validLaps.Average(x => x.EffectiveSeconds);
+                    var lastDrive = driverRows.Max(x => x.Zeitpunkt);
+
+                    var fahrerName = string.IsNullOrWhiteSpace(best.Row.Nachname)
+                        ? best.Row.Vorname
+                        : $"{best.Row.Vorname} {best.Row.Nachname}";
+
+                    return new
+                    {
+                        FahrerId = group.Key,
+                        BestSeconds = best.EffectiveSeconds,
+                        Klasse = string.IsNullOrWhiteSpace(best.Row.Altersklasse) ? "-" : best.Row.Altersklasse,
+                        Fahrer = fahrerName,
+                        Kart = string.IsNullOrWhiteSpace(best.Row.KartName) ? "-" : best.Row.KartName!,
+                        AverageSeconds = avg,
+                        GefahreneRunden = validLaps.Count,
+                        LastDriveTime = lastDrive
+                    };
+                })
+                .Where(x => x is not null)
+                .Select(x => x!)
+                .OrderBy(x => x.BestSeconds)
+                .ThenBy(x => x.Fahrer)
+                .ToList();
+
+            TrainingStatisticsBestLapItems.Clear();
+            TrainingStatisticsDriverSections.Clear();
+            if (perDriver.Count == 0)
+            {
+                return;
+            }
+
+            var bestOverall = perDriver[0].BestSeconds;
+            for (var i = 0; i < perDriver.Count; i++)
+            {
+                var row = perDriver[i];
+                var diff = row.BestSeconds - bestOverall;
+
+                TrainingStatisticsBestLapItems.Add(new TrainingStatisticsBestLapListItem
+                {
+                    Position = i + 1,
+                    Klasse = row.Klasse,
+                    Fahrer = row.Fahrer,
+                    Kart = row.Kart,
+                    Bestzeit = FormatTrainingTime(TimeSpan.FromSeconds(row.BestSeconds)),
+                    Abstand = i == 0 ? "-" : $"+{FormatTrainingTime(TimeSpan.FromSeconds(diff))}",
+                    Durchschnittszeit = FormatTrainingTime(TimeSpan.FromSeconds(row.AverageSeconds)),
+                    GefahreneRunden = row.GefahreneRunden,
+                    ZeitpunktLetzteFahrt = row.LastDriveTime.ToString("HH:mm:ss")
+                });
+            }
+
+            var driverOrderMap = perDriver
+                .Select((x, index) => new { x.FahrerId, Position = index + 1 })
+                .ToDictionary(x => x.FahrerId, x => x.Position);
+
+            var sections = lapRows
+                .GroupBy(x => x.FahrerId)
+                .Select(group =>
+                {
+                    var orderedRows = group
+                        .OrderBy(x => x.Zeitpunkt)
+                        .ThenBy(x => x.StintId)
+                        .ThenBy(x => x.Runde ?? int.MaxValue)
+                        .ToList();
+
+                    if (orderedRows.Count == 0)
+                    {
+                        return null;
+                    }
+
+                    var first = orderedRows[0];
+                    var fahrerName = string.IsNullOrWhiteSpace(first.Nachname)
+                        ? first.Vorname
+                        : $"{first.Vorname} {first.Nachname}";
+                    var klasse = orderedRows
+                        .Select(x => x.Altersklasse)
+                        .FirstOrDefault(x => !string.IsNullOrWhiteSpace(x)) ?? "-";
+
+                    var stintOrderMap = orderedRows
+                        .Select(x => x.StintId)
+                        .Distinct()
+                        .OrderBy(x => orderedRows.First(r => r.StintId == x).Zeitpunkt)
+                        .Select((stintId, idx) => new { stintId, Number = idx + 1 })
+                        .ToDictionary(x => x.stintId, x => x.Number);
+
+                    var lapItems = orderedRows
+                        .Select((row, idx) =>
+                        {
+                            var penalty = Math.Max(0d, (row.Tore * tfPenalty) + (row.Pylonen * pfPenalty));
+                            return new TrainingStatisticsDriverLapItem
+                            {
+                                Nummer = idx + 1,
+                                Stint = stintOrderMap[row.StintId],
+                                Runde = row.Runde ?? 0,
+                                Kart = string.IsNullOrWhiteSpace(row.KartName) ? "-" : row.KartName!,
+                                Zeit = row.Rundenzeit.HasValue && row.Rundenzeit.Value > 0d
+                                    ? FormatTrainingTime(TimeSpan.FromSeconds(row.Rundenzeit.Value))
+                                    : "-",
+                                StrafeSekunden = penalty,
+                                StrafeText = penalty > 0d ? $"{FormatSecondsValue(penalty)}s" : string.Empty,
+                                P = row.Pylonen,
+                                T = row.Tore,
+                                Zeitpunkt = row.Zeitpunkt.ToString("HH:mm:ss")
+                            };
+                        })
+                        .ToList();
+
+                    return new TrainingStatisticsDriverSectionItem
+                    {
+                        FahrerId = group.Key,
+                        Titel = $"{fahrerName} ({klasse})",
+                        LapItems = new ObservableCollection<TrainingStatisticsDriverLapItem>(lapItems)
+                    };
+                })
+                .Where(x => x is not null)
+                .Select(x => x!)
+                .OrderBy(x => driverOrderMap.TryGetValue(x.FahrerId, out var position) ? position : int.MaxValue)
+                .ThenBy(x => x.Titel)
+                .ToList();
+
+            foreach (var section in sections)
+            {
+                TrainingStatisticsDriverSections.Add(section);
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.Error(ex, "Fehler beim Laden der Trainingsstatistik.");
+            TrainingStatisticsTitleTextBlock.Text = "Trainingsstatistik nicht verfuegbar";
+            TrainingStatisticsParticipantsTextBlock.Text = "Teilnehmer: -";
+            TrainingStatisticsTimeRangeTextBlock.Text = "Uhrzeit: -";
+            TrainingStatisticsBestLapItems.Clear();
+            TrainingStatisticsDriverSections.Clear();
+        }
+    }
+
     private async Task LoadTrainingStarterListAsync(int trainingId)
     {
         try
         {
             await using var dbContext = await _localDbContextFactory.CreateDbContextAsync();
-            var starter = await dbContext.FahrerImTrainings
+            var trainingContext = await LoadTrainingAltersklassenContextAsync(dbContext, trainingId);
+            var altersklassen = trainingContext?.Altersklassen ?? [];
+            var trainingDate = trainingContext?.Zeitpunkt;
+
+            var starterRows = await dbContext.FahrerImTrainings
                 .AsNoTracking()
                 .Where(x => x.TrainingId == trainingId)
                 .Include(x => x.Fahrer)
@@ -959,15 +1410,28 @@ public partial class MainWindow : Window
                 .OrderBy(x => x.Reihenfolge)
                 .ThenBy(x => x.Fahrer.Vorname)
                 .ThenBy(x => x.Fahrer.Nachname)
-                .Select(x => new TrainingStarterListItem
+                .Select(x => new
                 {
                     FahrerId = x.FahrerId,
                     Reihenfolge = x.Reihenfolge,
                     Vorname = x.Fahrer.Vorname,
                     Nachname = x.Fahrer.Nachname ?? string.Empty,
-                    VereinName = x.Fahrer.Verein.Vereinsname
+                    VereinName = x.Fahrer.Verein.Vereinsname,
+                    Geburtsdatum = x.Fahrer.Geburtsdatum
                 })
                 .ToListAsync();
+
+            var starter = starterRows
+                .Select(x => new TrainingStarterListItem
+                {
+                    FahrerId = x.FahrerId,
+                    Reihenfolge = x.Reihenfolge,
+                    Vorname = x.Vorname,
+                    Nachname = x.Nachname,
+                    VereinName = x.VereinName,
+                    Altersklasse = ResolveAltersklasse(x.Geburtsdatum, trainingDate, altersklassen)
+                })
+                .ToList();
 
             if (starter.Count == 0)
             {
@@ -1057,6 +1521,7 @@ public partial class MainWindow : Window
                     FahrerId = x.Tstint!.FahrerId,
                     x.Tstint.Fahrer.Vorname,
                     Nachname = x.Tstint.Fahrer.Nachname ?? string.Empty,
+                    AltersklasseSnapshot = x.Tstint.AltersklasseSnapshot,
                     KartName = x.Tstint.Kart != null ? x.Tstint.Kart.Name : null,
                     Zeitpunkt = x.Tstint.Datum,
                     Runde = x.Runde ?? 0,
@@ -1102,6 +1567,7 @@ public partial class MainWindow : Window
                     {
                         fastest.EffectiveSeconds,
                         Fahrer = fahrerName,
+                        Altersklasse = string.IsNullOrWhiteSpace(fastest.Row.AltersklasseSnapshot) ? "-" : fastest.Row.AltersklasseSnapshot,
                         Kart = string.IsNullOrWhiteSpace(fastest.Row.KartName) ? "-" : fastest.Row.KartName!,
                         RundenzeitText = FormatTrainingTime(TimeSpan.FromSeconds(fastest.EffectiveSeconds)),
                         StrafenText = $"{fastest.Row.Pylonen}P {fastest.Row.Tore}T (+{FormatSecondsValue(fastest.PenaltySeconds)}s)",
@@ -1131,6 +1597,7 @@ public partial class MainWindow : Window
                 {
                     Position = i + 1,
                     Fahrer = row.Fahrer,
+                    Altersklasse = row.Altersklasse,
                     Kart = row.Kart,
                     RundenzeitText = row.RundenzeitText,
                     DiffText = i == 0 ? "-" : $"+{FormatTrainingTime(TimeSpan.FromSeconds(diff))}",
@@ -1367,6 +1834,61 @@ public partial class MainWindow : Window
         }
     }
 
+    private async void ReconnectRemote_OnClick(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            await using var migrationDbContext = await _remoteMigrationDbContextFactory.CreateDbContextAsync();
+            if (!await migrationDbContext.Database.CanConnectAsync())
+            {
+                _databaseRuntimeInfo.Set(
+                    _databaseRuntimeInfo.LocalSqliteConnected,
+                    false,
+                    _databaseRuntimeInfo.LocalSqliteError,
+                    "Remote-MySQL ist nicht erreichbar.");
+
+                UpdateConnectionStatus();
+                await RefreshSyncStatusAsync();
+                SettingsFeedbackTextBlock.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#B91C1C"));
+                SettingsFeedbackTextBlock.Text = "Remote-Verbindung nicht verfuegbar.";
+                return;
+            }
+
+            await migrationDbContext.Database.MigrateAsync();
+
+            await using var remoteDbContext = await _remoteDbContextFactory.CreateDbContextAsync();
+            var remoteConnected = await remoteDbContext.Database.CanConnectAsync();
+
+            _databaseRuntimeInfo.Set(
+                _databaseRuntimeInfo.LocalSqliteConnected,
+                remoteConnected,
+                _databaseRuntimeInfo.LocalSqliteError,
+                remoteConnected ? null : "Remote-MySQL ist nach Migration nicht erreichbar.");
+
+            UpdateConnectionStatus();
+            await RefreshSyncStatusAsync();
+            SettingsFeedbackTextBlock.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(remoteConnected ? "#166534" : "#B91C1C"));
+            SettingsFeedbackTextBlock.Text = remoteConnected
+                ? "Remote-Verbindung erfolgreich aufgebaut."
+                : "Remote-Verbindung fehlgeschlagen.";
+        }
+        catch (Exception ex)
+        {
+            Logger.Error(ex, "Remote-Verbindung konnte nicht neu aufgebaut werden.");
+
+            _databaseRuntimeInfo.Set(
+                _databaseRuntimeInfo.LocalSqliteConnected,
+                false,
+                _databaseRuntimeInfo.LocalSqliteError,
+                ex.Message);
+
+            UpdateConnectionStatus();
+            await RefreshSyncStatusAsync();
+            SettingsFeedbackTextBlock.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#B91C1C"));
+            SettingsFeedbackTextBlock.Text = "Remote-Verbindung fehlgeschlagen. Details stehen im Log.";
+        }
+    }
+
     private async void SaveTrainingRounds_OnClick(object sender, RoutedEventArgs e)
     {
         if (_selectedTrainingDetailId is null)
@@ -1548,6 +2070,7 @@ public partial class MainWindow : Window
 
         var currentDriverId = ordered[currentIndex].FahrerId;
         var currentKartId = ordered[currentIndex].KartId;
+        var currentAltersklasse = ordered[currentIndex].Altersklasse;
         var currentContext = (trainingId, currentDriverId);
 
         if (!_trainingStintsByDriver.TryGetValue(currentContext, out var currentState) || currentState.Stopwatch.IsRunning)
@@ -1574,6 +2097,7 @@ public partial class MainWindow : Window
                 TrainingId = trainingId,
                 FahrerId = currentDriverId,
                 KartId = currentKartId,
+                AltersklasseSnapshot = NormalizeAltersklasseSnapshot(currentAltersklasse),
                 Datum = DateTime.Now
             };
             dbContext.Tstints.Add(stint);
@@ -1843,20 +2367,39 @@ public partial class MainWindow : Window
         {
             TrainingStopwatchStartButton.IsEnabled = false;
             TrainingStopwatchStopButton.IsEnabled = false;
-            TrainingStopwatchStopButton.Content = "Runde";
+            TrainingStopwatchStopButton.Content = BuildShortcutButtonContent("Runde", "W");
             return;
         }
 
         var state = GetOrCreateTrainingStintState(_trainingStopwatchContext.Value);
-        var roundsTarget = _selectedTrainingDetailId is null
-            ? 0
-            : GetRoundsTargetForTraining(_selectedTrainingDetailId.Value);
+        var roundsTarget = _selectedTrainingDetailId is null ? 0 : GetRoundsTargetForTraining(_selectedTrainingDetailId.Value);
         var isLastLap = roundsTarget > 0 && state.LapRecords.Count >= roundsTarget - 1;
         var stintFinished = roundsTarget > 0 && state.LapRecords.Count >= roundsTarget;
 
-        TrainingStopwatchStartButton.IsEnabled = !state.Stopwatch.IsRunning && !stintFinished;
+        if (!state.Stopwatch.IsRunning && !stintFinished)
+        {
+            TrainingStopwatchStartButton.IsEnabled = true;
+            TrainingStopwatchStartButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#00AA00"));
+        }
+        else
+        {
+            TrainingStopwatchStartButton.IsEnabled = false;
+            TrainingStopwatchStartButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#BBBBBB"));
+        }
+// TrainingStopwatchStartButton.IsEnabled = !state.Stopwatch.IsRunning && !stintFinished;
         TrainingStopwatchStopButton.IsEnabled = state.Stopwatch.IsRunning;
-        TrainingStopwatchStopButton.Content = isLastLap ? "Stop" : "Runde";
+        TrainingStopwatchStopButton.Content = BuildShortcutButtonContent(isLastLap ? "Stop" : "Runde", "W");
+
+        if (isLastLap)
+        {
+            TrainingStopwatchStopButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#DC2626"));
+            if (!state.Stopwatch.IsRunning)
+                TrainingStopwatchStopButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#BBBBBB"));
+        }
+        else
+        {
+            TrainingStopwatchStopButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#1F84DE"));
+        }
     }
 
     private void LapNumericAdjust_OnClick(object sender, RoutedEventArgs e)
@@ -2145,6 +2688,248 @@ public partial class MainWindow : Window
         Close();
     }
 
+    private void MainWindow_OnPreviewKeyDown(object sender, KeyEventArgs e)
+    {
+        if (TrainingDetailPage.Visibility != Visibility.Visible || IsTypingInEditableControl())
+        {
+            return;
+        }
+
+        var modifiers = Keyboard.Modifiers;
+        var isCtrl = (modifiers & ModifierKeys.Control) == ModifierKeys.Control;
+
+        if (isCtrl && e.Key == Key.S && NextDriverButton.IsEnabled)
+        {
+            NextDriverButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            e.Handled = true;
+            return;
+        }
+
+        if (isCtrl && e.Key == Key.D && SkipDriverButton.IsEnabled)
+        {
+            SkipDriverButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            e.Handled = true;
+            return;
+        }
+
+        if (modifiers != ModifierKeys.None)
+        {
+            return;
+        }
+
+        if (e.Key == Key.Q && TrainingStopwatchStartButton.IsEnabled)
+        {
+            TrainingStopwatchStartButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            e.Handled = true;
+            return;
+        }
+
+        if (e.Key == Key.W && TrainingStopwatchStopButton.IsEnabled)
+        {
+            TrainingStopwatchStopButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            e.Handled = true;
+            return;
+        }
+
+        if (e.Key == Key.E && TrainingClearStintButton.IsEnabled)
+        {
+            TrainingClearStintButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            e.Handled = true;
+        }
+    }
+
+    private async Task LoadGeneralStatisticsAsync()
+    {
+        try
+        {
+            await using var dbContext = await _localDbContextFactory.CreateDbContextAsync();
+
+            var fahrerCountTask = dbContext.Fahrer.AsNoTracking().CountAsync();
+            var kartsCountTask = dbContext.Karts.AsNoTracking().CountAsync();
+            var trainingsCountTask = dbContext.Trainings.AsNoTracking().CountAsync();
+            var stintsCountTask = dbContext.Tstints.AsNoTracking().CountAsync();
+
+            var roundRows = await dbContext.Trunden
+                .AsNoTracking()
+                .Where(x => x.Rundenzeit.HasValue && x.Rundenzeit.Value > 0)
+                .Select(x => new
+                {
+                    FahrerId = x.Tstint != null ? x.Tstint.FahrerId : 0,
+                    TrainingId = x.Tstint != null ? x.Tstint.TrainingId : 0,
+                    Sekunden = x.Rundenzeit!.Value,
+                    Pylonen = x.Pf ?? 0,
+                    Tore = x.Tf ?? 0,
+                    x.Ungueltig
+                })
+                .ToListAsync();
+
+            var rundenCount = roundRows.Count;
+            var totalSeconds = roundRows.Sum(x => x.Sekunden);
+            var totalPylonen = roundRows.Sum(x => x.Pylonen);
+            var totalTore = roundRows.Sum(x => x.Tore);
+            var fehlerfreieRunden = roundRows.Count(x => !x.Ungueltig && x.Pylonen == 0 && x.Tore == 0);
+
+            var fahrerCount = await fahrerCountTask;
+            var kartsCount = await kartsCountTask;
+            var trainingsCount = await trainingsCountTask;
+            var stintsCount = await stintsCountTask;
+
+            var avgPylonen = rundenCount > 0 ? (double)totalPylonen / rundenCount : 0d;
+            var avgTore = rundenCount > 0 ? (double)totalTore / rundenCount : 0d;
+            var fehlerfreiPercent = rundenCount > 0 ? (double)fehlerfreieRunden / rundenCount * 100d : 0d;
+
+            StatsFahrerCountTextBlock.Text = fahrerCount.ToString(CultureInfo.InvariantCulture);
+            StatsKartsCountTextBlock.Text = kartsCount.ToString(CultureInfo.InvariantCulture);
+            StatsTrainingsCountTextBlock.Text = trainingsCount.ToString(CultureInfo.InvariantCulture);
+            StatsRundenCountTextBlock.Text = rundenCount.ToString(CultureInfo.InvariantCulture);
+            StatsStintsCountTextBlock.Text = stintsCount.ToString(CultureInfo.InvariantCulture);
+            StatsGesamteFahrzeitTextBlock.Text = FormatDuration(totalSeconds);
+            StatsPylonenfehlerCountTextBlock.Text = totalPylonen.ToString(CultureInfo.InvariantCulture);
+            StatsTorfehlerCountTextBlock.Text = totalTore.ToString(CultureInfo.InvariantCulture);
+            StatsAvgPylonenTextBlock.Text = avgPylonen.ToString("0.##", CultureInfo.InvariantCulture);
+            StatsAvgTorfehlerTextBlock.Text = avgTore.ToString("0.##", CultureInfo.InvariantCulture);
+            StatsFehlerfreieRundenPercentTextBlock.Text = $"{fehlerfreiPercent:0.##}%";
+
+            var stintsByDriver = await dbContext.Tstints
+                .AsNoTracking()
+                .GroupBy(x => x.FahrerId)
+                .Select(g => new
+                {
+                    FahrerId = g.Key,
+                    Stints = g.Count(),
+                    Trainings = g.Select(x => x.TrainingId).Distinct().Count()
+                })
+                .ToListAsync();
+
+            var stintsMap = stintsByDriver.ToDictionary(x => x.FahrerId, x => (Stints: x.Stints, Trainings: x.Trainings));
+
+            var roundsByDriver = roundRows
+                .Where(x => x.FahrerId > 0)
+                .GroupBy(x => x.FahrerId)
+                .ToDictionary(
+                    g => g.Key,
+                    g => new
+                    {
+                        Runden = g.Count(),
+                        FahrzeitSeconds = g.Sum(x => x.Sekunden),
+                        Fehlerfrei = g.Count(x => !x.Ungueltig && x.Pylonen == 0 && x.Tore == 0),
+                        Pylonen = g.Sum(x => x.Pylonen),
+                        Tore = g.Sum(x => x.Tore)
+                    });
+
+            var fahrer = await dbContext.Fahrer
+                .AsNoTracking()
+                .OrderBy(x => x.Vorname)
+                .ThenBy(x => x.Nachname)
+                .Select(x => new
+                {
+                    x.Id,
+                    x.Vorname,
+                    Nachname = x.Nachname ?? string.Empty
+                })
+                .ToListAsync();
+
+            DriverStatisticsItems.Clear();
+            foreach (var driver in fahrer)
+            {
+                var driverName = string.IsNullOrWhiteSpace(driver.Nachname)
+                    ? driver.Vorname
+                    : $"{driver.Vorname} {driver.Nachname}";
+
+                var hasRounds = roundsByDriver.TryGetValue(driver.Id, out var roundStats);
+                var hasStints = stintsMap.TryGetValue(driver.Id, out var stintStats);
+
+                var rounds = hasRounds ? roundStats!.Runden : 0;
+                var fehlerfrei = hasRounds ? roundStats!.Fehlerfrei : 0;
+                var fehlerfreiPct = rounds > 0 ? (double)fehlerfrei / rounds * 100d : 0d;
+
+                DriverStatisticsItems.Add(new DriverStatisticsListItem
+                {
+                    Fahrer = driverName,
+                    Fahrzeit = FormatDuration(hasRounds ? roundStats!.FahrzeitSeconds : 0d),
+                    Trainings = hasStints ? stintStats.Trainings : 0,
+                    Runden = rounds,
+                    FehlerfreieRunden = $"{fehlerfrei} ({fehlerfreiPct:0.##}%)",
+                    Stints = hasStints ? stintStats.Stints : 0,
+                    Pylonenfehler = hasRounds ? roundStats!.Pylonen : 0,
+                    Torfehler = hasRounds ? roundStats!.Tore : 0,
+                    DurchschnittPylonenProRunde = rounds > 0 ? $"{((double)(hasRounds ? roundStats!.Pylonen : 0) / rounds):0.##}" : "0",
+                    DurchschnittTorfehlerProRunde = rounds > 0 ? $"{((double)(hasRounds ? roundStats!.Tore : 0) / rounds):0.##}" : "0"
+                });
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.Error(ex, "Fehler beim Laden der allgemeinen Statistik.");
+            StatsFahrerCountTextBlock.Text = "-";
+            StatsKartsCountTextBlock.Text = "-";
+            StatsTrainingsCountTextBlock.Text = "-";
+            StatsRundenCountTextBlock.Text = "-";
+            StatsStintsCountTextBlock.Text = "-";
+            StatsGesamteFahrzeitTextBlock.Text = "-";
+            StatsPylonenfehlerCountTextBlock.Text = "-";
+            StatsTorfehlerCountTextBlock.Text = "-";
+            StatsAvgPylonenTextBlock.Text = "-";
+            StatsAvgTorfehlerTextBlock.Text = "-";
+            StatsFehlerfreieRundenPercentTextBlock.Text = "-";
+            DriverStatisticsItems.Clear();
+        }
+    }
+
+    private static string FormatDuration(double totalSeconds)
+    {
+        var span = TimeSpan.FromSeconds(Math.Max(0d, totalSeconds));
+        var hours = (int)span.TotalHours;
+        return $"{hours:00}:{span.Minutes:00}:{span.Seconds:00}";
+    }
+
+    private static object BuildShortcutButtonContent(string label, string shortcut)
+    {
+        var panel = new StackPanel { Orientation = Orientation.Horizontal };
+        panel.Children.Add(new TextBlock
+        {
+            VerticalAlignment = VerticalAlignment.Center,
+            Text = label
+        });
+
+        panel.Children.Add(new Border
+        {
+            Margin = new Thickness(8, 0, 0, 0),
+            Padding = new Thickness(6, 1, 6, 1),
+            CornerRadius = new CornerRadius(2),
+            Background = Brushes.White,
+            Child = new TextBlock
+            {
+                Foreground = Brushes.Black,
+                FontSize = 11,
+                Text = shortcut
+            }
+        });
+
+        return panel;
+    }
+
+    private static bool IsTypingInEditableControl()
+    {
+        if (Keyboard.FocusedElement is TextBoxBase)
+        {
+            return true;
+        }
+
+        if (Keyboard.FocusedElement is ComboBox comboBox && comboBox.IsEditable)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    private void TrainingStatisticsDataGrid_OnPreviewMouseWheel(object sender, MouseWheelEventArgs e)
+    {
+        TrainingStatisticsScrollViewer.ScrollToVerticalOffset(TrainingStatisticsScrollViewer.VerticalOffset - (e.Delta / 3.0));
+        e.Handled = true;
+    }
+
     private void LogoImage_OnImageFailed(object sender, ExceptionRoutedEventArgs e)
     {
         LogoImage.Visibility = Visibility.Collapsed;
@@ -2155,10 +2940,155 @@ public partial class MainWindow : Window
         return value.ToString("0.###", CultureInfo.InvariantCulture);
     }
 
+    private static string GetGeschlechtIconPath(string? geschlecht)
+    {
+        return geschlecht?.Trim().ToLowerInvariant() switch
+        {
+            "m" => "/icons/m.svg",
+            "w" => "/icons/w.svg",
+            "d" => "/icons/d.svg",
+            _ => string.Empty
+        };
+    }
+
+    private static string GetSelectedGeschlechtValue(ComboBox comboBox)
+    {
+        if (comboBox.SelectedItem is ComboBoxItem item && item.Tag is string value)
+        {
+            return value;
+        }
+
+        return string.Empty;
+    }
+
+    private static void SetSelectedGeschlechtValue(ComboBox comboBox, string? geschlecht)
+    {
+        var normalized = geschlecht?.Trim().ToLowerInvariant() ?? string.Empty;
+        foreach (var rawItem in comboBox.Items)
+        {
+            if (rawItem is ComboBoxItem item && string.Equals(item.Tag as string, normalized, StringComparison.OrdinalIgnoreCase))
+            {
+                comboBox.SelectedItem = item;
+                return;
+            }
+        }
+
+        comboBox.SelectedIndex = -1;
+    }
+
     private static bool TryParseSecondsValue(string input, out double value)
     {
         var normalized = input.Trim().Replace(',', '.');
         return double.TryParse(normalized, NumberStyles.Float, CultureInfo.InvariantCulture, out value);
+    }
+
+    private static string FormatAltersklassenText(IEnumerable<DisziplinAltersklasse> altersklassen)
+    {
+        return string.Join(
+            ", ",
+            altersklassen
+                .OrderBy(x => x.AlterVon)
+                .ThenBy(x => x.AlterBis ?? int.MaxValue)
+                .ThenBy(x => x.Bezeichnung)
+                .Select(x => $"{x.Bezeichnung} ({x.AlterVon}-{(x.AlterBis.HasValue ? x.AlterBis.Value.ToString(CultureInfo.InvariantCulture) : "offen")})"));
+    }
+
+    private static bool TryParseAlterValue(string input, out int value)
+    {
+        return int.TryParse(input.Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture, out value);
+    }
+
+    private static bool TryValidateAltersklasseInput(
+        string bezeichnung,
+        string alterVonText,
+        string alterBisText,
+        out int alterVon,
+        out int? alterBis,
+        out string? validationError)
+    {
+        alterVon = 0;
+        alterBis = null;
+        validationError = null;
+
+        if (string.IsNullOrWhiteSpace(bezeichnung))
+        {
+            validationError = "Bitte eine Bezeichnung fuer die Altersklasse eingeben.";
+            return false;
+        }
+
+        if (!TryParseAlterValue(alterVonText, out alterVon) || alterVon < 0)
+        {
+            validationError = "Bitte ein gueltiges, nicht negatives Alter fuer 'Alter von' eingeben.";
+            return false;
+        }
+
+        if (string.IsNullOrWhiteSpace(alterBisText))
+        {
+            return true;
+        }
+
+        if (!TryParseAlterValue(alterBisText, out var parsedAlterBis) || parsedAlterBis < 0)
+        {
+            validationError = "Bitte ein gueltiges, nicht negatives Alter fuer 'Alter bis' eingeben oder leer lassen.";
+            return false;
+        }
+
+        if (parsedAlterBis < alterVon)
+        {
+            validationError = "'Alter bis' muss groesser oder gleich 'Alter von' sein.";
+            return false;
+        }
+
+        alterBis = parsedAlterBis;
+        return true;
+    }
+
+    private static bool HasAltersklassenOverlap(int alterVon, int? alterBis, IEnumerable<CreateDisziplinAltersklasseItem> existing)
+    {
+        var newMax = alterBis ?? int.MaxValue;
+
+        foreach (var item in existing)
+        {
+            var existingMax = item.AlterBis ?? int.MaxValue;
+            var overlaps = alterVon <= existingMax && item.AlterVon <= newMax;
+            if (overlaps)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static bool HasAltersklassenOverlap(int alterVon, int? alterBis, IEnumerable<EditDisziplinAltersklasseItem> existing)
+    {
+        var newMax = alterBis ?? int.MaxValue;
+
+        foreach (var item in existing)
+        {
+            var existingMax = item.AlterBis ?? int.MaxValue;
+            var overlaps = alterVon <= existingMax && item.AlterVon <= newMax;
+            if (overlaps)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private void ResetCreateDisziplinAltersklasseInputs()
+    {
+        CreateDisziplinKlasseBezeichnungTextBox.Text = string.Empty;
+        CreateDisziplinKlasseAlterVonTextBox.Text = string.Empty;
+        CreateDisziplinKlasseAlterBisTextBox.Text = string.Empty;
+    }
+
+    private void ResetEditDisziplinAltersklasseInputs()
+    {
+        EditDisziplinKlasseBezeichnungTextBox.Text = string.Empty;
+        EditDisziplinKlasseAlterVonTextBox.Text = string.Empty;
+        EditDisziplinKlasseAlterBisTextBox.Text = string.Empty;
     }
 
     private void OpenCreateDisziplinPage_OnClick(object sender, RoutedEventArgs e)
@@ -2166,7 +3096,93 @@ public partial class MainWindow : Window
         CreateDisziplinNameTextBox.Text = string.Empty;
         CreateDisziplinTfTextBox.Text = "0";
         CreateDisziplinPfTextBox.Text = "0";
+        CreateDisziplinAltersklassenItems.Clear();
+        ResetCreateDisziplinAltersklasseInputs();
         ShowDisziplinDialog(DisziplinDialogMode.Create);
+    }
+
+    private void AddCreateDisziplinAltersklasse_OnClick(object sender, RoutedEventArgs e)
+    {
+        var bezeichnung = CreateDisziplinKlasseBezeichnungTextBox.Text.Trim();
+        if (!TryValidateAltersklasseInput(
+                bezeichnung,
+                CreateDisziplinKlasseAlterVonTextBox.Text,
+                CreateDisziplinKlasseAlterBisTextBox.Text,
+                out var alterVon,
+                out var alterBis,
+                out var validationError))
+        {
+            MessageBox.Show(validationError ?? "Ungueltige Eingabe.", "Hinweis", MessageBoxButton.OK, MessageBoxImage.Information);
+            return;
+        }
+
+        if (HasAltersklassenOverlap(alterVon, alterBis, CreateDisziplinAltersklassenItems))
+        {
+            MessageBox.Show("Altersklassen duerfen sich nicht ueberlappen.", "Hinweis", MessageBoxButton.OK, MessageBoxImage.Information);
+            return;
+        }
+
+        CreateDisziplinAltersklassenItems.Add(new CreateDisziplinAltersklasseItem
+        {
+            Bezeichnung = bezeichnung,
+            AlterVon = alterVon,
+            AlterBis = alterBis,
+            AlterBisText = alterBis?.ToString(CultureInfo.InvariantCulture) ?? "offen"
+        });
+
+        ResetCreateDisziplinAltersklasseInputs();
+    }
+
+    private void RemoveCreateDisziplinAltersklasse_OnClick(object sender, RoutedEventArgs e)
+    {
+        if (sender is not Button button || button.DataContext is not CreateDisziplinAltersklasseItem item)
+        {
+            return;
+        }
+
+        CreateDisziplinAltersklassenItems.Remove(item);
+    }
+
+    private void AddEditDisziplinAltersklasse_OnClick(object sender, RoutedEventArgs e)
+    {
+        var bezeichnung = EditDisziplinKlasseBezeichnungTextBox.Text.Trim();
+        if (!TryValidateAltersklasseInput(
+                bezeichnung,
+                EditDisziplinKlasseAlterVonTextBox.Text,
+                EditDisziplinKlasseAlterBisTextBox.Text,
+                out var alterVon,
+                out var alterBis,
+                out var validationError))
+        {
+            MessageBox.Show(validationError ?? "Ungueltige Eingabe.", "Hinweis", MessageBoxButton.OK, MessageBoxImage.Information);
+            return;
+        }
+
+        if (HasAltersklassenOverlap(alterVon, alterBis, EditDisziplinAltersklassenItems))
+        {
+            MessageBox.Show("Altersklassen duerfen sich nicht ueberlappen.", "Hinweis", MessageBoxButton.OK, MessageBoxImage.Information);
+            return;
+        }
+
+        EditDisziplinAltersklassenItems.Add(new EditDisziplinAltersklasseItem
+        {
+            Bezeichnung = bezeichnung,
+            AlterVon = alterVon,
+            AlterBis = alterBis,
+            AlterBisText = alterBis?.ToString(CultureInfo.InvariantCulture) ?? "offen"
+        });
+
+        ResetEditDisziplinAltersklasseInputs();
+    }
+
+    private void RemoveEditDisziplinAltersklasse_OnClick(object sender, RoutedEventArgs e)
+    {
+        if (sender is not Button button || button.DataContext is not EditDisziplinAltersklasseItem item)
+        {
+            return;
+        }
+
+        EditDisziplinAltersklassenItems.Remove(item);
     }
 
     private async void SaveCreateDisziplin_OnClick(object sender, RoutedEventArgs e)
@@ -2193,14 +3209,31 @@ public partial class MainWindow : Window
         try
         {
             await using var dbContext = await _localDbContextFactory.CreateDbContextAsync();
-            dbContext.Disziplinen.Add(new Disziplin
+            var disziplin = new Disziplin
             {
                 Name = name,
                 ZeitstrafeTorfehler = zeitstrafeTorfehler,
                 ZeitstrafePylonenfehler = zeitstrafePylonenfehler
-            });
+            };
+
+            foreach (var altersklasse in CreateDisziplinAltersklassenItems
+                         .OrderBy(x => x.AlterVon)
+                         .ThenBy(x => x.AlterBis ?? int.MaxValue)
+                         .ThenBy(x => x.Bezeichnung))
+            {
+                disziplin.Altersklassen.Add(new DisziplinAltersklasse
+                {
+                    Bezeichnung = altersklasse.Bezeichnung,
+                    AlterVon = altersklasse.AlterVon,
+                    AlterBis = altersklasse.AlterBis
+                });
+            }
+
+            dbContext.Disziplinen.Add(disziplin);
             await dbContext.SaveChangesAsync();
 
+            CreateDisziplinAltersklassenItems.Clear();
+            ResetCreateDisziplinAltersklasseInputs();
             ShowDisziplinDialog(DisziplinDialogMode.None);
             await LoadDisziplinenAsync();
             await LoadLookupDataAsync();
@@ -2221,7 +3254,9 @@ public partial class MainWindow : Window
         }
 
         await using var dbContext = await _localDbContextFactory.CreateDbContextAsync();
-        var disziplin = await dbContext.Disziplinen.FirstOrDefaultAsync(x => x.Id == disziplinId);
+        var disziplin = await dbContext.Disziplinen
+            .Include(x => x.Altersklassen)
+            .FirstOrDefaultAsync(x => x.Id == disziplinId);
         if (disziplin is null)
         {
             return;
@@ -2231,6 +3266,22 @@ public partial class MainWindow : Window
         EditDisziplinNameTextBox.Text = disziplin.Name;
         EditDisziplinTfTextBox.Text = FormatSecondsValue(disziplin.ZeitstrafeTorfehler);
         EditDisziplinPfTextBox.Text = FormatSecondsValue(disziplin.ZeitstrafePylonenfehler);
+        EditDisziplinAltersklassenItems.Clear();
+        foreach (var altersklasse in disziplin.Altersklassen
+                     .OrderBy(x => x.AlterVon)
+                     .ThenBy(x => x.AlterBis ?? int.MaxValue)
+                     .ThenBy(x => x.Bezeichnung))
+        {
+            EditDisziplinAltersklassenItems.Add(new EditDisziplinAltersklasseItem
+            {
+                Bezeichnung = altersklasse.Bezeichnung,
+                AlterVon = altersklasse.AlterVon,
+                AlterBis = altersklasse.AlterBis,
+                AlterBisText = altersklasse.AlterBis?.ToString(CultureInfo.InvariantCulture) ?? "offen"
+            });
+        }
+
+        ResetEditDisziplinAltersklasseInputs();
         ShowDisziplinDialog(DisziplinDialogMode.Edit);
     }
 
@@ -2263,7 +3314,9 @@ public partial class MainWindow : Window
         try
         {
             await using var dbContext = await _localDbContextFactory.CreateDbContextAsync();
-            var disziplin = await dbContext.Disziplinen.FirstOrDefaultAsync(x => x.Id == _editDisziplinId.Value);
+            var disziplin = await dbContext.Disziplinen
+                .Include(x => x.Altersklassen)
+                .FirstOrDefaultAsync(x => x.Id == _editDisziplinId.Value);
             if (disziplin is null)
             {
                 ShowDisziplinDialog(DisziplinDialogMode.None);
@@ -2274,9 +3327,26 @@ public partial class MainWindow : Window
             disziplin.Name = name;
             disziplin.ZeitstrafeTorfehler = zeitstrafeTorfehler;
             disziplin.ZeitstrafePylonenfehler = zeitstrafePylonenfehler;
+
+            dbContext.DisziplinAltersklassen.RemoveRange(disziplin.Altersklassen);
+            foreach (var altersklasse in EditDisziplinAltersklassenItems
+                         .OrderBy(x => x.AlterVon)
+                         .ThenBy(x => x.AlterBis ?? int.MaxValue)
+                         .ThenBy(x => x.Bezeichnung))
+            {
+                disziplin.Altersklassen.Add(new DisziplinAltersklasse
+                {
+                    Bezeichnung = altersklasse.Bezeichnung,
+                    AlterVon = altersklasse.AlterVon,
+                    AlterBis = altersklasse.AlterBis
+                });
+            }
+
             await dbContext.SaveChangesAsync();
 
             _editDisziplinId = null;
+            EditDisziplinAltersklassenItems.Clear();
+            ResetEditDisziplinAltersklasseInputs();
             ShowDisziplinDialog(DisziplinDialogMode.None);
             await LoadDisziplinenAsync();
             await LoadLookupDataAsync();
@@ -2342,6 +3412,10 @@ public partial class MainWindow : Window
     {
         _editDisziplinId = null;
         _deleteDisziplinId = null;
+        CreateDisziplinAltersklassenItems.Clear();
+        EditDisziplinAltersklassenItems.Clear();
+        ResetCreateDisziplinAltersklasseInputs();
+        ResetEditDisziplinAltersklasseInputs();
         ShowDisziplinDialog(DisziplinDialogMode.None);
     }
 
@@ -2522,6 +3596,7 @@ public partial class MainWindow : Window
         CreateFahrerVornameTextBox.Text = string.Empty;
         CreateFahrerNachnameTextBox.Text = string.Empty;
         CreateFahrerGeburtsdatumPicker.SelectedDate = null;
+        CreateFahrerGeschlechtComboBox.SelectedIndex = -1;
         CreateFahrerVereinComboBox.SelectedIndex = -1;
         ShowFahrerDialog(FahrerDialogMode.Create);
     }
@@ -2533,6 +3608,7 @@ public partial class MainWindow : Window
         var geburtsdatum = CreateFahrerGeburtsdatumPicker.SelectedDate.HasValue
             ? DateOnly.FromDateTime(CreateFahrerGeburtsdatumPicker.SelectedDate.Value)
             : (DateOnly?)null;
+        var geschlecht = GetSelectedGeschlechtValue(CreateFahrerGeschlechtComboBox);
         if (string.IsNullOrWhiteSpace(vorname) || CreateFahrerVereinComboBox.SelectedValue is not int vereinId)
         {
             MessageBox.Show("Bitte Vorname und Verein ausfuellen.", "Hinweis", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -2547,6 +3623,7 @@ public partial class MainWindow : Window
                 Vorname = vorname,
                 Nachname = string.IsNullOrWhiteSpace(nachname) ? null : nachname,
                 Geburtsdatum = geburtsdatum,
+                Geschlecht = geschlecht,
                 VereinId = vereinId
             });
             await dbContext.SaveChangesAsync();
@@ -2581,6 +3658,7 @@ public partial class MainWindow : Window
         EditFahrerVornameTextBox.Text = fahrer.Vorname;
         EditFahrerNachnameTextBox.Text = fahrer.Nachname ?? string.Empty;
         EditFahrerGeburtsdatumPicker.SelectedDate = fahrer.Geburtsdatum?.ToDateTime(TimeOnly.MinValue);
+        SetSelectedGeschlechtValue(EditFahrerGeschlechtComboBox, fahrer.Geschlecht);
         EditFahrerVereinComboBox.SelectedValue = fahrer.VereinId;
         ShowFahrerDialog(FahrerDialogMode.Edit);
     }
@@ -2597,6 +3675,7 @@ public partial class MainWindow : Window
         var geburtsdatum = EditFahrerGeburtsdatumPicker.SelectedDate.HasValue
             ? DateOnly.FromDateTime(EditFahrerGeburtsdatumPicker.SelectedDate.Value)
             : (DateOnly?)null;
+        var geschlecht = GetSelectedGeschlechtValue(EditFahrerGeschlechtComboBox);
         if (string.IsNullOrWhiteSpace(vorname) || EditFahrerVereinComboBox.SelectedValue is not int vereinId)
         {
             MessageBox.Show("Bitte Vorname und Verein ausfuellen.", "Hinweis", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -2617,6 +3696,7 @@ public partial class MainWindow : Window
             fahrer.Vorname = vorname;
             fahrer.Nachname = string.IsNullOrWhiteSpace(nachname) ? null : nachname;
             fahrer.Geburtsdatum = geburtsdatum;
+            fahrer.Geschlecht = geschlecht;
             fahrer.VereinId = vereinId;
             await dbContext.SaveChangesAsync();
 
@@ -2747,6 +3827,16 @@ public partial class MainWindow : Window
             Logger.Error(ex, "Fehler beim Anlegen eines Trainings.");
             MessageBox.Show("Training konnte nicht angelegt werden. Details stehen im Log.", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
         }
+    }
+
+    private void OpenDetailTrainingPage_OnClick(object sender, RoutedEventArgs e)
+    {
+        if (sender is not Button button || !int.TryParse(button.Tag?.ToString(), out var trainingId))
+        {
+            return;
+        }
+
+        NavigateTo($"{TrainingStatisticsTagPrefix}{trainingId}");
     }
 
     private async void OpenEditTrainingPage_OnClick(object sender, RoutedEventArgs e)
@@ -3280,6 +4370,30 @@ public partial class MainWindow : Window
         public required string ZeitstrafeTorfehlerText { get; init; }
 
         public required string ZeitstrafePylonenfehlerText { get; init; }
+
+        public required string AltersklassenText { get; init; }
+    }
+
+    public sealed class CreateDisziplinAltersklasseItem
+    {
+        public required string Bezeichnung { get; init; }
+
+        public required int AlterVon { get; init; }
+
+        public required int? AlterBis { get; init; }
+
+        public required string AlterBisText { get; init; }
+    }
+
+    public sealed class EditDisziplinAltersklasseItem
+    {
+        public required string Bezeichnung { get; init; }
+
+        public required int AlterVon { get; init; }
+
+        public required int? AlterBis { get; init; }
+
+        public required string AlterBisText { get; init; }
     }
 
     public sealed class FahrerListItem
@@ -3287,6 +4401,10 @@ public partial class MainWindow : Window
         public required int Id { get; init; }
 
         public required int VereinId { get; init; }
+
+        public required string Geschlecht { get; init; }
+
+        public required string GeschlechtIconPath { get; init; }
 
         public required string Vorname { get; init; }
 
@@ -3345,6 +4463,8 @@ public partial class MainWindow : Window
         public required string Vorname { get; init; }
 
         public required string Nachname { get; init; }
+
+        public required string Altersklasse { get; init; }
 
         public required string VereinName { get; init; }
     }
@@ -3433,11 +4553,15 @@ public partial class MainWindow : Window
         }
     }
 
+  
+
     public sealed class TrainingFastestLapListItem
     {
         public int Position { get; init; }
 
         public required string Fahrer { get; init; }
+
+        public required string Altersklasse { get; init; }
 
         public required string Kart { get; init; }
 
@@ -3450,6 +4574,59 @@ public partial class MainWindow : Window
         public required string ZeitpunktText { get; init; }
 
         public int Runden { get; init; }
+    }
+
+    public sealed class TrainingStatisticsBestLapListItem
+    {
+        public int Position { get; init; }
+
+        public required string Klasse { get; init; }
+
+        public required string Fahrer { get; init; }
+
+        public required string Kart { get; init; }
+
+        public required string Bestzeit { get; init; }
+
+        public required string Abstand { get; init; }
+
+        public required string Durchschnittszeit { get; init; }
+
+        public int GefahreneRunden { get; init; }
+
+        public required string ZeitpunktLetzteFahrt { get; init; }
+    }
+
+    public sealed class TrainingStatisticsDriverSectionItem
+    {
+        public required int FahrerId { get; init; }
+
+        public required string Titel { get; init; }
+
+        public ObservableCollection<TrainingStatisticsDriverLapItem> LapItems { get; init; } = [];
+    }
+
+    public sealed class TrainingStatisticsDriverLapItem
+    {
+        public int Nummer { get; init; }
+
+        public int Stint { get; init; }
+
+        public int Runde { get; init; }
+
+        public required string Kart { get; init; }
+
+        public required string Zeit { get; init; }
+
+        public required double StrafeSekunden { get; init; }
+
+        public required string StrafeText { get; init; }
+
+        public int P { get; init; }
+
+        public int T { get; init; }
+
+        public required string Zeitpunkt { get; init; }
     }
 
     private sealed class TrainingStintState
@@ -3485,6 +4662,29 @@ public partial class MainWindow : Window
         public required int Id { get; init; }
 
         public required string Name { get; init; }
+    }
+
+    public sealed class DriverStatisticsListItem
+    {
+        public required string Fahrer { get; init; }
+
+        public required string Fahrzeit { get; init; }
+
+        public int Trainings { get; init; }
+
+        public int Runden { get; init; }
+
+        public required string FehlerfreieRunden { get; init; }
+
+        public int Stints { get; init; }
+
+        public int Pylonenfehler { get; init; }
+
+        public int Torfehler { get; init; }
+
+        public required string DurchschnittPylonenProRunde { get; init; }
+
+        public required string DurchschnittTorfehlerProRunde { get; init; }
     }
 
     public sealed class LookupItem

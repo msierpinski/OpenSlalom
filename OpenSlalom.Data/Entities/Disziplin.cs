@@ -14,6 +14,8 @@ public sealed class Disziplin : ISyncEntity
 
     public ICollection<Training> Trainings { get; set; } = new List<Training>();
 
+    public ICollection<DisziplinAltersklasse> Altersklassen { get; set; } = new List<DisziplinAltersklasse>();
+
     public DateTime UpdatedAtUtc { get; set; }
 
     public bool IsDeleted { get; set; }

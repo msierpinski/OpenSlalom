@@ -10,6 +10,8 @@ public sealed class Tstint : ISyncEntity
 
     public int? KartId { get; set; }
 
+    public string AltersklasseSnapshot { get; set; } = string.Empty;
+
     public DateTime Datum { get; set; }
 
     public Training Training { get; set; } = null!;

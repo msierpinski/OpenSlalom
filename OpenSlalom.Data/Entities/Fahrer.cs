@@ -12,6 +12,8 @@ public sealed class Fahrer : ISyncEntity
 
     public DateOnly? Geburtsdatum { get; set; }
 
+    public string Geschlecht { get; set; } = string.Empty;
+
     public Verein Verein { get; set; } = null!;
 
     public ICollection<FahrerImTraining> FahrerImTrainings { get; set; } = new List<FahrerImTraining>();
