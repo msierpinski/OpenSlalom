@@ -10,6 +10,8 @@ public sealed class Fahrer : ISyncEntity
 
     public string? Nachname { get; set; }
 
+    public string MitgliedsNummer { get; set; } = string.Empty;
+
     public DateOnly? Geburtsdatum { get; set; }
 
     public string Geschlecht { get; set; } = string.Empty;

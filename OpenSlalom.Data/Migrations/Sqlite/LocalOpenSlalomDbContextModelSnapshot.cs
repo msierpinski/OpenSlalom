@@ -140,6 +140,14 @@ namespace OpenSlalom.Data.Migrations.Sqlite
                         .HasDefaultValue(false)
                         .HasColumnName("is_deleted");
 
+                    b.Property<string>("MitgliedsNummer")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT")
+                        .HasDefaultValue("")
+                        .HasColumnName("mitglieds_nummer");
+
                     b.Property<string>("Nachname")
                         .HasMaxLength(100)
                         .HasColumnType("TEXT")
@@ -694,6 +702,14 @@ namespace OpenSlalom.Data.Migrations.Sqlite
                         .HasColumnType("INTEGER")
                         .HasColumnName("id");
 
+                    b.Property<string>("Adresse")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(250)
+                        .HasColumnType("TEXT")
+                        .HasDefaultValue("")
+                        .HasColumnName("adresse");
+
                     b.Property<DateTime?>("DeletedAtUtc")
                         .HasColumnType("datetime")
                         .HasColumnName("deleted_at_utc");
@@ -704,6 +720,10 @@ namespace OpenSlalom.Data.Migrations.Sqlite
                         .HasDefaultValue(false)
                         .HasColumnName("is_deleted");
 
+                    b.Property<byte[]>("Logo")
+                        .HasColumnType("BLOB")
+                        .HasColumnName("logo");
+
                     b.Property<string>("MitgliedsNummer")
                         .IsRequired()
                         .ValueGeneratedOnAdd()
@@ -711,6 +731,22 @@ namespace OpenSlalom.Data.Migrations.Sqlite
                         .HasColumnType("TEXT")
                         .HasDefaultValue("")
                         .HasColumnName("mitglieds_nummer");
+
+                    b.Property<string>("Ort")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT")
+                        .HasDefaultValue("")
+                        .HasColumnName("ort");
+
+                    b.Property<string>("Postleitzahl")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(20)
+                        .HasColumnType("TEXT")
+                        .HasDefaultValue("")
+                        .HasColumnName("postleitzahl");
 
                     b.Property<DateTime>("UpdatedAtUtc")
                         .ValueGeneratedOnAdd()

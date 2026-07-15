@@ -7,6 +7,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         Title="openSlalom"
+        Icon="/icons/logo.png"
         Height="768"
         Width="1280"
         MinHeight="640"
@@ -310,6 +311,7 @@
             <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="HorizontalAlignment" Value="Center" />
             <Setter Property="TextAlignment" Value="Center" />
+            <Setter Property="TextWrapping" Value="Wrap" />
         </Style>
         <Style x:Key="StandardDataGridRowStyle" TargetType="DataGridRow">
             <Setter Property="Foreground" Value="Black" />
@@ -361,18 +363,18 @@
                 <Grid Grid.Column="0">
                     <Border x:Name="SidebarBorder" Background="Transparent" BorderBrush="LightGray" BorderThickness="0,0,1,0">
                         <StackPanel x:Name="MenuPanel">
-                            <Button x:Name="MenuStartseite" Style="{StaticResource MenuButtonStyle}" Padding="12,10" HorizontalContentAlignment="Left" Content="Startseite" Tag="Startseite" Click="MenuButton_OnClick" />
-                            <Button x:Name="MenuTrainings" Style="{StaticResource MenuButtonStyle}" Padding="10,10" HorizontalContentAlignment="Left" Content="Trainings" Tag="Trainings" Click="MenuButton_OnClick" />
-                            <Button Style="{StaticResource MenuButtonStyle}" Padding="10,10" HorizontalContentAlignment="Left" Content="Meisterschaften" Tag="Meisterschaften" Click="MenuButton_OnClick" />
-                            <Button Style="{StaticResource MenuButtonStyle}" Padding="10,10" HorizontalContentAlignment="Left" Content="Vereine" Tag="Vereine" Click="MenuButton_OnClick" />
-                            <Button Style="{StaticResource MenuButtonStyle}" Padding="10,10" HorizontalContentAlignment="Left" Content="Disziplin" Tag="Disziplin" Click="MenuButton_OnClick" />
-                            <Button Style="{StaticResource MenuButtonStyle}" Padding="10,10" HorizontalContentAlignment="Left" Content="Fahrer" Tag="Fahrer" Click="MenuButton_OnClick" />
-                            <Button Style="{StaticResource MenuButtonStyle}" Padding="10,10" HorizontalContentAlignment="Left" Content="Karts" Tag="Karts" Click="MenuButton_OnClick" />
-                            <Button Style="{StaticResource MenuButtonStyle}" Padding="10,10" HorizontalContentAlignment="Left" Content="Wetter" Tag="Wetter" Click="MenuButton_OnClick" />
-                            <Button Style="{StaticResource MenuButtonStyle}" Padding="12,10" HorizontalContentAlignment="Left" Content="Statistiken" Tag="Statistiken" Click="MenuButton_OnClick" />
-                            <Button Style="{StaticResource MenuButtonStyle}" Padding="12,10" HorizontalContentAlignment="Left" Content="Einstellungen" Tag="Einstellungen" Click="MenuButton_OnClick" />
-                        </StackPanel>
-                    </Border>
+                        <Button x:Name="MenuStartseite" Style="{StaticResource MenuButtonStyle}" Padding="12,10" HorizontalContentAlignment="Left" Content="Startseite" Tag="Startseite" Click="MenuButton_OnClick" />
+                        <Button x:Name="MenuTrainings" Style="{StaticResource MenuButtonStyle}" Padding="10,10" HorizontalContentAlignment="Left" Content="Trainings" Tag="Trainings" Click="MenuButton_OnClick" />
+                        <Button Style="{StaticResource MenuButtonStyle}" Padding="10,10" HorizontalContentAlignment="Left" Content="Meisterschaften" Tag="Meisterschaften" Click="MenuButton_OnClick" />
+                        <Button Style="{StaticResource MenuButtonStyle}" Padding="12,10" HorizontalContentAlignment="Left" Content="Statistiken" Tag="Statistiken" Click="MenuButton_OnClick" />
+                        <Button Style="{StaticResource MenuButtonStyle}" Padding="12,10" HorizontalContentAlignment="Left" Content="Einstellungen" Tag="Einstellungen" Click="MenuButton_OnClick" />
+                        <Button x:Name="MenuSettingsVereine" Style="{StaticResource MenuButtonStyle}" Padding="28,8,10,8" HorizontalContentAlignment="Left" Content="- Vereine" Tag="Vereine" Click="MenuButton_OnClick" Visibility="Collapsed" />
+                        <Button x:Name="MenuSettingsFahrer" Style="{StaticResource MenuButtonStyle}" Padding="28,8,10,8" HorizontalContentAlignment="Left" Content="- Fahrer" Tag="Fahrer" Click="MenuButton_OnClick" Visibility="Collapsed" />
+                        <Button x:Name="MenuSettingsDisziplin" Style="{StaticResource MenuButtonStyle}" Padding="28,8,10,8" HorizontalContentAlignment="Left" Content="- Disziplin" Tag="Disziplin" Click="MenuButton_OnClick" Visibility="Collapsed" />
+                        <Button x:Name="MenuSettingsKarts" Style="{StaticResource MenuButtonStyle}" Padding="28,8,10,8" HorizontalContentAlignment="Left" Content="- Karts" Tag="Karts" Click="MenuButton_OnClick" Visibility="Collapsed" />
+                        <Button x:Name="MenuSettingsWetter" Style="{StaticResource MenuButtonStyle}" Padding="28,8,10,8" HorizontalContentAlignment="Left" Content="- Wetter" Tag="Wetter" Click="MenuButton_OnClick" Visibility="Collapsed" />
+                    </StackPanel>
+                </Border>
 
                     <Button x:Name="SidebarToggleButton"
                             Width="22"
@@ -437,7 +439,7 @@
                                                   GridLinesVisibility="None"
                                                   BorderThickness="0"
                                                   RowHeaderWidth="0"
-                                                  RowHeight="36"
+                                                  MinRowHeight="36"
                                                   VerticalContentAlignment="Center"
                                                   SelectionMode="Single"
                                                   AlternationCount="2"
@@ -570,7 +572,7 @@
                                               GridLinesVisibility="None"
                                               BorderThickness="0"
                                               RowHeaderWidth="0"
-                                              RowHeight="36"
+                                              MinRowHeight="36"
                                               VerticalContentAlignment="Center"
                                               SelectionMode="Single"
                                               AlternationCount="2"
@@ -608,7 +610,7 @@
                                                                   GridLinesVisibility="None"
                                                                   BorderThickness="0"
                                                                   RowHeaderWidth="0"
-                                                                  RowHeight="32"
+                                                                  MinRowHeight="32"
                                                                   VerticalContentAlignment="Center"
                                                                   SelectionMode="Single"
                                                                   AlternationCount="2"
@@ -754,7 +756,7 @@
                                                               GridLinesVisibility="None"
                                                               BorderThickness="0"
                                                               RowHeaderWidth="0"
-                                                              RowHeight="36"
+                                                              MinRowHeight="36"
                                                               VerticalContentAlignment="Center"
                                                               SelectionMode="Single"
                                                               AlternationCount="2"
@@ -837,7 +839,7 @@
                                                               GridLinesVisibility="None"
                                                               BorderThickness="0"
                                                               RowHeaderWidth="0"
-                                                              RowHeight="36"
+                                                              MinRowHeight="36"
                                                               VerticalContentAlignment="Center"
                                                               SelectionMode="Single"
                                                               AlternationCount="2"
@@ -969,7 +971,7 @@
                                                         GridLinesVisibility="None"
                                                         BorderThickness="0"
                                                         RowHeaderWidth="0"
-                                                        RowHeight="36"
+                                                        MinRowHeight="36"
                                                         VerticalContentAlignment="Center"
                                                         SelectionMode="Single"
                                                         AlternationCount="2"
@@ -1149,7 +1151,7 @@
                                                   GridLinesVisibility="None"
                                                   BorderThickness="0"
                                                   RowHeaderWidth="0"
-                                                  RowHeight="36"
+                                                  MinRowHeight="36"
                                                   VerticalContentAlignment="Center"
                                                   SelectionMode="Single"
                                                   AlternationCount="2"
@@ -1157,9 +1159,55 @@
                                                   CellStyle="{StaticResource StandardDataGridCellStyle}"
                                                   RowStyle="{StaticResource StandardDataGridRowStyle}">
                                         <DataGrid.Columns>
-                                            <DataGridTextColumn Header="Mitgliedsnummer" Binding="{Binding MitgliedsNummer}" Width="220" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
-                                            <DataGridTextColumn Header="Vereinsname" Binding="{Binding Vereinsname}" Width="*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
-                                            <DataGridTemplateColumn Header="Aktionen" Width="140">
+                                            <DataGridTextColumn Header="Vereinsname" Binding="{Binding Vereinsname}" Width="20*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                                            <DataGridTextColumn Header="PLZ" Binding="{Binding Postleitzahl}" Width="6*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                                            <DataGridTextColumn Header="Ort" Binding="{Binding Ort}" Width="20*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                                            <DataGridTextColumn Header="Adresse" Binding="{Binding Adresse}" Width="20*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                                            <DataGridTextColumn Header="Mitgliedsnummer" Binding="{Binding MitgliedsNummer}" Width="15*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                                            <DataGridTemplateColumn Header="Logo" Width="9*">
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <Grid Height="32" VerticalAlignment="Center">
+                                                            <Border x:Name="LogoThumbBorder"
+                                                                    Width="42"
+                                                                    Height="28"
+                                                                    HorizontalAlignment="Center"
+                                                                    VerticalAlignment="Center"
+                                                                    Background="#FFFFFF"
+                                                                    BorderBrush="#D1D5DB"
+                                                                    BorderThickness="1"
+                                                                    CornerRadius="3">
+                                                                <Image Width="36"
+                                                                       Height="24"
+                                                                       Stretch="Uniform"
+                                                                       HorizontalAlignment="Center"
+                                                                       VerticalAlignment="Center"
+                                                                       Source="{Binding LogoPreview}" />
+                                                            </Border>
+                                                            <Popup IsOpen="{Binding IsMouseOver, ElementName=LogoThumbBorder, Mode=OneWay}"
+                                                                   PlacementTarget="{Binding ElementName=LogoThumbBorder}"
+                                                                   Placement="Right"
+                                                                   HorizontalOffset="8"
+                                                                   VerticalOffset="-8"
+                                                                   AllowsTransparency="True"
+                                                                   StaysOpen="True"
+                                                                   IsHitTestVisible="False">
+                                                                <Border Background="#FFFFFF"
+                                                                        BorderBrush="#CBD5E1"
+                                                                        BorderThickness="1"
+                                                                        CornerRadius="6"
+                                                                        Padding="6">
+                                                                    <Image Width="220"
+                                                                           Height="140"
+                                                                           Stretch="Uniform"
+                                                                           Source="{Binding LogoPreview}" />
+                                                                </Border>
+                                                            </Popup>
+                                                        </Grid>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+                                            <DataGridTemplateColumn Header="Aktionen" Width="12*">
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
                                                         <Grid Height="32" VerticalAlignment="Center">
@@ -1191,6 +1239,19 @@
                                             <TextBox x:Name="CreateMitgliedsNummerTextBox" Height="30" />
                                             <TextBlock Margin="0,12,0,4" Text="Vereinsname" />
                                             <TextBox x:Name="CreateVereinsnameTextBox" Height="30" />
+                                            <TextBlock Margin="0,12,0,4" Text="Postleitzahl" />
+                                            <TextBox x:Name="CreatePostleitzahlTextBox" Height="30" />
+                                            <TextBlock Margin="0,12,0,4" Text="Ort" />
+                                            <TextBox x:Name="CreateOrtTextBox" Height="30" />
+                                            <TextBlock Margin="0,12,0,4" Text="Adresse" />
+                                            <TextBox x:Name="CreateAdresseTextBox" Height="30" />
+                                            <TextBlock Margin="0,12,0,4" Text="Logo" />
+                                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                                <Button Style="{StaticResource RoundedButton}" Background="#1F84DE" Width="150" Height="30" Click="SelectCreateVereinLogo_OnClick" Content="Logo auswaehlen" />
+                                                <Button Style="{StaticResource RoundedButton}" Background="#6B7280" Width="100" Height="30" Margin="8,0,0,0" Click="ClearCreateVereinLogo_OnClick" Content="Entfernen" />
+                                                <TextBlock x:Name="CreateLogoStatusTextBlock" Margin="10,0,0,0" VerticalAlignment="Center" Text="Kein Logo ausgewaehlt" />
+                                            </StackPanel>
+                                            <Image x:Name="CreateVereinLogoPreviewImage" Margin="0,8,0,0" Height="64" Stretch="Uniform" HorizontalAlignment="Left" />
                                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
                                                 <Button   Style="{StaticResource RoundedButton}" Background="#1F84DE"  Width="120" Height="30"  Margin="0,0,8,0" Click="CancelVereinPage_OnClick" Content="Abbrechen" />
                                                 <Button Style="{StaticResource RoundedButton}" Background="green"  Width="120" Height="30"  Click="SaveCreateVerein_OnClick" Content="Speichern" />
@@ -1205,6 +1266,19 @@
                                             <TextBox x:Name="EditMitgliedsNummerTextBox" Height="30" />
                                             <TextBlock Margin="0,12,0,4" Text="Vereinsname" />
                                             <TextBox x:Name="EditVereinsnameTextBox" Height="30" />
+                                            <TextBlock Margin="0,12,0,4" Text="Postleitzahl" />
+                                            <TextBox x:Name="EditPostleitzahlTextBox" Height="30" />
+                                            <TextBlock Margin="0,12,0,4" Text="Ort" />
+                                            <TextBox x:Name="EditOrtTextBox" Height="30" />
+                                            <TextBlock Margin="0,12,0,4" Text="Adresse" />
+                                            <TextBox x:Name="EditAdresseTextBox" Height="30" />
+                                            <TextBlock Margin="0,12,0,4" Text="Logo" />
+                                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                                <Button Style="{StaticResource RoundedButton}" Background="#1F84DE" Width="150" Height="30" Click="SelectEditVereinLogo_OnClick" Content="Logo auswaehlen" />
+                                                <Button Style="{StaticResource RoundedButton}" Background="#6B7280" Width="100" Height="30" Margin="8,0,0,0" Click="ClearEditVereinLogo_OnClick" Content="Entfernen" />
+                                                <TextBlock x:Name="EditLogoStatusTextBlock" Margin="10,0,0,0" VerticalAlignment="Center" Text="Kein Logo ausgewaehlt" />
+                                            </StackPanel>
+                                            <Image x:Name="EditVereinLogoPreviewImage" Margin="0,8,0,0" Height="64" Stretch="Uniform" HorizontalAlignment="Left" />
                                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
                                                 <Button Style="{StaticResource RoundedButton}" Background="#1F84DE" Width="120" Height="30"  Margin="0,0,8,0" Click="CancelVereinPage_OnClick" Content="Abbrechen" />
                                                 <Button  Style="{StaticResource RoundedButton}" Background="green"  Width="120" Height="30"  Click="SaveEditVerein_OnClick" Content="Speichern" />
@@ -1256,7 +1330,7 @@
                                                   GridLinesVisibility="None"
                                                   BorderThickness="0"
                                                   RowHeaderWidth="0"
-                                                  RowHeight="36"
+                                                  MinRowHeight="36"
                                                   VerticalContentAlignment="Center"
                                                   SelectionMode="Single"
                                                   AlternationCount="2"
@@ -1328,7 +1402,7 @@
                                                       GridLinesVisibility="None"
                                                       BorderThickness="0"
                                                       RowHeaderWidth="0"
-                                                      RowHeight="32"
+                                                      MinRowHeight="32"
                                                       VerticalContentAlignment="Center"
                                                       SelectionMode="Single"
                                                       AlternationCount="2"
@@ -1395,7 +1469,7 @@
                                                       GridLinesVisibility="None"
                                                       BorderThickness="0"
                                                       RowHeaderWidth="0"
-                                                      RowHeight="32"
+                                                      MinRowHeight="32"
                                                       VerticalContentAlignment="Center"
                                                       SelectionMode="Single"
                                                       AlternationCount="2"
@@ -1472,7 +1546,7 @@
                                                   GridLinesVisibility="None"
                                                   BorderThickness="0"
                                                   RowHeaderWidth="0"
-                                                  RowHeight="36"
+                                                  MinRowHeight="36"
                                                   VerticalContentAlignment="Center"
                                                   SelectionMode="Single"
                                                   AlternationCount="2"
@@ -1483,6 +1557,7 @@
                                             
                                             <DataGridTextColumn Header="Vorname" Binding="{Binding Vorname}" Width="19*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
                                             <DataGridTextColumn Header="Nachname" Binding="{Binding Nachname}" Width="19*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                                            <DataGridTextColumn Header="Mitgliedsnummer" Binding="{Binding MitgliedsNummer}" Width="15*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
                                             <DataGridTextColumn Header="Geburtsdatum" Binding="{Binding GeburtsdatumText}" Width="14*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
                                             <DataGridTemplateColumn Header="Geschlecht" Width="10*">
                                                 <DataGridTemplateColumn.CellTemplate>
@@ -1528,6 +1603,8 @@
                                             <TextBox x:Name="CreateFahrerVornameTextBox" Height="30" />
                                             <TextBlock Margin="0,12,0,4" Text="Nachname" />
                                             <TextBox x:Name="CreateFahrerNachnameTextBox" Height="30" />
+                                            <TextBlock Margin="0,12,0,4" Text="Mitgliedsnummer" />
+                                            <TextBox x:Name="CreateFahrerMitgliedsNummerTextBox" Height="30" />
                                             <TextBlock Margin="0,12,0,4" Text="Geburtsdatum" />
                                             <DatePicker x:Name="CreateFahrerGeburtsdatumPicker" Height="30" />
                                             <TextBlock Margin="0,12,0,4" Text="Geschlecht" />
@@ -1552,6 +1629,8 @@
                                             <TextBox x:Name="EditFahrerVornameTextBox" Height="30" />
                                             <TextBlock Margin="0,12,0,4" Text="Nachname" />
                                             <TextBox x:Name="EditFahrerNachnameTextBox" Height="30" />
+                                            <TextBlock Margin="0,12,0,4" Text="Mitgliedsnummer" />
+                                            <TextBox x:Name="EditFahrerMitgliedsNummerTextBox" Height="30" />
                                             <TextBlock Margin="0,12,0,4" Text="Geburtsdatum" />
                                             <DatePicker x:Name="EditFahrerGeburtsdatumPicker" Height="30" />
                                             <TextBlock Margin="0,12,0,4" Text="Geschlecht" />
@@ -1613,7 +1692,7 @@
                                                   GridLinesVisibility="None"
                                                   BorderThickness="0"
                                                   RowHeaderWidth="0"
-                                                  RowHeight="36"
+                                                  MinRowHeight="36"
                                                   VerticalContentAlignment="Center"
                                                   SelectionMode="Single"
                                                   AlternationCount="2"
@@ -1735,7 +1814,7 @@
                                                   GridLinesVisibility="None"
                                                   BorderThickness="0"
                                                   RowHeaderWidth="0"
-                                                  RowHeight="36"
+                                                  MinRowHeight="36"
                                                   VerticalContentAlignment="Center"
                                                   SelectionMode="Single"
                                                   AlternationCount="2"
@@ -1902,7 +1981,7 @@
                                           GridLinesVisibility="None"
                                           BorderThickness="0"
                                           RowHeaderWidth="0"
-                                          RowHeight="36"
+                                          MinRowHeight="36"
                                           VerticalContentAlignment="Center"
                                           SelectionMode="Single"
                                           AlternationCount="2"

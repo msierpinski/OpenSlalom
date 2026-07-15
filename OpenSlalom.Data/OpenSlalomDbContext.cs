@@ -152,6 +152,27 @@ public class OpenSlalomDbContext : DbContext
                 .HasDefaultValue(string.Empty)
                 .IsRequired();
 
+            entity.Property(x => x.Postleitzahl)
+                .HasColumnName("postleitzahl")
+                .HasMaxLength(20)
+                .HasDefaultValue(string.Empty)
+                .IsRequired();
+
+            entity.Property(x => x.Ort)
+                .HasColumnName("ort")
+                .HasMaxLength(100)
+                .HasDefaultValue(string.Empty)
+                .IsRequired();
+
+            entity.Property(x => x.Adresse)
+                .HasColumnName("adresse")
+                .HasMaxLength(250)
+                .HasDefaultValue(string.Empty)
+                .IsRequired();
+
+            entity.Property(x => x.Logo)
+                .HasColumnName("logo");
+
             ConfigureSyncEntity(entity);
         });
 
@@ -193,6 +214,12 @@ public class OpenSlalomDbContext : DbContext
             entity.Property(x => x.Nachname)
                 .HasColumnName("nachname")
                 .HasMaxLength(100);
+
+            entity.Property(x => x.MitgliedsNummer)
+                .HasColumnName("mitglieds_nummer")
+                .HasMaxLength(50)
+                .HasDefaultValue(string.Empty)
+                .IsRequired();
 
             entity.Property(x => x.Geburtsdatum)
                 .HasColumnName("geburtsdatum")

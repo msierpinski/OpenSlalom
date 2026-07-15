@@ -2,34 +2,30 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OpenSlalom.Data;
 
 #nullable disable
 
-namespace OpenSlalom.Data.Migrations
+namespace OpenSlalom.Data.Migrations.Sqlite
 {
-    [DbContext(typeof(OpenSlalomDbContext))]
-    partial class OpenSlalomDbContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(LocalOpenSlalomDbContext))]
+    [Migration("20260715050121_AddFahrerMitgliedsnummerUndVereinKontaktSqlite")]
+    partial class AddFahrerMitgliedsnummerUndVereinKontaktSqlite
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.2")
-                .HasAnnotation("Relational:MaxIdentifierLength", 64);
-
-            MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
+            modelBuilder.HasAnnotation("ProductVersion", "8.0.2");
 
             modelBuilder.Entity("OpenSlalom.Data.Entities.Disziplin", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("id");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DeletedAtUtc")
                         .HasColumnType("datetime")
@@ -37,14 +33,14 @@ namespace OpenSlalom.Data.Migrations
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("INTEGER")
                         .HasDefaultValue(false)
                         .HasColumnName("is_deleted");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("TEXT")
                         .HasColumnName("disziplin");
 
                     b.Property<DateTime>("UpdatedAtUtc")
@@ -55,13 +51,13 @@ namespace OpenSlalom.Data.Migrations
 
                     b.Property<double>("ZeitstrafePylonenfehler")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("double")
+                        .HasColumnType("REAL")
                         .HasDefaultValue(0.0)
                         .HasColumnName("pf");
 
                     b.Property<double>("ZeitstrafeTorfehler")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("double")
+                        .HasColumnType("REAL")
                         .HasDefaultValue(0.0)
                         .HasColumnName("tf");
 
@@ -74,23 +70,21 @@ namespace OpenSlalom.Data.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("id");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
                     b.Property<int?>("AlterBis")
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("alter_bis");
 
                     b.Property<int>("AlterVon")
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("alter_von");
 
                     b.Property<string>("Bezeichnung")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("TEXT")
                         .HasColumnName("bezeichnung");
 
                     b.Property<DateTime?>("DeletedAtUtc")
@@ -98,12 +92,12 @@ namespace OpenSlalom.Data.Migrations
                         .HasColumnName("deleted_at_utc");
 
                     b.Property<int>("DisziplinId")
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("fk_id_disziplin");
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("INTEGER")
                         .HasDefaultValue(false)
                         .HasColumnName("is_deleted");
 
@@ -124,10 +118,8 @@ namespace OpenSlalom.Data.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("id");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DeletedAtUtc")
                         .HasColumnType("datetime")
@@ -141,13 +133,13 @@ namespace OpenSlalom.Data.Migrations
                         .IsRequired()
                         .ValueGeneratedOnAdd()
                         .HasMaxLength(20)
-                        .HasColumnType("varchar(20)")
+                        .HasColumnType("TEXT")
                         .HasDefaultValue("")
                         .HasColumnName("geschlecht");
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("INTEGER")
                         .HasDefaultValue(false)
                         .HasColumnName("is_deleted");
 
@@ -155,13 +147,13 @@ namespace OpenSlalom.Data.Migrations
                         .IsRequired()
                         .ValueGeneratedOnAdd()
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("TEXT")
                         .HasDefaultValue("")
                         .HasColumnName("mitglieds_nummer");
 
                     b.Property<string>("Nachname")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("TEXT")
                         .HasColumnName("nachname");
 
                     b.Property<DateTime>("UpdatedAtUtc")
@@ -171,13 +163,13 @@ namespace OpenSlalom.Data.Migrations
                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<int>("VereinId")
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("fk_id_verein");
 
                     b.Property<string>("Vorname")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("TEXT")
                         .HasColumnName("vorname");
 
                     b.HasKey("Id");
@@ -190,11 +182,11 @@ namespace OpenSlalom.Data.Migrations
             modelBuilder.Entity("OpenSlalom.Data.Entities.FahrerImTraining", b =>
                 {
                     b.Property<int>("TrainingId")
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("fk_id_training");
 
                     b.Property<int>("FahrerId")
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("fk_id_fahrer");
 
                     b.Property<DateTime?>("DeletedAtUtc")
@@ -203,13 +195,13 @@ namespace OpenSlalom.Data.Migrations
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("INTEGER")
                         .HasDefaultValue(false)
                         .HasColumnName("is_deleted");
 
                     b.Property<int>("Reihenfolge")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasDefaultValue(0)
                         .HasColumnName("reihenfolge");
 
@@ -229,11 +221,11 @@ namespace OpenSlalom.Data.Migrations
             modelBuilder.Entity("OpenSlalom.Data.Entities.FahrerInDerMeisterschaft", b =>
                 {
                     b.Property<int>("MeisterschaftId")
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("fk_id_meisterschaft");
 
                     b.Property<int>("FahrerId")
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("fk_id_fahrer");
 
                     b.Property<DateTime?>("DeletedAtUtc")
@@ -242,13 +234,13 @@ namespace OpenSlalom.Data.Migrations
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("INTEGER")
                         .HasDefaultValue(false)
                         .HasColumnName("is_deleted");
 
                     b.Property<int>("Reihenfolge")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasDefaultValue(0)
                         .HasColumnName("reihenfolge");
 
@@ -269,14 +261,12 @@ namespace OpenSlalom.Data.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("id");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Chassis")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("TEXT")
                         .HasColumnName("Chassis");
 
                     b.Property<DateTime?>("DeletedAtUtc")
@@ -284,23 +274,23 @@ namespace OpenSlalom.Data.Migrations
                         .HasColumnName("deleted_at_utc");
 
                     b.Property<int>("DisziplinId")
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("fk_id_disziplin");
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("INTEGER")
                         .HasDefaultValue(false)
                         .HasColumnName("is_deleted");
 
                     b.Property<string>("Motor")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("TEXT")
                         .HasColumnName("Motor");
 
                     b.Property<string>("Name")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("TEXT")
                         .HasColumnName("Name");
 
                     b.Property<DateTime>("UpdatedAtUtc")
@@ -310,7 +300,7 @@ namespace OpenSlalom.Data.Migrations
                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<int>("VereinId")
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("fk_id_verein");
 
                     b.HasKey("Id");
@@ -326,21 +316,19 @@ namespace OpenSlalom.Data.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("id");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<bool>("AktivAusgerichtet")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("INTEGER")
                         .HasDefaultValue(false)
                         .HasColumnName("aktiv_ausgerichtet");
 
                     b.Property<string>("Beschreibung")
                         .IsRequired()
                         .HasMaxLength(250)
-                        .HasColumnType("varchar(250)")
+                        .HasColumnType("TEXT")
                         .HasColumnName("beschreibung");
 
                     b.Property<DateTime?>("DeletedAtUtc")
@@ -348,29 +336,29 @@ namespace OpenSlalom.Data.Migrations
                         .HasColumnName("deleted_at_utc");
 
                     b.Property<int>("DisziplinId")
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("fk_id_disziplin");
 
                     b.Property<int>("GastgeberId")
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("fk_id_gastgeber");
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("INTEGER")
                         .HasDefaultValue(false)
                         .HasColumnName("is_deleted");
 
                     b.Property<bool>("MeisterschaftAbgeschlossen")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("INTEGER")
                         .HasDefaultValue(false)
                         .HasColumnName("meisterschaft_abgeschlossen");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("TEXT")
                         .HasColumnName("name");
 
                     b.Property<DateTime>("UpdatedAtUtc")
@@ -380,7 +368,7 @@ namespace OpenSlalom.Data.Migrations
                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<int>("WetterId")
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("fk_id_wetter");
 
                     b.Property<DateOnly>("Zeitpunkt")
@@ -402,10 +390,8 @@ namespace OpenSlalom.Data.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("id");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DeletedAtUtc")
                         .HasColumnType("datetime")
@@ -413,33 +399,33 @@ namespace OpenSlalom.Data.Migrations
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("INTEGER")
                         .HasDefaultValue(false)
                         .HasColumnName("is_deleted");
 
                     b.Property<int?>("MstintId")
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("fk_id_mstint");
 
                     b.Property<int?>("Pf")
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("pf");
 
                     b.Property<int?>("Runde")
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("runde");
 
                     b.Property<double?>("Rundenzeit")
-                        .HasColumnType("double")
+                        .HasColumnType("REAL")
                         .HasColumnName("rundenzeit");
 
                     b.Property<int?>("Tf")
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("tf");
 
                     b.Property<bool>("Ungueltig")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("INTEGER")
                         .HasDefaultValue(false)
                         .HasColumnName("ungueltig");
 
@@ -460,16 +446,14 @@ namespace OpenSlalom.Data.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("id");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("AltersklasseSnapshot")
                         .IsRequired()
                         .ValueGeneratedOnAdd()
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("TEXT")
                         .HasDefaultValue("")
                         .HasColumnName("altersklasse_snapshot");
 
@@ -482,21 +466,21 @@ namespace OpenSlalom.Data.Migrations
                         .HasColumnName("deleted_at_utc");
 
                     b.Property<int>("FahrerId")
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("fk_id_fahrer");
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("INTEGER")
                         .HasDefaultValue(false)
                         .HasColumnName("is_deleted");
 
                     b.Property<int?>("KartId")
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("fk_id_kart");
 
                     b.Property<int>("MeisterschaftId")
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("fk_id_meisterschaft");
 
                     b.Property<DateTime>("UpdatedAtUtc")
@@ -520,7 +504,7 @@ namespace OpenSlalom.Data.Migrations
                 {
                     b.Property<string>("Id")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("TEXT")
                         .HasColumnName("id");
 
                     b.Property<DateTime>("LastSyncUtc")
@@ -536,15 +520,13 @@ namespace OpenSlalom.Data.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("id");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Beschreibung")
                         .IsRequired()
                         .HasMaxLength(250)
-                        .HasColumnType("varchar(250)")
+                        .HasColumnType("TEXT")
                         .HasColumnName("beschreibung");
 
                     b.Property<DateTime?>("DeletedAtUtc")
@@ -552,24 +534,24 @@ namespace OpenSlalom.Data.Migrations
                         .HasColumnName("deleted_at_utc");
 
                     b.Property<int>("DisziplinId")
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("fk_id_disziplin");
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("INTEGER")
                         .HasDefaultValue(false)
                         .HasColumnName("is_deleted");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("TEXT")
                         .HasColumnName("name");
 
                     b.Property<bool>("TrainingAbgeschlossen")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("INTEGER")
                         .HasDefaultValue(false)
                         .HasColumnName("training_abgeschlossen");
 
@@ -580,11 +562,11 @@ namespace OpenSlalom.Data.Migrations
                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<int>("VereinId")
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("fk_id_verein");
 
                     b.Property<int>("WetterId")
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("fk_id_wetter");
 
                     b.Property<DateOnly>("Zeitpunkt")
@@ -606,10 +588,8 @@ namespace OpenSlalom.Data.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("id");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DeletedAtUtc")
                         .HasColumnType("datetime")
@@ -617,33 +597,33 @@ namespace OpenSlalom.Data.Migrations
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("INTEGER")
                         .HasDefaultValue(false)
                         .HasColumnName("is_deleted");
 
                     b.Property<int?>("Pf")
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("pf");
 
                     b.Property<int?>("Runde")
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("runde");
 
                     b.Property<double?>("Rundenzeit")
-                        .HasColumnType("double")
+                        .HasColumnType("REAL")
                         .HasColumnName("rundenzeit");
 
                     b.Property<int?>("Tf")
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("tf");
 
                     b.Property<int?>("TstintId")
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("fk_id_tstint");
 
                     b.Property<bool>("Ungueltig")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("INTEGER")
                         .HasDefaultValue(false)
                         .HasColumnName("ungueltig");
 
@@ -664,16 +644,14 @@ namespace OpenSlalom.Data.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("id");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("AltersklasseSnapshot")
                         .IsRequired()
                         .ValueGeneratedOnAdd()
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("TEXT")
                         .HasDefaultValue("")
                         .HasColumnName("altersklasse_snapshot");
 
@@ -686,21 +664,21 @@ namespace OpenSlalom.Data.Migrations
                         .HasColumnName("deleted_at_utc");
 
                     b.Property<int>("FahrerId")
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("fk_id_fahrer");
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("INTEGER")
                         .HasDefaultValue(false)
                         .HasColumnName("is_deleted");
 
                     b.Property<int?>("KartId")
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("fk_id_kart");
 
                     b.Property<int>("TrainingId")
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("fk_id_training");
 
                     b.Property<DateTime>("UpdatedAtUtc")
@@ -724,16 +702,14 @@ namespace OpenSlalom.Data.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("id");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Adresse")
                         .IsRequired()
                         .ValueGeneratedOnAdd()
                         .HasMaxLength(250)
-                        .HasColumnType("varchar(250)")
+                        .HasColumnType("TEXT")
                         .HasDefaultValue("")
                         .HasColumnName("adresse");
 
@@ -743,35 +719,27 @@ namespace OpenSlalom.Data.Migrations
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("INTEGER")
                         .HasDefaultValue(false)
                         .HasColumnName("is_deleted");
 
                     b.Property<byte[]>("Logo")
-                        .HasColumnType("longblob")
+                        .HasColumnType("BLOB")
                         .HasColumnName("logo");
 
                     b.Property<string>("MitgliedsNummer")
                         .IsRequired()
                         .ValueGeneratedOnAdd()
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("TEXT")
                         .HasDefaultValue("")
                         .HasColumnName("mitglieds_nummer");
-
-                    b.Property<string>("Ort")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
-                        .HasDefaultValue("")
-                        .HasColumnName("ort");
 
                     b.Property<string>("Postleitzahl")
                         .IsRequired()
                         .ValueGeneratedOnAdd()
                         .HasMaxLength(20)
-                        .HasColumnType("varchar(20)")
+                        .HasColumnType("TEXT")
                         .HasDefaultValue("")
                         .HasColumnName("postleitzahl");
 
@@ -785,7 +753,7 @@ namespace OpenSlalom.Data.Migrations
                         .IsRequired()
                         .ValueGeneratedOnAdd()
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("TEXT")
                         .HasDefaultValue("")
                         .HasColumnName("vereinsname");
 
@@ -798,15 +766,13 @@ namespace OpenSlalom.Data.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("id");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Bezeichnung")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("TEXT")
                         .HasColumnName("wetter");
 
                     b.Property<DateTime?>("DeletedAtUtc")
@@ -815,7 +781,7 @@ namespace OpenSlalom.Data.Migrations
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("INTEGER")
                         .HasDefaultValue(false)
                         .HasColumnName("is_deleted");
 

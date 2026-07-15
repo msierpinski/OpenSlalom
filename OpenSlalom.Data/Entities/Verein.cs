@@ -8,6 +8,14 @@ public sealed class Verein : ISyncEntity
 
     public string MitgliedsNummer { get; set; } = string.Empty;
 
+    public string Postleitzahl { get; set; } = string.Empty;
+
+    public string Ort { get; set; } = string.Empty;
+
+    public string Adresse { get; set; } = string.Empty;
+
+    public byte[]? Logo { get; set; }
+
     public ICollection<Fahrer> Fahrer { get; set; } = new List<Fahrer>();
 
     public ICollection<Kart> Karts { get; set; } = new List<Kart>();

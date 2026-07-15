@@ -155,6 +155,11 @@ public static class HostMigrationExtensions
         CancellationToken cancellationToken)
     {
         await EnsureColumnAsync(localDbContext, "vereine", "mitglieds_nummer", "ALTER TABLE vereine ADD COLUMN mitglieds_nummer TEXT NOT NULL DEFAULT '';", cancellationToken);
+        await EnsureColumnAsync(localDbContext, "vereine", "postleitzahl", "ALTER TABLE vereine ADD COLUMN postleitzahl TEXT NOT NULL DEFAULT '';", cancellationToken);
+        await EnsureColumnAsync(localDbContext, "vereine", "ort", "ALTER TABLE vereine ADD COLUMN ort TEXT NOT NULL DEFAULT '';", cancellationToken);
+        await EnsureColumnAsync(localDbContext, "vereine", "adresse", "ALTER TABLE vereine ADD COLUMN adresse TEXT NOT NULL DEFAULT '';", cancellationToken);
+        await EnsureColumnAsync(localDbContext, "vereine", "logo", "ALTER TABLE vereine ADD COLUMN logo BLOB NULL;", cancellationToken);
+        await EnsureColumnAsync(localDbContext, "fahrer", "mitglieds_nummer", "ALTER TABLE fahrer ADD COLUMN mitglieds_nummer TEXT NOT NULL DEFAULT '';", cancellationToken);
         await EnsureColumnAsync(localDbContext, "fahrer", "geburtsdatum", "ALTER TABLE fahrer ADD COLUMN geburtsdatum TEXT NULL;", cancellationToken);
         await EnsureColumnAsync(localDbContext, "fahrer", "geschlecht", "ALTER TABLE fahrer ADD COLUMN geschlecht TEXT NOT NULL DEFAULT '';", cancellationToken);
         await EnsureColumnAsync(localDbContext, "training", "training_abgeschlossen", "ALTER TABLE training ADD COLUMN training_abgeschlossen INTEGER NOT NULL DEFAULT 0;", cancellationToken);

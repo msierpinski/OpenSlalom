@@ -21,6 +21,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shell;
 using System.Windows.Threading;
+using Microsoft.Win32;
 
 namespace OpenSlalom.UI;
 
@@ -36,8 +37,10 @@ public partial class MainWindow : Window
     private const double HoverDarkenFactor = 0.15;
     private const string TrainingDetailTagPrefix = "TrainingDetail:";
     private const string TrainingStatisticsTagPrefix = "TrainingStatistics:";
+    private static readonly HashSet<string> SettingsSubmenuTags = ["Vereine", "Fahrer", "Disziplin", "Karts", "Wetter"];
     private const int WmGetMinMaxInfo = 0x0024;
     private const int MonitorDefaultToNearest = 0x00000002;
+    private static readonly HashSet<string> AllowedLogoExtensions = [".bmp", ".jpg", ".jpeg", ".png"];
 
     private readonly IDbContextFactory<LocalOpenSlalomDbContext> _localDbContextFactory;
     private readonly IDbContextFactory<OpenSlalomDbContext> _remoteMigrationDbContextFactory;
@@ -53,6 +56,8 @@ public partial class MainWindow : Window
     private int? _deleteDisziplinId;
     private int? _editVereinId;
     private int? _deleteVereinId;
+    private byte[]? _createVereinLogoBytes;
+    private byte[]? _editVereinLogoBytes;
     private int? _editFahrerId;
     private int? _deleteFahrerId;
     private int? _editKartId;
@@ -286,16 +291,22 @@ public partial class MainWindow : Window
             var vereine = await dbContext.Vereine
                 .AsNoTracking()
                 .OrderBy(x => x.Vereinsname)
-                .Select(x => new VereinListItem
+                .ToListAsync();
+
+            var vereinItems = vereine.Select(x => new VereinListItem
                 {
                     Id = x.Id,
                     Vereinsname = x.Vereinsname,
-                    MitgliedsNummer = x.MitgliedsNummer
+                    MitgliedsNummer = x.MitgliedsNummer,
+                    Postleitzahl = x.Postleitzahl,
+                    Ort = x.Ort,
+                    Adresse = x.Adresse,
+                    LogoPreview = CreateImageSourceFromBytes(x.Logo)
                 })
-                .ToListAsync();
+                .ToList();
 
             VereineItems.Clear();
-            foreach (var verein in vereine)
+            foreach (var verein in vereinItems)
             {
                 VereineItems.Add(verein);
             }
@@ -360,6 +371,7 @@ public partial class MainWindow : Window
                     GeschlechtIconPath = GetGeschlechtIconPath(x.Geschlecht),
                     Vorname = x.Vorname,
                     Nachname = x.Nachname ?? string.Empty,
+                    MitgliedsNummer = x.MitgliedsNummer,
                     Geburtsdatum = x.Geburtsdatum,
                     GeburtsdatumText = x.Geburtsdatum.HasValue ? x.Geburtsdatum.Value.ToString("dd.MM.yyyy") : string.Empty,
                     VereinName = x.Verein.Vereinsname
@@ -1618,6 +1630,8 @@ public partial class MainWindow : Window
 
     private void ApplyMenuSelection(string selectedTag)
     {
+        UpdateSettingsSubmenuVisibility(selectedTag);
+
         _selectedMenuTag = selectedTag;
 
         foreach (var button in GetMenuButtons())
@@ -1646,6 +1660,21 @@ public partial class MainWindow : Window
         {
             ConfigureMenuButton(button);
         }
+
+        UpdateSettingsSubmenuVisibility(_selectedMenuTag);
+    }
+
+    private void UpdateSettingsSubmenuVisibility(string selectedTag)
+    {
+        var show = string.Equals(selectedTag, "Einstellungen", StringComparison.Ordinal) ||
+                   SettingsSubmenuTags.Contains(selectedTag);
+        var visibility = show ? Visibility.Visible : Visibility.Collapsed;
+
+        MenuSettingsVereine.Visibility = visibility;
+        MenuSettingsFahrer.Visibility = visibility;
+        MenuSettingsDisziplin.Visibility = visibility;
+        MenuSettingsKarts.Visibility = visibility;
+        MenuSettingsWetter.Visibility = visibility;
     }
 
     private void ConfigureMenuButton(Button button)
@@ -3448,6 +3477,11 @@ public partial class MainWindow : Window
     {
         CreateMitgliedsNummerTextBox.Text = string.Empty;
         CreateVereinsnameTextBox.Text = string.Empty;
+        CreatePostleitzahlTextBox.Text = string.Empty;
+        CreateOrtTextBox.Text = string.Empty;
+        CreateAdresseTextBox.Text = string.Empty;
+        _createVereinLogoBytes = null;
+        UpdateCreateLogoPreview();
         ShowVereinDialog(VereinDialogMode.Create);
     }
 
@@ -3455,6 +3489,9 @@ public partial class MainWindow : Window
     {
         var mitgliedsNummer = CreateMitgliedsNummerTextBox.Text.Trim();
         var vereinsname = CreateVereinsnameTextBox.Text.Trim();
+        var postleitzahl = CreatePostleitzahlTextBox.Text.Trim();
+        var ort = CreateOrtTextBox.Text.Trim();
+        var adresse = CreateAdresseTextBox.Text.Trim();
 
         if (string.IsNullOrWhiteSpace(mitgliedsNummer) || string.IsNullOrWhiteSpace(vereinsname))
         {
@@ -3468,7 +3505,11 @@ public partial class MainWindow : Window
             dbContext.Vereine.Add(new Verein
             {
                 MitgliedsNummer = mitgliedsNummer,
-                Vereinsname = vereinsname
+                Vereinsname = vereinsname,
+                Postleitzahl = postleitzahl,
+                Ort = ort,
+                Adresse = adresse,
+                Logo = _createVereinLogoBytes
             });
 
             await dbContext.SaveChangesAsync();
@@ -3500,6 +3541,11 @@ public partial class MainWindow : Window
         _editVereinId = verein.Id;
         EditMitgliedsNummerTextBox.Text = verein.MitgliedsNummer;
         EditVereinsnameTextBox.Text = verein.Vereinsname;
+        EditPostleitzahlTextBox.Text = verein.Postleitzahl;
+        EditOrtTextBox.Text = verein.Ort;
+        EditAdresseTextBox.Text = verein.Adresse;
+        _editVereinLogoBytes = verein.Logo;
+        UpdateEditLogoPreview();
         ShowVereinDialog(VereinDialogMode.Edit);
     }
 
@@ -3512,6 +3558,9 @@ public partial class MainWindow : Window
 
         var mitgliedsNummer = EditMitgliedsNummerTextBox.Text.Trim();
         var vereinsname = EditVereinsnameTextBox.Text.Trim();
+        var postleitzahl = EditPostleitzahlTextBox.Text.Trim();
+        var ort = EditOrtTextBox.Text.Trim();
+        var adresse = EditAdresseTextBox.Text.Trim();
 
         if (string.IsNullOrWhiteSpace(mitgliedsNummer) || string.IsNullOrWhiteSpace(vereinsname))
         {
@@ -3532,6 +3581,10 @@ public partial class MainWindow : Window
 
             verein.MitgliedsNummer = mitgliedsNummer;
             verein.Vereinsname = vereinsname;
+            verein.Postleitzahl = postleitzahl;
+            verein.Ort = ort;
+            verein.Adresse = adresse;
+            verein.Logo = _editVereinLogoBytes;
             await dbContext.SaveChangesAsync();
 
             _editVereinId = null;
@@ -3598,7 +3651,119 @@ public partial class MainWindow : Window
     {
         _editVereinId = null;
         _deleteVereinId = null;
+        _createVereinLogoBytes = null;
+        _editVereinLogoBytes = null;
         ShowVereinDialog(VereinDialogMode.None);
+    }
+
+    private void SelectCreateVereinLogo_OnClick(object sender, RoutedEventArgs e)
+    {
+        if (!TryLoadLogoFromDialog(out var logoBytes))
+        {
+            return;
+        }
+
+        _createVereinLogoBytes = logoBytes;
+        UpdateCreateLogoPreview();
+    }
+
+    private void ClearCreateVereinLogo_OnClick(object sender, RoutedEventArgs e)
+    {
+        _createVereinLogoBytes = null;
+        UpdateCreateLogoPreview();
+    }
+
+    private void SelectEditVereinLogo_OnClick(object sender, RoutedEventArgs e)
+    {
+        if (!TryLoadLogoFromDialog(out var logoBytes))
+        {
+            return;
+        }
+
+        _editVereinLogoBytes = logoBytes;
+        UpdateEditLogoPreview();
+    }
+
+    private void ClearEditVereinLogo_OnClick(object sender, RoutedEventArgs e)
+    {
+        _editVereinLogoBytes = null;
+        UpdateEditLogoPreview();
+    }
+
+    private bool TryLoadLogoFromDialog(out byte[] logoBytes)
+    {
+        logoBytes = [];
+
+        var dialog = new OpenFileDialog
+        {
+            Filter = "Bilddateien (*.bmp;*.jpg;*.jpeg;*.png)|*.bmp;*.jpg;*.jpeg;*.png",
+            CheckFileExists = true,
+            Multiselect = false
+        };
+
+        if (dialog.ShowDialog(this) != true)
+        {
+            return false;
+        }
+
+        var extension = Path.GetExtension(dialog.FileName);
+        if (!AllowedLogoExtensions.Contains(extension))
+        {
+            MessageBox.Show("Bitte ein Logo im Format BMP, JPG oder PNG auswaehlen.", "Hinweis", MessageBoxButton.OK, MessageBoxImage.Information);
+            return false;
+        }
+
+        try
+        {
+            logoBytes = File.ReadAllBytes(dialog.FileName);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Logger.Error(ex, "Logo-Datei konnte nicht gelesen werden.");
+            MessageBox.Show("Logo konnte nicht geladen werden. Details stehen im Log.", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
+            return false;
+        }
+    }
+
+    private void UpdateCreateLogoPreview()
+    {
+        CreateLogoStatusTextBlock.Text = _createVereinLogoBytes is { Length: > 0 }
+            ? "Logo ausgewaehlt"
+            : "Kein Logo ausgewaehlt";
+        CreateVereinLogoPreviewImage.Source = CreateImageSourceFromBytes(_createVereinLogoBytes);
+    }
+
+    private void UpdateEditLogoPreview()
+    {
+        EditLogoStatusTextBlock.Text = _editVereinLogoBytes is { Length: > 0 }
+            ? "Logo ausgewaehlt"
+            : "Kein Logo ausgewaehlt";
+        EditVereinLogoPreviewImage.Source = CreateImageSourceFromBytes(_editVereinLogoBytes);
+    }
+
+    private static ImageSource? CreateImageSourceFromBytes(byte[]? logoBytes)
+    {
+        if (logoBytes is null || logoBytes.Length == 0)
+        {
+            return null;
+        }
+
+        try
+        {
+            using var memoryStream = new MemoryStream(logoBytes);
+            var image = new BitmapImage();
+            image.BeginInit();
+            image.CacheOption = BitmapCacheOption.OnLoad;
+            image.StreamSource = memoryStream;
+            image.EndInit();
+            image.Freeze();
+            return image;
+        }
+        catch
+        {
+            return null;
+        }
     }
 
     private void ShowVereinDialog(VereinDialogMode mode)
@@ -3613,6 +3778,7 @@ public partial class MainWindow : Window
         await LoadLookupDataAsync();
         CreateFahrerVornameTextBox.Text = string.Empty;
         CreateFahrerNachnameTextBox.Text = string.Empty;
+        CreateFahrerMitgliedsNummerTextBox.Text = string.Empty;
         CreateFahrerGeburtsdatumPicker.SelectedDate = null;
         CreateFahrerGeschlechtComboBox.SelectedIndex = -1;
         CreateFahrerVereinComboBox.SelectedIndex = -1;
@@ -3623,6 +3789,7 @@ public partial class MainWindow : Window
     {
         var vorname = CreateFahrerVornameTextBox.Text.Trim();
         var nachname = CreateFahrerNachnameTextBox.Text.Trim();
+        var mitgliedsNummer = CreateFahrerMitgliedsNummerTextBox.Text.Trim();
         var geburtsdatum = CreateFahrerGeburtsdatumPicker.SelectedDate.HasValue
             ? DateOnly.FromDateTime(CreateFahrerGeburtsdatumPicker.SelectedDate.Value)
             : (DateOnly?)null;
@@ -3640,6 +3807,7 @@ public partial class MainWindow : Window
             {
                 Vorname = vorname,
                 Nachname = string.IsNullOrWhiteSpace(nachname) ? null : nachname,
+                MitgliedsNummer = mitgliedsNummer,
                 Geburtsdatum = geburtsdatum,
                 Geschlecht = geschlecht,
                 VereinId = vereinId
@@ -3675,6 +3843,7 @@ public partial class MainWindow : Window
         _editFahrerId = fahrer.Id;
         EditFahrerVornameTextBox.Text = fahrer.Vorname;
         EditFahrerNachnameTextBox.Text = fahrer.Nachname ?? string.Empty;
+        EditFahrerMitgliedsNummerTextBox.Text = fahrer.MitgliedsNummer;
         EditFahrerGeburtsdatumPicker.SelectedDate = fahrer.Geburtsdatum?.ToDateTime(TimeOnly.MinValue);
         SetSelectedGeschlechtValue(EditFahrerGeschlechtComboBox, fahrer.Geschlecht);
         EditFahrerVereinComboBox.SelectedValue = fahrer.VereinId;
@@ -3690,6 +3859,7 @@ public partial class MainWindow : Window
 
         var vorname = EditFahrerVornameTextBox.Text.Trim();
         var nachname = EditFahrerNachnameTextBox.Text.Trim();
+        var mitgliedsNummer = EditFahrerMitgliedsNummerTextBox.Text.Trim();
         var geburtsdatum = EditFahrerGeburtsdatumPicker.SelectedDate.HasValue
             ? DateOnly.FromDateTime(EditFahrerGeburtsdatumPicker.SelectedDate.Value)
             : (DateOnly?)null;
@@ -3713,6 +3883,7 @@ public partial class MainWindow : Window
 
             fahrer.Vorname = vorname;
             fahrer.Nachname = string.IsNullOrWhiteSpace(nachname) ? null : nachname;
+            fahrer.MitgliedsNummer = mitgliedsNummer;
             fahrer.Geburtsdatum = geburtsdatum;
             fahrer.Geschlecht = geschlecht;
             fahrer.VereinId = vereinId;
@@ -3745,7 +3916,10 @@ public partial class MainWindow : Window
         }
 
         _deleteFahrerId = fahrer.Id;
-        DeleteFahrerTextBlock.Text = $"{fahrer.Vorname} {fahrer.Nachname}".Trim();
+        var fahrerName = $"{fahrer.Vorname} {fahrer.Nachname}".Trim();
+        DeleteFahrerTextBlock.Text = string.IsNullOrWhiteSpace(fahrer.MitgliedsNummer)
+            ? fahrerName
+            : $"{fahrerName} ({fahrer.MitgliedsNummer})";
         ShowFahrerDialog(FahrerDialogMode.Delete);
     }
 
@@ -4373,6 +4547,14 @@ public partial class MainWindow : Window
         public required string MitgliedsNummer { get; init; }
 
         public required string Vereinsname { get; init; }
+
+        public required string Postleitzahl { get; init; }
+
+        public required string Ort { get; init; }
+
+        public required string Adresse { get; init; }
+
+        public required ImageSource? LogoPreview { get; init; }
     }
 
     public sealed class DisziplinListItem
@@ -4427,6 +4609,8 @@ public partial class MainWindow : Window
         public required string Vorname { get; init; }
 
         public required string Nachname { get; init; }
+
+        public required string MitgliedsNummer { get; init; }
 
         public required DateOnly? Geburtsdatum { get; init; }
 

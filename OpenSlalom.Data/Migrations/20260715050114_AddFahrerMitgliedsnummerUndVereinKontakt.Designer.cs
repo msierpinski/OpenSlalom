@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OpenSlalom.Data;
 
@@ -11,9 +12,11 @@ using OpenSlalom.Data;
 namespace OpenSlalom.Data.Migrations
 {
     [DbContext(typeof(OpenSlalomDbContext))]
-    partial class OpenSlalomDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260715050114_AddFahrerMitgliedsnummerUndVereinKontakt")]
+    partial class AddFahrerMitgliedsnummerUndVereinKontakt
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -758,14 +761,6 @@ namespace OpenSlalom.Data.Migrations
                         .HasColumnType("varchar(50)")
                         .HasDefaultValue("")
                         .HasColumnName("mitglieds_nummer");
-
-                    b.Property<string>("Ort")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
-                        .HasDefaultValue("")
-                        .HasColumnName("ort");
 
                     b.Property<string>("Postleitzahl")
                         .IsRequired()

@@ -134,6 +134,10 @@ public sealed class DataSyncService(
                     Id = x.Id,
                     Vereinsname = x.Vereinsname,
                     MitgliedsNummer = x.MitgliedsNummer,
+                    Postleitzahl = x.Postleitzahl,
+                    Ort = x.Ort,
+                    Adresse = x.Adresse,
+                    Logo = x.Logo,
                     UpdatedAtUtc = x.UpdatedAtUtc,
                     IsDeleted = x.IsDeleted,
                     DeletedAtUtc = x.DeletedAtUtc
@@ -142,6 +146,10 @@ public sealed class DataSyncService(
                 {
                     target.Vereinsname = source.Vereinsname;
                     target.MitgliedsNummer = source.MitgliedsNummer;
+                    target.Postleitzahl = source.Postleitzahl;
+                    target.Ort = source.Ort;
+                    target.Adresse = source.Adresse;
+                    target.Logo = source.Logo;
                     CopySyncFields(target, source);
                 }, cancellationToken);
 
@@ -172,6 +180,7 @@ public sealed class DataSyncService(
                     VereinId = x.VereinId,
                     Vorname = x.Vorname,
                     Nachname = x.Nachname,
+                    MitgliedsNummer = x.MitgliedsNummer,
                     Geburtsdatum = x.Geburtsdatum,
                     Geschlecht = x.Geschlecht,
                     UpdatedAtUtc = x.UpdatedAtUtc,
@@ -183,6 +192,7 @@ public sealed class DataSyncService(
                     target.VereinId = source.VereinId;
                     target.Vorname = source.Vorname;
                     target.Nachname = source.Nachname;
+                    target.MitgliedsNummer = source.MitgliedsNummer;
                     target.Geburtsdatum = source.Geburtsdatum;
                     target.Geschlecht = source.Geschlecht;
                     CopySyncFields(target, source);
