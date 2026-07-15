@@ -30,3 +30,12 @@ jobs:
       shell: pwsh
       run: |
         Get-ChildItem -Recurse .\OpenSlalom.UI\bin
+    - name: Publish
+      run: |
+        dotnet publish OpenSlalom.UI/OpenSlalom.UI.csproj `
+          -c Release `
+          -o publish        
+    - name: Zip publish folder
+      shell: pwsh
+      run: |
+        Compress-Archive -Path "publish/*" -DestinationPath "artifact/OpenSlalom.UI.zip"          
