@@ -26,5 +26,7 @@ jobs:
       run: dotnet build --no-restore
     - name: Test
       run: dotnet test --no-build --verbosity normal
-    - name: Show build output
-      run: find . -type d -name bin -o -name publish
+    - name: List build output
+      shell: pwsh
+      run: |
+        Get-ChildItem -Recurse .\OpenSlalom.UI\bin
