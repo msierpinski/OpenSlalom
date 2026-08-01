@@ -1,0 +1,45 @@
+<UserControl x:Class="OpenSlalom.UI.Views.EinstellungenView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             d:Background="White">
+    <Border Background="Transparent" BorderBrush="#E2E8F0" BorderThickness="0" CornerRadius="10">
+        <Grid Margin="20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30" />
+                <RowDefinition Height="20" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="20" />
+                <RowDefinition Height="30" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Row="0" FontSize="24" FontWeight="Bold" Text="Einstellungen" />
+
+            <Grid Grid.Row="2" Grid.ColumnSpan="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30" />
+                    <RowDefinition Height="30" />
+                    <RowDefinition Height="30" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="200" />
+                    <ColumnDefinition Width="150" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Default Rundenanzahl pro Stint" VerticalAlignment="Center" />
+                <TextBox Grid.Row="0" Grid.Column="1" x:Name="DefaultStintRoundsTextBox" x:FieldModifier="internal" Height="25" Width="50" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" />
+
+                <Button Grid.Row="2" Grid.ColumnSpan="2" Width="220" Height="30" HorizontalAlignment="Left" Background="#0EA5E9" Style="{StaticResource RoundedButton}" Content="Remote Verbindung neu aufbauen" Click="ReconnectRemote_OnClick" />
+            </Grid>
+
+            <Button Grid.Row="4" Width="120" Height="30" HorizontalAlignment="Left" Background="#1F84DE" Style="{StaticResource RoundedButton}" Content="Speichern" Click="SaveSettings_OnClick" />
+            <TextBlock Grid.Row="4" Grid.Column="1" x:Name="SettingsFeedbackTextBlock" x:FieldModifier="internal" VerticalAlignment="Center" />
+        </Grid>
+    </Border>
+</UserControl>

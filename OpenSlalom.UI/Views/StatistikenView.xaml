@@ -1,0 +1,123 @@
+<UserControl x:Class="OpenSlalom.UI.Views.StatistikenView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             d:Background="White">
+    <Border Background="Transparent" BorderBrush="#E2E8F0" BorderThickness="0" CornerRadius="10">
+        <Grid Margin="20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="12" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="12" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0" FontSize="24" FontWeight="Bold" Text="Statistiken" />
+
+            <Border Grid.Row="2" Background="White" BorderBrush="#D1D5DB" BorderThickness="1" CornerRadius="8" Padding="12">
+                <UniformGrid Columns="3">
+                    <Border Margin="4" Padding="8" Background="#F8FAFC" CornerRadius="6">
+                        <StackPanel>
+                            <TextBlock x:Name="StatsFahrerCountTextBlock" x:FieldModifier="internal" FontSize="16" FontWeight="Bold" TextAlignment="Center" Text="-" />
+                            <TextBlock Margin="0,3,0,0" FontSize="13" Foreground="#475569" TextAlignment="Center" Text="Anzahl Fahrer" />
+                        </StackPanel>
+                    </Border>
+                    <Border Margin="4" Padding="8" Background="#F8FAFC" CornerRadius="6">
+                        <StackPanel>
+                            <TextBlock x:Name="StatsKartsCountTextBlock" x:FieldModifier="internal" FontSize="16" FontWeight="Bold" TextAlignment="Center" Text="-" />
+                            <TextBlock Margin="0,3,0,0" FontSize="13" Foreground="#475569" TextAlignment="Center" Text="Anzahl Karts" />
+                        </StackPanel>
+                    </Border>
+                    <Border Margin="4" Padding="8" Background="#F8FAFC" CornerRadius="6">
+                        <StackPanel>
+                            <TextBlock x:Name="StatsTrainingsCountTextBlock" x:FieldModifier="internal" FontSize="16" FontWeight="Bold" TextAlignment="Center" Text="-" />
+                            <TextBlock Margin="0,3,0,0" FontSize="13" Foreground="#475569" TextAlignment="Center" Text="Anzahl Trainings" />
+                        </StackPanel>
+                    </Border>
+                    <Border Margin="4" Padding="8" Background="#F8FAFC" CornerRadius="6">
+                        <StackPanel>
+                            <TextBlock x:Name="StatsRundenCountTextBlock" x:FieldModifier="internal" FontSize="16" FontWeight="Bold" TextAlignment="Center" Text="-" />
+                            <TextBlock Margin="0,3,0,0" FontSize="13" Foreground="#475569" TextAlignment="Center" Text="Anzahl Runden" />
+                        </StackPanel>
+                    </Border>
+                    <Border Margin="4" Padding="8" Background="#F8FAFC" CornerRadius="6">
+                        <StackPanel>
+                            <TextBlock x:Name="StatsStintsCountTextBlock" x:FieldModifier="internal" FontSize="16" FontWeight="Bold" TextAlignment="Center" Text="-" />
+                            <TextBlock Margin="0,3,0,0" FontSize="13" Foreground="#475569" TextAlignment="Center" Text="Anzahl Stints" />
+                        </StackPanel>
+                    </Border>
+                    <Border Margin="4" Padding="8" Background="#F8FAFC" CornerRadius="6">
+                        <StackPanel>
+                            <TextBlock x:Name="StatsGesamteFahrzeitTextBlock" x:FieldModifier="internal" FontSize="16" FontWeight="Bold" TextAlignment="Center" Text="-" />
+                            <TextBlock Margin="0,3,0,0" FontSize="13" Foreground="#475569" TextAlignment="Center" Text="Gesamte Fahrzeit" />
+                        </StackPanel>
+                    </Border>
+                    <Border Margin="4" Padding="8" Background="#F8FAFC" CornerRadius="6">
+                        <StackPanel>
+                            <TextBlock x:Name="StatsPylonenfehlerCountTextBlock" x:FieldModifier="internal" FontSize="16" FontWeight="Bold" TextAlignment="Center" Text="-" />
+                            <TextBlock Margin="0,3,0,0" FontSize="13" Foreground="#475569" TextAlignment="Center" Text="Anzahl Pylonenfehler" />
+                        </StackPanel>
+                    </Border>
+                    <Border Margin="4" Padding="8" Background="#F8FAFC" CornerRadius="6">
+                        <StackPanel>
+                            <TextBlock x:Name="StatsTorfehlerCountTextBlock" x:FieldModifier="internal" FontSize="16" FontWeight="Bold" TextAlignment="Center" Text="-" />
+                            <TextBlock Margin="0,3,0,0" FontSize="13" Foreground="#475569" TextAlignment="Center" Text="Anzahl Torfehler" />
+                        </StackPanel>
+                    </Border>
+                    <Border Margin="4" Padding="8" Background="#F8FAFC" CornerRadius="6">
+                        <StackPanel>
+                            <TextBlock x:Name="StatsAvgPylonenTextBlock" x:FieldModifier="internal" FontSize="16" FontWeight="Bold" TextAlignment="Center" Text="-" />
+                            <TextBlock Margin="0,3,0,0" FontSize="13" Foreground="#475569" TextAlignment="Center" Text="Durchschnitt Pylonen pro Runde" />
+                        </StackPanel>
+                    </Border>
+                    <Border Margin="4" Padding="8" Background="#F8FAFC" CornerRadius="6">
+                        <StackPanel>
+                            <TextBlock x:Name="StatsAvgTorfehlerTextBlock" x:FieldModifier="internal" FontSize="16" FontWeight="Bold" TextAlignment="Center" Text="-" />
+                            <TextBlock Margin="0,3,0,0" FontSize="13" Foreground="#475569" TextAlignment="Center" Text="Durchschnitt Torfehler pro Runde" />
+                        </StackPanel>
+                    </Border>
+                    <Border Margin="4" Padding="8" Background="#F8FAFC" CornerRadius="6">
+                        <StackPanel>
+                            <TextBlock x:Name="StatsFehlerfreieRundenPercentTextBlock" x:FieldModifier="internal" FontSize="16" FontWeight="Bold" TextAlignment="Center" Text="-" />
+                            <TextBlock Margin="0,3,0,0" FontSize="13" Foreground="#475569" TextAlignment="Center" Text="Fehlerfreie Runden in Prozent" />
+                        </StackPanel>
+                    </Border>
+                </UniformGrid>
+            </Border>
+
+            <DataGrid Grid.Row="4"
+                      ItemsSource="{Binding DriverStatisticsItems}"
+                      Background="Transparent"
+                      AutoGenerateColumns="False"
+                      CanUserAddRows="False"
+                      IsReadOnly="True"
+                      HeadersVisibility="Column"
+                      GridLinesVisibility="None"
+                      BorderThickness="0"
+                      RowHeaderWidth="0"
+                      MinRowHeight="36"
+                      VerticalContentAlignment="Center"
+                      SelectionMode="Single"
+                      AlternationCount="2"
+                      ColumnHeaderStyle="{StaticResource StandardDataGridHeaderStyle}"
+                      CellStyle="{StaticResource StandardDataGridCellStyle}"
+                      RowStyle="{StaticResource StandardDataGridRowStyle}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Fahrer" Binding="{Binding Fahrer}" Width="18*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                    <DataGridTextColumn Header="Fahrzeit" Binding="{Binding Fahrzeit}" Width="11*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                    <DataGridTextColumn Header="Trainings" Binding="{Binding Trainings}" Width="8*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                    <DataGridTextColumn Header="Runden" Binding="{Binding Runden}" Width="8*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                    <DataGridTextColumn Header="Fehlerfreie Runden" Binding="{Binding FehlerfreieRunden}" Width="14*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                    <DataGridTextColumn Header="Stints" Binding="{Binding Stints}" Width="8*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                    <DataGridTextColumn Header="Pylonenfehler" Binding="{Binding Pylonenfehler}" Width="10*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                    <DataGridTextColumn Header="Torfehler" Binding="{Binding Torfehler}" Width="8*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                    <DataGridTextColumn Header="Durchschnitt Pylonen pro Runde" Binding="{Binding DurchschnittPylonenProRunde}" Width="12*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                    <DataGridTextColumn Header="Durchschnitt Torfehler pro Runde" Binding="{Binding DurchschnittTorfehlerProRunde}" Width="12*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+    </Border>
+</UserControl>

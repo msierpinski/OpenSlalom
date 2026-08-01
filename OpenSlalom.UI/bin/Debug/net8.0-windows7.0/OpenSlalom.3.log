@@ -1,0 +1,2129 @@
+2026-07-31 08:37:47.1837|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "t"."Value"
+FROM (
+    SELECT COUNT(1) AS Value FROM sqlite_master WHERE type='table' AND name='__EFMigrationsHistory'
+) AS "t"
+LIMIT 2
+2026-07-31 08:37:47.2120|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "t"."Value"
+FROM (
+    SELECT COUNT(1) AS Value FROM sqlite_master WHERE type='table' AND name='__EFMigrationsHistory'
+) AS "t"
+LIMIT 2
+2026-07-31 08:37:47.2137|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "t"."Value"
+FROM (
+    SELECT COUNT(1) AS Value FROM __EFMigrationsHistory WHERE MigrationId = '20260713103700_AddBidirectionalSyncMetadataSqlite'
+) AS "t"
+LIMIT 2
+2026-07-31 08:37:47.2137|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*) FROM "sqlite_master" WHERE "name" = '__EFMigrationsHistory' AND "type" = 'table';
+2026-07-31 08:37:47.2137|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*) FROM "sqlite_master" WHERE "name" = '__EFMigrationsHistory' AND "type" = 'table';
+2026-07-31 08:37:47.2137|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+2026-07-31 08:37:47.2321|INFO|Microsoft.EntityFrameworkCore.Migrations|No migrations were applied. The database is already up to date.
+2026-07-31 08:37:47.4404|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (25ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = '__EFMigrationsHistory'
+) AS `t`
+LIMIT 2
+2026-07-31 08:37:47.4595|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (6ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM __EFMigrationsHistory WHERE MigrationId = '20260713103701_AddBidirectionalSyncMetadata'
+) AS `t`
+LIMIT 2
+2026-07-31 08:37:47.4681|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'sync_state'
+) AS `t`
+LIMIT 2
+2026-07-31 08:37:47.4681|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'sync_state'
+) AS `t`
+LIMIT 2
+2026-07-31 08:37:47.4941|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (6ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'disziplin' AND COLUMN_NAME = 'updated_at_utc'
+) AS `t`
+LIMIT 2
+2026-07-31 08:37:47.4941|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (6ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'disziplin' AND COLUMN_NAME = 'is_deleted'
+) AS `t`
+LIMIT 2
+2026-07-31 08:37:47.5130|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'disziplin' AND COLUMN_NAME = 'deleted_at_utc'
+) AS `t`
+LIMIT 2
+2026-07-31 08:37:47.5130|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'disziplin_altersklassen' AND COLUMN_NAME = 'updated_at_utc'
+) AS `t`
+LIMIT 2
+2026-07-31 08:37:47.5348|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (7ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'disziplin_altersklassen' AND COLUMN_NAME = 'is_deleted'
+) AS `t`
+LIMIT 2
+2026-07-31 08:37:47.5449|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'disziplin_altersklassen' AND COLUMN_NAME = 'deleted_at_utc'
+) AS `t`
+LIMIT 2
+2026-07-31 08:37:47.5449|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'vereine' AND COLUMN_NAME = 'updated_at_utc'
+) AS `t`
+LIMIT 2
+2026-07-31 08:37:47.5637|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'vereine' AND COLUMN_NAME = 'is_deleted'
+) AS `t`
+LIMIT 2
+2026-07-31 08:37:47.5727|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'vereine' AND COLUMN_NAME = 'deleted_at_utc'
+) AS `t`
+LIMIT 2
+2026-07-31 08:37:47.5727|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (7ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'wetter' AND COLUMN_NAME = 'updated_at_utc'
+) AS `t`
+LIMIT 2
+2026-07-31 08:37:47.5915|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'wetter' AND COLUMN_NAME = 'is_deleted'
+) AS `t`
+LIMIT 2
+2026-07-31 08:37:47.6038|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (8ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'wetter' AND COLUMN_NAME = 'deleted_at_utc'
+) AS `t`
+LIMIT 2
+2026-07-31 08:37:47.6038|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'fahrer' AND COLUMN_NAME = 'updated_at_utc'
+) AS `t`
+LIMIT 2
+2026-07-31 08:37:47.6268|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'fahrer' AND COLUMN_NAME = 'is_deleted'
+) AS `t`
+LIMIT 2
+2026-07-31 08:37:47.6354|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'fahrer' AND COLUMN_NAME = 'deleted_at_utc'
+) AS `t`
+LIMIT 2
+2026-07-31 08:37:47.6354|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'training' AND COLUMN_NAME = 'updated_at_utc'
+) AS `t`
+LIMIT 2
+2026-07-31 08:37:47.6532|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'training' AND COLUMN_NAME = 'is_deleted'
+) AS `t`
+LIMIT 2
+2026-07-31 08:37:47.6532|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'training' AND COLUMN_NAME = 'deleted_at_utc'
+) AS `t`
+LIMIT 2
+2026-07-31 08:37:47.6697|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'meisterschaften' AND COLUMN_NAME = 'updated_at_utc'
+) AS `t`
+LIMIT 2
+2026-07-31 08:37:47.6697|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'meisterschaften' AND COLUMN_NAME = 'is_deleted'
+) AS `t`
+LIMIT 2
+2026-07-31 08:37:47.6940|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (10ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'meisterschaften' AND COLUMN_NAME = 'deleted_at_utc'
+) AS `t`
+LIMIT 2
+2026-07-31 08:37:47.7046|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (7ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'karts' AND COLUMN_NAME = 'updated_at_utc'
+) AS `t`
+LIMIT 2
+2026-07-31 08:37:47.7132|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'karts' AND COLUMN_NAME = 'is_deleted'
+) AS `t`
+LIMIT 2
+2026-07-31 08:37:47.7132|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'karts' AND COLUMN_NAME = 'deleted_at_utc'
+) AS `t`
+LIMIT 2
+2026-07-31 08:37:47.7334|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'tstints' AND COLUMN_NAME = 'updated_at_utc'
+) AS `t`
+LIMIT 2
+2026-07-31 08:37:47.7334|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'tstints' AND COLUMN_NAME = 'is_deleted'
+) AS `t`
+LIMIT 2
+2026-07-31 08:37:47.7505|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (6ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'tstints' AND COLUMN_NAME = 'deleted_at_utc'
+) AS `t`
+LIMIT 2
+2026-07-31 08:37:47.7613|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'mstints' AND COLUMN_NAME = 'updated_at_utc'
+) AS `t`
+LIMIT 2
+2026-07-31 08:37:47.7613|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (6ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'mstints' AND COLUMN_NAME = 'is_deleted'
+) AS `t`
+LIMIT 2
+2026-07-31 08:37:47.7791|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'mstints' AND COLUMN_NAME = 'deleted_at_utc'
+) AS `t`
+LIMIT 2
+2026-07-31 08:37:47.7791|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (6ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'fahrer_im_training' AND COLUMN_NAME = 'updated_at_utc'
+) AS `t`
+LIMIT 2
+2026-07-31 08:37:47.7972|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'fahrer_im_training' AND COLUMN_NAME = 'is_deleted'
+) AS `t`
+LIMIT 2
+2026-07-31 08:37:47.7972|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'fahrer_im_training' AND COLUMN_NAME = 'deleted_at_utc'
+) AS `t`
+LIMIT 2
+2026-07-31 08:37:47.8137|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'fahrer_inder_meisterschaft' AND COLUMN_NAME = 'updated_at_utc'
+) AS `t`
+LIMIT 2
+2026-07-31 08:37:47.8137|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'fahrer_inder_meisterschaft' AND COLUMN_NAME = 'is_deleted'
+) AS `t`
+LIMIT 2
+2026-07-31 08:37:47.8291|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'fahrer_inder_meisterschaft' AND COLUMN_NAME = 'deleted_at_utc'
+) AS `t`
+LIMIT 2
+2026-07-31 08:37:47.8380|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'trunden' AND COLUMN_NAME = 'updated_at_utc'
+) AS `t`
+LIMIT 2
+2026-07-31 08:37:47.8380|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'trunden' AND COLUMN_NAME = 'is_deleted'
+) AS `t`
+LIMIT 2
+2026-07-31 08:37:47.8565|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'trunden' AND COLUMN_NAME = 'deleted_at_utc'
+) AS `t`
+LIMIT 2
+2026-07-31 08:37:47.8565|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'mrunden' AND COLUMN_NAME = 'updated_at_utc'
+) AS `t`
+LIMIT 2
+2026-07-31 08:37:47.8750|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'mrunden' AND COLUMN_NAME = 'is_deleted'
+) AS `t`
+LIMIT 2
+2026-07-31 08:37:47.8750|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'mrunden' AND COLUMN_NAME = 'deleted_at_utc'
+) AS `t`
+LIMIT 2
+2026-07-31 08:37:47.9273|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (6ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='os' AND TABLE_NAME='__EFMigrationsHistory';
+2026-07-31 08:37:47.9654|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='os' AND TABLE_NAME='__EFMigrationsHistory';
+2026-07-31 08:37:47.9654|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `MigrationId`, `ProductVersion`
+FROM `__EFMigrationsHistory`
+ORDER BY `MigrationId`;
+2026-07-31 08:37:47.9654|INFO|Microsoft.EntityFrameworkCore.Migrations|No migrations were applied. The database is already up to date.
+2026-07-31 08:37:48.3713|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "t"."id", "t"."fk_id_verein", "t"."fk_id_disziplin", "t"."fk_id_wetter", "t"."name", "t"."beschreibung", "t"."zeitpunkt", "t"."training_abgeschlossen", CASE
+    WHEN "t"."training_abgeschlossen" THEN 'Ja'
+    ELSE 'Nein'
+END, "t0"."vereinsname", "t1"."disziplin", "t2"."wetter"
+FROM "training" AS "t"
+INNER JOIN (
+    SELECT "v"."id", "v"."vereinsname"
+    FROM "vereine" AS "v"
+    WHERE NOT ("v"."is_deleted")
+) AS "t0" ON "t"."fk_id_verein" = "t0"."id"
+INNER JOIN (
+    SELECT "d"."id", "d"."disziplin"
+    FROM "disziplin" AS "d"
+    WHERE NOT ("d"."is_deleted")
+) AS "t1" ON "t"."fk_id_disziplin" = "t1"."id"
+INNER JOIN (
+    SELECT "w"."id", "w"."wetter"
+    FROM "wetter" AS "w"
+    WHERE NOT ("w"."is_deleted")
+) AS "t2" ON "t"."fk_id_wetter" = "t2"."id"
+WHERE NOT ("t"."is_deleted")
+ORDER BY "t"."zeitpunkt" DESC, "t"."name"
+2026-07-31 08:37:48.4361|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "d"."id", "d"."deleted_at_utc", "d"."is_deleted", "d"."disziplin", "d"."updated_at_utc", "d"."pf", "d"."tf", "t"."id", "t"."alter_bis", "t"."alter_von", "t"."bezeichnung", "t"."deleted_at_utc", "t"."fk_id_disziplin", "t"."is_deleted", "t"."updated_at_utc"
+FROM "disziplin" AS "d"
+LEFT JOIN (
+    SELECT "d0"."id", "d0"."alter_bis", "d0"."alter_von", "d0"."bezeichnung", "d0"."deleted_at_utc", "d0"."fk_id_disziplin", "d0"."is_deleted", "d0"."updated_at_utc"
+    FROM "disziplin_altersklassen" AS "d0"
+    WHERE NOT ("d0"."is_deleted")
+) AS "t" ON "d"."id" = "t"."fk_id_disziplin"
+WHERE NOT ("d"."is_deleted")
+ORDER BY "d"."disziplin", "d"."id"
+2026-07-31 08:37:48.4479|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "v"."id", "v"."adresse", "v"."deleted_at_utc", "v"."is_deleted", "v"."logo", "v"."mitglieds_nummer", "v"."ort", "v"."postleitzahl", "v"."updated_at_utc", "v"."vereinsname"
+FROM "vereine" AS "v"
+WHERE NOT ("v"."is_deleted")
+ORDER BY "v"."vereinsname"
+2026-07-31 08:37:48.5082|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "f"."id", "f"."fk_id_verein", "f"."geschlecht", "f"."vorname", COALESCE("f"."nachname", ''), "f"."mitglieds_nummer", "f"."geburtsdatum", "f"."geburtsdatum" IS NOT NULL, "t"."vereinsname"
+FROM "fahrer" AS "f"
+INNER JOIN (
+    SELECT "v"."id", "v"."vereinsname"
+    FROM "vereine" AS "v"
+    WHERE NOT ("v"."is_deleted")
+) AS "t" ON "f"."fk_id_verein" = "t"."id"
+WHERE NOT ("f"."is_deleted")
+ORDER BY "f"."vorname", "f"."nachname"
+2026-07-31 08:37:48.5154|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "k"."id" AS "Id", "k"."fk_id_verein" AS "VereinId", "k"."fk_id_disziplin" AS "DisziplinId", COALESCE("k"."Name", '') AS "Name", COALESCE("k"."Motor", '') AS "Motor", COALESCE("k"."Chassis", '') AS "Chassis", "t"."vereinsname" AS "VereinName", "t0"."disziplin" AS "DisziplinName"
+FROM "karts" AS "k"
+INNER JOIN (
+    SELECT "v"."id", "v"."vereinsname"
+    FROM "vereine" AS "v"
+    WHERE NOT ("v"."is_deleted")
+) AS "t" ON "k"."fk_id_verein" = "t"."id"
+INNER JOIN (
+    SELECT "d"."id", "d"."disziplin"
+    FROM "disziplin" AS "d"
+    WHERE NOT ("d"."is_deleted")
+) AS "t0" ON "k"."fk_id_disziplin" = "t0"."id"
+WHERE NOT ("k"."is_deleted")
+ORDER BY "k"."Name"
+2026-07-31 08:37:48.5154|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "w"."id" AS "Id", "w"."wetter" AS "Name"
+FROM "wetter" AS "w"
+WHERE NOT ("w"."is_deleted")
+ORDER BY "w"."wetter"
+2026-07-31 08:37:48.5154|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "v"."id" AS "Id", "v"."vereinsname" AS "Name"
+FROM "vereine" AS "v"
+WHERE NOT ("v"."is_deleted")
+ORDER BY "v"."vereinsname"
+2026-07-31 08:37:48.5154|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "d"."id" AS "Id", "d"."disziplin" AS "Name"
+FROM "disziplin" AS "d"
+WHERE NOT ("d"."is_deleted")
+ORDER BY "d"."disziplin"
+2026-07-31 08:37:48.5253|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "w"."id" AS "Id", "w"."wetter" AS "Name"
+FROM "wetter" AS "w"
+WHERE NOT ("w"."is_deleted")
+ORDER BY "w"."wetter"
+2026-07-31 08:37:48.5253|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "k"."id", "k"."Name" IS NULL OR trim("k"."Name") = '', "k"."Name"
+FROM "karts" AS "k"
+WHERE NOT ("k"."is_deleted")
+ORDER BY "k"."Name", "k"."id"
+2026-07-31 08:37:48.6082|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "s"."id", "s"."last_sync_utc"
+FROM "sync_state" AS "s"
+WHERE "s"."id" = 'global'
+LIMIT 1
+2026-07-31 08:37:48.6213|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (6ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `s`.`id`, `s`.`last_sync_utc`
+FROM `sync_state` AS `s`
+WHERE `s`.`id` = 'global'
+LIMIT 1
+2026-07-31 08:37:48.6342|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (2ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "disziplin" AS "d"
+WHERE "d"."updated_at_utc" > @__lastSyncUtc_0
+2026-07-31 08:37:48.6342|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "disziplin_altersklassen" AS "d"
+WHERE "d"."updated_at_utc" > @__lastSyncUtc_0
+2026-07-31 08:37:48.6342|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "vereine" AS "v"
+WHERE "v"."updated_at_utc" > @__lastSyncUtc_0
+2026-07-31 08:37:48.6342|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "wetter" AS "w"
+WHERE "w"."updated_at_utc" > @__lastSyncUtc_0
+2026-07-31 08:37:48.6342|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "fahrer" AS "f"
+WHERE "f"."updated_at_utc" > @__lastSyncUtc_0
+2026-07-31 08:37:48.6342|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "training" AS "t"
+WHERE "t"."updated_at_utc" > @__lastSyncUtc_0
+2026-07-31 08:37:48.6342|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "meisterschaften" AS "m"
+WHERE "m"."updated_at_utc" > @__lastSyncUtc_0
+2026-07-31 08:37:48.6342|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "karts" AS "k"
+WHERE "k"."updated_at_utc" > @__lastSyncUtc_0
+2026-07-31 08:37:48.6342|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "tstints" AS "t"
+WHERE "t"."updated_at_utc" > @__lastSyncUtc_0
+2026-07-31 08:37:48.6342|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "mstints" AS "m"
+WHERE "m"."updated_at_utc" > @__lastSyncUtc_0
+2026-07-31 08:37:48.6504|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "fahrer_im_training" AS "f"
+WHERE "f"."updated_at_utc" > @__lastSyncUtc_0
+2026-07-31 08:37:48.6504|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "fahrer_inder_meisterschaft" AS "f"
+WHERE "f"."updated_at_utc" > @__lastSyncUtc_0
+2026-07-31 08:37:48.6504|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "trunden" AS "t"
+WHERE "t"."updated_at_utc" > @__lastSyncUtc_0
+2026-07-31 08:37:48.6504|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "mrunden" AS "m"
+WHERE "m"."updated_at_utc" > @__lastSyncUtc_0
+2026-07-31 08:37:48.6866|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (21ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM `disziplin` AS `d`
+WHERE `d`.`updated_at_utc` > @__lastSyncUtc_0
+2026-07-31 08:37:48.6866|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (6ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM `disziplin_altersklassen` AS `d`
+WHERE `d`.`updated_at_utc` > @__lastSyncUtc_0
+2026-07-31 08:37:48.7084|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (6ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM `vereine` AS `v`
+WHERE `v`.`updated_at_utc` > @__lastSyncUtc_0
+2026-07-31 08:37:48.7188|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (6ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM `wetter` AS `w`
+WHERE `w`.`updated_at_utc` > @__lastSyncUtc_0
+2026-07-31 08:37:48.7188|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM `fahrer` AS `f`
+WHERE `f`.`updated_at_utc` > @__lastSyncUtc_0
+2026-07-31 08:37:48.7371|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM `training` AS `t`
+WHERE `t`.`updated_at_utc` > @__lastSyncUtc_0
+2026-07-31 08:37:48.7468|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM `meisterschaften` AS `m`
+WHERE `m`.`updated_at_utc` > @__lastSyncUtc_0
+2026-07-31 08:37:48.7468|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM `karts` AS `k`
+WHERE `k`.`updated_at_utc` > @__lastSyncUtc_0
+2026-07-31 08:37:48.7659|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (6ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM `tstints` AS `t`
+WHERE `t`.`updated_at_utc` > @__lastSyncUtc_0
+2026-07-31 08:37:48.7764|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM `mstints` AS `m`
+WHERE `m`.`updated_at_utc` > @__lastSyncUtc_0
+2026-07-31 08:37:48.7764|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (6ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM `fahrer_im_training` AS `f`
+WHERE `f`.`updated_at_utc` > @__lastSyncUtc_0
+2026-07-31 08:37:48.7959|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM `fahrer_inder_meisterschaft` AS `f`
+WHERE `f`.`updated_at_utc` > @__lastSyncUtc_0
+2026-07-31 08:37:48.7959|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (6ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM `trunden` AS `t`
+WHERE `t`.`updated_at_utc` > @__lastSyncUtc_0
+2026-07-31 08:37:48.8172|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (7ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM `mrunden` AS `m`
+WHERE `m`.`updated_at_utc` > @__lastSyncUtc_0
+2026-07-31 08:37:48.8220|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "d"."id"
+FROM "disziplin" AS "d"
+2026-07-31 08:37:48.8220|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `d`.`id`
+FROM `disziplin` AS `d`
+2026-07-31 08:37:48.8220|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "d"."id"
+FROM "disziplin_altersklassen" AS "d"
+2026-07-31 08:37:48.8623|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (23ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `d`.`id`
+FROM `disziplin_altersklassen` AS `d`
+2026-07-31 08:37:48.8623|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "v"."id"
+FROM "vereine" AS "v"
+2026-07-31 08:37:48.8719|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `v`.`id`
+FROM `vereine` AS `v`
+2026-07-31 08:37:48.8719|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "w"."id"
+FROM "wetter" AS "w"
+2026-07-31 08:37:48.8719|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `w`.`id`
+FROM `wetter` AS `w`
+2026-07-31 08:37:48.8853|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "f"."id"
+FROM "fahrer" AS "f"
+2026-07-31 08:37:48.9201|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (31ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `f`.`id`
+FROM `fahrer` AS `f`
+2026-07-31 08:37:48.9201|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "t"."id"
+FROM "training" AS "t"
+2026-07-31 08:37:48.9411|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (14ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`id`
+FROM `training` AS `t`
+2026-07-31 08:37:48.9411|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "m"."id"
+FROM "meisterschaften" AS "m"
+2026-07-31 08:37:48.9628|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (15ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `m`.`id`
+FROM `meisterschaften` AS `m`
+2026-07-31 08:37:48.9628|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "k"."id"
+FROM "karts" AS "k"
+2026-07-31 08:37:48.9628|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `k`.`id`
+FROM `karts` AS `k`
+2026-07-31 08:37:48.9628|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "t"."id"
+FROM "tstints" AS "t"
+2026-07-31 08:37:48.9882|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (6ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`id`
+FROM `tstints` AS `t`
+2026-07-31 08:37:48.9882|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "m"."id"
+FROM "mstints" AS "m"
+2026-07-31 08:37:49.0084|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (8ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `m`.`id`
+FROM `mstints` AS `m`
+2026-07-31 08:37:49.0116|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "t"."id"
+FROM "trunden" AS "t"
+2026-07-31 08:37:49.0116|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`id`
+FROM `trunden` AS `t`
+2026-07-31 08:37:49.0116|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "m"."id"
+FROM "mrunden" AS "m"
+2026-07-31 08:37:49.0319|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (6ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `m`.`id`
+FROM `mrunden` AS `m`
+2026-07-31 08:37:49.0319|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "f"."fk_id_training" AS "TrainingId", "f"."fk_id_fahrer" AS "FahrerId"
+FROM "fahrer_im_training" AS "f"
+2026-07-31 08:37:49.0485|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (6ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `f`.`fk_id_training` AS `TrainingId`, `f`.`fk_id_fahrer` AS `FahrerId`
+FROM `fahrer_im_training` AS `f`
+2026-07-31 08:37:49.0485|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "f"."fk_id_meisterschaft" AS "MeisterschaftId", "f"."fk_id_fahrer" AS "FahrerId"
+FROM "fahrer_inder_meisterschaft" AS "f"
+2026-07-31 08:37:49.0630|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (6ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `f`.`fk_id_meisterschaft` AS `MeisterschaftId`, `f`.`fk_id_fahrer` AS `FahrerId`
+FROM `fahrer_inder_meisterschaft` AS `f`
+2026-07-31 08:38:03.8729|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "fahrer" AS "f"
+WHERE NOT ("f"."is_deleted")
+2026-07-31 08:38:03.8729|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "karts" AS "k"
+WHERE NOT ("k"."is_deleted")
+2026-07-31 08:38:03.8729|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "training" AS "t"
+WHERE NOT ("t"."is_deleted")
+2026-07-31 08:38:03.8729|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "tstints" AS "t"
+WHERE NOT ("t"."is_deleted")
+2026-07-31 08:38:03.8729|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT CASE
+    WHEN "t0"."id" IS NOT NULL THEN "t0"."fk_id_fahrer"
+    ELSE 0
+END AS "FahrerId", CASE
+    WHEN "t0"."id" IS NOT NULL THEN "t0"."fk_id_training"
+    ELSE 0
+END AS "TrainingId", "t"."rundenzeit" AS "Sekunden", COALESCE("t"."pf", 0) AS "Pylonen", COALESCE("t"."tf", 0) AS "Tore", "t"."ungueltig" AS "Ungueltig"
+FROM "trunden" AS "t"
+LEFT JOIN (
+    SELECT "t1"."id", "t1"."fk_id_fahrer", "t1"."fk_id_training"
+    FROM "tstints" AS "t1"
+    WHERE NOT ("t1"."is_deleted")
+) AS "t0" ON "t"."fk_id_tstint" = "t0"."id"
+WHERE NOT ("t"."is_deleted") AND "t"."rundenzeit" IS NOT NULL AND "t"."rundenzeit" > 0.0
+2026-07-31 08:38:03.8938|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "t"."fk_id_fahrer" AS "FahrerId", COUNT(*) AS "Stints", COUNT(DISTINCT ("t"."fk_id_training")) AS "Trainings"
+FROM "tstints" AS "t"
+WHERE NOT ("t"."is_deleted")
+GROUP BY "t"."fk_id_fahrer"
+2026-07-31 08:38:03.8938|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "f"."id" AS "Id", "f"."vorname" AS "Vorname", COALESCE("f"."nachname", '') AS "Nachname"
+FROM "fahrer" AS "f"
+WHERE NOT ("f"."is_deleted")
+ORDER BY "f"."vorname", "f"."nachname"
+2026-07-31 08:38:05.6937|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "v"."id", "v"."adresse", "v"."deleted_at_utc", "v"."is_deleted", "v"."logo", "v"."mitglieds_nummer", "v"."ort", "v"."postleitzahl", "v"."updated_at_utc", "v"."vereinsname"
+FROM "vereine" AS "v"
+WHERE NOT ("v"."is_deleted")
+ORDER BY "v"."vereinsname"
+2026-07-31 08:38:07.4448|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "f"."id", "f"."fk_id_verein", "f"."geschlecht", "f"."vorname", COALESCE("f"."nachname", ''), "f"."mitglieds_nummer", "f"."geburtsdatum", "f"."geburtsdatum" IS NOT NULL, "t"."vereinsname"
+FROM "fahrer" AS "f"
+INNER JOIN (
+    SELECT "v"."id", "v"."vereinsname"
+    FROM "vereine" AS "v"
+    WHERE NOT ("v"."is_deleted")
+) AS "t" ON "f"."fk_id_verein" = "t"."id"
+WHERE NOT ("f"."is_deleted")
+ORDER BY "f"."vorname", "f"."nachname"
+2026-07-31 08:38:10.4440|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "d"."id", "d"."deleted_at_utc", "d"."is_deleted", "d"."disziplin", "d"."updated_at_utc", "d"."pf", "d"."tf", "t"."id", "t"."alter_bis", "t"."alter_von", "t"."bezeichnung", "t"."deleted_at_utc", "t"."fk_id_disziplin", "t"."is_deleted", "t"."updated_at_utc"
+FROM "disziplin" AS "d"
+LEFT JOIN (
+    SELECT "d0"."id", "d0"."alter_bis", "d0"."alter_von", "d0"."bezeichnung", "d0"."deleted_at_utc", "d0"."fk_id_disziplin", "d0"."is_deleted", "d0"."updated_at_utc"
+    FROM "disziplin_altersklassen" AS "d0"
+    WHERE NOT ("d0"."is_deleted")
+) AS "t" ON "d"."id" = "t"."fk_id_disziplin"
+WHERE NOT ("d"."is_deleted")
+ORDER BY "d"."disziplin", "d"."id"
+2026-07-31 08:38:12.8834|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "k"."id" AS "Id", "k"."fk_id_verein" AS "VereinId", "k"."fk_id_disziplin" AS "DisziplinId", COALESCE("k"."Name", '') AS "Name", COALESCE("k"."Motor", '') AS "Motor", COALESCE("k"."Chassis", '') AS "Chassis", "t"."vereinsname" AS "VereinName", "t0"."disziplin" AS "DisziplinName"
+FROM "karts" AS "k"
+INNER JOIN (
+    SELECT "v"."id", "v"."vereinsname"
+    FROM "vereine" AS "v"
+    WHERE NOT ("v"."is_deleted")
+) AS "t" ON "k"."fk_id_verein" = "t"."id"
+INNER JOIN (
+    SELECT "d"."id", "d"."disziplin"
+    FROM "disziplin" AS "d"
+    WHERE NOT ("d"."is_deleted")
+) AS "t0" ON "k"."fk_id_disziplin" = "t0"."id"
+WHERE NOT ("k"."is_deleted")
+ORDER BY "k"."Name"
+2026-07-31 08:38:16.7954|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "t"."id", "t"."fk_id_verein", "t"."fk_id_disziplin", "t"."fk_id_wetter", "t"."name", "t"."beschreibung", "t"."zeitpunkt", "t"."training_abgeschlossen", CASE
+    WHEN "t"."training_abgeschlossen" THEN 'Ja'
+    ELSE 'Nein'
+END, "t0"."vereinsname", "t1"."disziplin", "t2"."wetter"
+FROM "training" AS "t"
+INNER JOIN (
+    SELECT "v"."id", "v"."vereinsname"
+    FROM "vereine" AS "v"
+    WHERE NOT ("v"."is_deleted")
+) AS "t0" ON "t"."fk_id_verein" = "t0"."id"
+INNER JOIN (
+    SELECT "d"."id", "d"."disziplin"
+    FROM "disziplin" AS "d"
+    WHERE NOT ("d"."is_deleted")
+) AS "t1" ON "t"."fk_id_disziplin" = "t1"."id"
+INNER JOIN (
+    SELECT "w"."id", "w"."wetter"
+    FROM "wetter" AS "w"
+    WHERE NOT ("w"."is_deleted")
+) AS "t2" ON "t"."fk_id_wetter" = "t2"."id"
+WHERE NOT ("t"."is_deleted")
+ORDER BY "t"."zeitpunkt" DESC, "t"."name"
+2026-07-31 08:38:21.6434|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "t"."id", "t"."fk_id_verein", "t"."fk_id_disziplin", "t"."fk_id_wetter", "t"."name", "t"."beschreibung", "t"."zeitpunkt", "t"."training_abgeschlossen", CASE
+    WHEN "t"."training_abgeschlossen" THEN 'Ja'
+    ELSE 'Nein'
+END, "t0"."vereinsname", "t1"."disziplin", "t2"."wetter"
+FROM "training" AS "t"
+INNER JOIN (
+    SELECT "v"."id", "v"."vereinsname"
+    FROM "vereine" AS "v"
+    WHERE NOT ("v"."is_deleted")
+) AS "t0" ON "t"."fk_id_verein" = "t0"."id"
+INNER JOIN (
+    SELECT "d"."id", "d"."disziplin"
+    FROM "disziplin" AS "d"
+    WHERE NOT ("d"."is_deleted")
+) AS "t1" ON "t"."fk_id_disziplin" = "t1"."id"
+INNER JOIN (
+    SELECT "w"."id", "w"."wetter"
+    FROM "wetter" AS "w"
+    WHERE NOT ("w"."is_deleted")
+) AS "t2" ON "t"."fk_id_wetter" = "t2"."id"
+WHERE NOT ("t"."is_deleted")
+ORDER BY "t"."zeitpunkt" DESC, "t"."name"
+2026-07-31 08:38:22.0776|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (1ms) [Parameters=[@__trainingId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+SELECT "t"."id", "t"."beschreibung", "t"."deleted_at_utc", "t"."fk_id_disziplin", "t"."is_deleted", "t"."name", "t"."training_abgeschlossen", "t"."updated_at_utc", "t"."fk_id_verein", "t"."fk_id_wetter", "t"."zeitpunkt", "t0"."id", "t0"."adresse", "t0"."deleted_at_utc", "t0"."is_deleted", "t0"."logo", "t0"."mitglieds_nummer", "t0"."ort", "t0"."postleitzahl", "t0"."updated_at_utc", "t0"."vereinsname", "t1"."id", "t1"."deleted_at_utc", "t1"."is_deleted", "t1"."disziplin", "t1"."updated_at_utc", "t1"."pf", "t1"."tf", "t2"."id", "t2"."wetter", "t2"."deleted_at_utc", "t2"."is_deleted", "t2"."updated_at_utc"
+FROM "training" AS "t"
+INNER JOIN (
+    SELECT "v"."id", "v"."adresse", "v"."deleted_at_utc", "v"."is_deleted", "v"."logo", "v"."mitglieds_nummer", "v"."ort", "v"."postleitzahl", "v"."updated_at_utc", "v"."vereinsname"
+    FROM "vereine" AS "v"
+    WHERE NOT ("v"."is_deleted")
+) AS "t0" ON "t"."fk_id_verein" = "t0"."id"
+INNER JOIN (
+    SELECT "d"."id", "d"."deleted_at_utc", "d"."is_deleted", "d"."disziplin", "d"."updated_at_utc", "d"."pf", "d"."tf"
+    FROM "disziplin" AS "d"
+    WHERE NOT ("d"."is_deleted")
+) AS "t1" ON "t"."fk_id_disziplin" = "t1"."id"
+INNER JOIN (
+    SELECT "w"."id", "w"."wetter", "w"."deleted_at_utc", "w"."is_deleted", "w"."updated_at_utc"
+    FROM "wetter" AS "w"
+    WHERE NOT ("w"."is_deleted")
+) AS "t2" ON "t"."fk_id_wetter" = "t2"."id"
+WHERE NOT ("t"."is_deleted") AND "t"."id" = @__trainingId_0
+LIMIT 1
+2026-07-31 08:38:22.0776|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[@__trainingId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+SELECT "t"."zeitpunkt" AS "Zeitpunkt", "t"."fk_id_disziplin" AS "DisziplinId"
+FROM "training" AS "t"
+WHERE NOT ("t"."is_deleted") AND "t"."id" = @__trainingId_0
+LIMIT 1
+2026-07-31 08:38:22.0776|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[@__trainingMeta_DisziplinId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+SELECT "d"."id", "d"."alter_bis", "d"."alter_von", "d"."bezeichnung", "d"."deleted_at_utc", "d"."fk_id_disziplin", "d"."is_deleted", "d"."updated_at_utc"
+FROM "disziplin_altersklassen" AS "d"
+WHERE NOT ("d"."is_deleted") AND "d"."fk_id_disziplin" = @__trainingMeta_DisziplinId_0
+ORDER BY "d"."alter_von", COALESCE("d"."alter_bis", 2147483647)
+2026-07-31 08:38:22.0891|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[@__trainingId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+SELECT "f"."fk_id_fahrer" AS "FahrerId", "f"."reihenfolge" AS "Reihenfolge", "t"."vorname" AS "Vorname", COALESCE("t"."nachname", '') AS "Nachname", "t0"."vereinsname" AS "VereinName", "t"."geburtsdatum" AS "Geburtsdatum"
+FROM "fahrer_im_training" AS "f"
+INNER JOIN (
+    SELECT "f0"."id", "f0"."geburtsdatum", "f0"."nachname", "f0"."fk_id_verein", "f0"."vorname"
+    FROM "fahrer" AS "f0"
+    WHERE NOT ("f0"."is_deleted")
+) AS "t" ON "f"."fk_id_fahrer" = "t"."id"
+INNER JOIN (
+    SELECT "v"."id", "v"."vereinsname"
+    FROM "vereine" AS "v"
+    WHERE NOT ("v"."is_deleted")
+) AS "t0" ON "t"."fk_id_verein" = "t0"."id"
+WHERE NOT ("f"."is_deleted") AND "f"."fk_id_training" = @__trainingId_0
+ORDER BY "f"."reihenfolge", "t"."vorname", "t"."nachname"
+2026-07-31 08:38:22.0891|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[@__trainingId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+SELECT "t0"."tf" AS "Torfehler", "t0"."pf" AS "Pylonenfehler"
+FROM "training" AS "t"
+INNER JOIN (
+    SELECT "d"."id", "d"."pf", "d"."tf"
+    FROM "disziplin" AS "d"
+    WHERE NOT ("d"."is_deleted")
+) AS "t0" ON "t"."fk_id_disziplin" = "t0"."id"
+WHERE NOT ("t"."is_deleted") AND "t"."id" = @__trainingId_0
+LIMIT 1
+2026-07-31 08:38:22.0891|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[@__trainingId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+SELECT "t0"."fk_id_fahrer" AS "FahrerId", "t2"."vorname" AS "Vorname", COALESCE("t2"."nachname", '') AS "Nachname", "t0"."altersklasse_snapshot" AS "AltersklasseSnapshot", "t3"."Name" AS "KartName", "t0"."datum" AS "Zeitpunkt", COALESCE("t"."runde", 0) AS "Runde", "t"."rundenzeit" AS "Rundenzeit", COALESCE("t"."pf", 0) AS "Pylonen", COALESCE("t"."tf", 0) AS "Tore", "t"."ungueltig" AS "Ungueltig"
+FROM "trunden" AS "t"
+LEFT JOIN (
+    SELECT "t1"."id", "t1"."altersklasse_snapshot", "t1"."datum", "t1"."fk_id_fahrer", "t1"."fk_id_kart", "t1"."fk_id_training"
+    FROM "tstints" AS "t1"
+    WHERE NOT ("t1"."is_deleted")
+) AS "t0" ON "t"."fk_id_tstint" = "t0"."id"
+LEFT JOIN (
+    SELECT "f"."id", "f"."nachname", "f"."vorname"
+    FROM "fahrer" AS "f"
+    WHERE NOT ("f"."is_deleted")
+) AS "t2" ON "t0"."fk_id_fahrer" = "t2"."id"
+LEFT JOIN (
+    SELECT "k"."id", "k"."Name"
+    FROM "karts" AS "k"
+    WHERE NOT ("k"."is_deleted")
+) AS "t3" ON "t0"."fk_id_kart" = "t3"."id"
+WHERE NOT ("t"."is_deleted") AND "t0"."id" IS NOT NULL AND "t0"."fk_id_training" = @__trainingId_0
+2026-07-31 08:38:51.9062|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (1ms) [Parameters=[@p0='?' (Size = 2), @p1='?' (DbType = DateTime), @p2='?' (DbType = DateTime), @p3='?' (DbType = Int32), @p4='?' (DbType = Int32), @p5='?' (DbType = Int32), @p6='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+INSERT INTO "tstints" ("altersklasse_snapshot", "datum", "deleted_at_utc", "fk_id_fahrer", "fk_id_kart", "fk_id_training", "updated_at_utc")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6)
+RETURNING "id", "is_deleted";
+2026-07-31 08:38:51.9062|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[@p7='?' (DbType = DateTime), @p8='?' (DbType = Int32), @p9='?' (DbType = Int32), @p10='?' (DbType = Double), @p11='?' (DbType = Int32), @p12='?' (DbType = Int32), @p13='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+INSERT INTO "trunden" ("deleted_at_utc", "pf", "runde", "rundenzeit", "tf", "fk_id_tstint", "updated_at_utc")
+VALUES (@p7, @p8, @p9, @p10, @p11, @p12, @p13)
+RETURNING "id", "is_deleted", "ungueltig";
+2026-07-31 08:38:51.9062|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = DateTime), @p1='?' (DbType = Int32), @p2='?' (DbType = Int32), @p3='?' (DbType = Double), @p4='?' (DbType = Int32), @p5='?' (DbType = Int32), @p6='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+INSERT INTO "trunden" ("deleted_at_utc", "pf", "runde", "rundenzeit", "tf", "fk_id_tstint", "updated_at_utc")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6)
+RETURNING "id", "is_deleted", "ungueltig";
+2026-07-31 08:38:51.9154|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = DateTime), @p1='?' (DbType = Int32), @p2='?' (DbType = Int32), @p3='?' (DbType = Double), @p4='?' (DbType = Int32), @p5='?' (DbType = Int32), @p6='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+INSERT INTO "trunden" ("deleted_at_utc", "pf", "runde", "rundenzeit", "tf", "fk_id_tstint", "updated_at_utc")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6)
+RETURNING "id", "is_deleted", "ungueltig";
+2026-07-31 08:38:51.9154|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[@__trainingId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+SELECT "t0"."tf" AS "Torfehler", "t0"."pf" AS "Pylonenfehler"
+FROM "training" AS "t"
+INNER JOIN (
+    SELECT "d"."id", "d"."pf", "d"."tf"
+    FROM "disziplin" AS "d"
+    WHERE NOT ("d"."is_deleted")
+) AS "t0" ON "t"."fk_id_disziplin" = "t0"."id"
+WHERE NOT ("t"."is_deleted") AND "t"."id" = @__trainingId_0
+LIMIT 1
+2026-07-31 08:38:51.9154|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[@__trainingId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+SELECT "t0"."fk_id_fahrer" AS "FahrerId", "t2"."vorname" AS "Vorname", COALESCE("t2"."nachname", '') AS "Nachname", "t0"."altersklasse_snapshot" AS "AltersklasseSnapshot", "t3"."Name" AS "KartName", "t0"."datum" AS "Zeitpunkt", COALESCE("t"."runde", 0) AS "Runde", "t"."rundenzeit" AS "Rundenzeit", COALESCE("t"."pf", 0) AS "Pylonen", COALESCE("t"."tf", 0) AS "Tore", "t"."ungueltig" AS "Ungueltig"
+FROM "trunden" AS "t"
+LEFT JOIN (
+    SELECT "t1"."id", "t1"."altersklasse_snapshot", "t1"."datum", "t1"."fk_id_fahrer", "t1"."fk_id_kart", "t1"."fk_id_training"
+    FROM "tstints" AS "t1"
+    WHERE NOT ("t1"."is_deleted")
+) AS "t0" ON "t"."fk_id_tstint" = "t0"."id"
+LEFT JOIN (
+    SELECT "f"."id", "f"."nachname", "f"."vorname"
+    FROM "fahrer" AS "f"
+    WHERE NOT ("f"."is_deleted")
+) AS "t2" ON "t0"."fk_id_fahrer" = "t2"."id"
+LEFT JOIN (
+    SELECT "k"."id", "k"."Name"
+    FROM "karts" AS "k"
+    WHERE NOT ("k"."is_deleted")
+) AS "t3" ON "t0"."fk_id_kart" = "t3"."id"
+WHERE NOT ("t"."is_deleted") AND "t0"."id" IS NOT NULL AND "t0"."fk_id_training" = @__trainingId_0
+2026-07-31 08:38:51.9923|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "s"."id", "s"."last_sync_utc"
+FROM "sync_state" AS "s"
+WHERE "s"."id" = 'global'
+LIMIT 1
+2026-07-31 08:38:52.0021|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `s`.`id`, `s`.`last_sync_utc`
+FROM `sync_state` AS `s`
+WHERE `s`.`id` = 'global'
+LIMIT 1
+2026-07-31 08:38:52.0021|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "disziplin" AS "d"
+WHERE "d"."updated_at_utc" > @__lastSyncUtc_0
+2026-07-31 08:38:52.0021|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "disziplin_altersklassen" AS "d"
+WHERE "d"."updated_at_utc" > @__lastSyncUtc_0
+2026-07-31 08:38:52.0021|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "vereine" AS "v"
+WHERE "v"."updated_at_utc" > @__lastSyncUtc_0
+2026-07-31 08:38:52.0021|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "wetter" AS "w"
+WHERE "w"."updated_at_utc" > @__lastSyncUtc_0
+2026-07-31 08:38:52.0021|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "fahrer" AS "f"
+WHERE "f"."updated_at_utc" > @__lastSyncUtc_0
+2026-07-31 08:38:52.0021|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "training" AS "t"
+WHERE "t"."updated_at_utc" > @__lastSyncUtc_0
+2026-07-31 08:38:52.0021|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "meisterschaften" AS "m"
+WHERE "m"."updated_at_utc" > @__lastSyncUtc_0
+2026-07-31 08:38:52.0021|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "karts" AS "k"
+WHERE "k"."updated_at_utc" > @__lastSyncUtc_0
+2026-07-31 08:38:52.0021|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "tstints" AS "t"
+WHERE "t"."updated_at_utc" > @__lastSyncUtc_0
+2026-07-31 08:38:52.0021|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "mstints" AS "m"
+WHERE "m"."updated_at_utc" > @__lastSyncUtc_0
+2026-07-31 08:38:52.0021|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "fahrer_im_training" AS "f"
+WHERE "f"."updated_at_utc" > @__lastSyncUtc_0
+2026-07-31 08:38:52.0021|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "fahrer_inder_meisterschaft" AS "f"
+WHERE "f"."updated_at_utc" > @__lastSyncUtc_0
+2026-07-31 08:38:52.0021|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "trunden" AS "t"
+WHERE "t"."updated_at_utc" > @__lastSyncUtc_0
+2026-07-31 08:38:52.0021|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "mrunden" AS "m"
+WHERE "m"."updated_at_utc" > @__lastSyncUtc_0
+2026-07-31 08:38:52.0144|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM `disziplin` AS `d`
+WHERE `d`.`updated_at_utc` > @__lastSyncUtc_0
+2026-07-31 08:38:52.0144|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (6ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM `disziplin_altersklassen` AS `d`
+WHERE `d`.`updated_at_utc` > @__lastSyncUtc_0
+2026-07-31 08:38:52.0355|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (6ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM `vereine` AS `v`
+WHERE `v`.`updated_at_utc` > @__lastSyncUtc_0
+2026-07-31 08:38:52.0455|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM `wetter` AS `w`
+WHERE `w`.`updated_at_utc` > @__lastSyncUtc_0
+2026-07-31 08:38:52.0455|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (4ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM `fahrer` AS `f`
+WHERE `f`.`updated_at_utc` > @__lastSyncUtc_0
+2026-07-31 08:38:52.0608|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM `training` AS `t`
+WHERE `t`.`updated_at_utc` > @__lastSyncUtc_0
+2026-07-31 08:38:52.0608|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (4ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM `meisterschaften` AS `m`
+WHERE `m`.`updated_at_utc` > @__lastSyncUtc_0
+2026-07-31 08:38:52.0759|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (4ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM `karts` AS `k`
+WHERE `k`.`updated_at_utc` > @__lastSyncUtc_0
+2026-07-31 08:38:52.0759|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM `tstints` AS `t`
+WHERE `t`.`updated_at_utc` > @__lastSyncUtc_0
+2026-07-31 08:38:52.0930|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM `mstints` AS `m`
+WHERE `m`.`updated_at_utc` > @__lastSyncUtc_0
+2026-07-31 08:38:52.0930|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (6ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM `fahrer_im_training` AS `f`
+WHERE `f`.`updated_at_utc` > @__lastSyncUtc_0
+2026-07-31 08:38:52.1079|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (3ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM `fahrer_inder_meisterschaft` AS `f`
+WHERE `f`.`updated_at_utc` > @__lastSyncUtc_0
+2026-07-31 08:38:52.1079|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (4ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM `trunden` AS `t`
+WHERE `t`.`updated_at_utc` > @__lastSyncUtc_0
+2026-07-31 08:38:52.1253|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (4ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM `mrunden` AS `m`
+WHERE `m`.`updated_at_utc` > @__lastSyncUtc_0
+2026-07-31 08:39:01.2627|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "t"."id", "t"."fk_id_verein", "t"."fk_id_disziplin", "t"."fk_id_wetter", "t"."name", "t"."beschreibung", "t"."zeitpunkt", "t"."training_abgeschlossen", CASE
+    WHEN "t"."training_abgeschlossen" THEN 'Ja'
+    ELSE 'Nein'
+END, "t0"."vereinsname", "t1"."disziplin", "t2"."wetter"
+FROM "training" AS "t"
+INNER JOIN (
+    SELECT "v"."id", "v"."vereinsname"
+    FROM "vereine" AS "v"
+    WHERE NOT ("v"."is_deleted")
+) AS "t0" ON "t"."fk_id_verein" = "t0"."id"
+INNER JOIN (
+    SELECT "d"."id", "d"."disziplin"
+    FROM "disziplin" AS "d"
+    WHERE NOT ("d"."is_deleted")
+) AS "t1" ON "t"."fk_id_disziplin" = "t1"."id"
+INNER JOIN (
+    SELECT "w"."id", "w"."wetter"
+    FROM "wetter" AS "w"
+    WHERE NOT ("w"."is_deleted")
+) AS "t2" ON "t"."fk_id_wetter" = "t2"."id"
+WHERE NOT ("t"."is_deleted")
+ORDER BY "t"."zeitpunkt" DESC, "t"."name"
+2026-07-31 08:39:02.6862|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[@__trainingId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+SELECT "t"."id", "t"."beschreibung", "t"."deleted_at_utc", "t"."fk_id_disziplin", "t"."is_deleted", "t"."name", "t"."training_abgeschlossen", "t"."updated_at_utc", "t"."fk_id_verein", "t"."fk_id_wetter", "t"."zeitpunkt", "t0"."id", "t0"."deleted_at_utc", "t0"."is_deleted", "t0"."disziplin", "t0"."updated_at_utc", "t0"."pf", "t0"."tf"
+FROM "training" AS "t"
+INNER JOIN (
+    SELECT "d"."id", "d"."deleted_at_utc", "d"."is_deleted", "d"."disziplin", "d"."updated_at_utc", "d"."pf", "d"."tf"
+    FROM "disziplin" AS "d"
+    WHERE NOT ("d"."is_deleted")
+) AS "t0" ON "t"."fk_id_disziplin" = "t0"."id"
+WHERE NOT ("t"."is_deleted") AND "t"."id" = @__trainingId_0
+LIMIT 1
+2026-07-31 08:39:02.6862|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[@__trainingId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+SELECT "t"."fk_id_fahrer" AS "FahrerId", "t"."datum" AS "Datum"
+FROM "tstints" AS "t"
+WHERE NOT ("t"."is_deleted") AND "t"."fk_id_training" = @__trainingId_0
+2026-07-31 08:39:02.6862|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[@__trainingId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+SELECT "t0"."fk_id_fahrer" AS "FahrerId", "t0"."id" AS "StintId", "t2"."vorname" AS "Vorname", COALESCE("t2"."nachname", '') AS "Nachname", "t3"."Name" AS "KartName", "t0"."altersklasse_snapshot" AS "Altersklasse", "t0"."datum" AS "Zeitpunkt", "t"."runde" AS "Runde", "t"."rundenzeit" AS "Rundenzeit", COALESCE("t"."pf", 0) AS "Pylonen", COALESCE("t"."tf", 0) AS "Tore", "t"."ungueltig" AS "Ungueltig"
+FROM "trunden" AS "t"
+LEFT JOIN (
+    SELECT "t1"."id", "t1"."altersklasse_snapshot", "t1"."datum", "t1"."fk_id_fahrer", "t1"."fk_id_kart", "t1"."fk_id_training"
+    FROM "tstints" AS "t1"
+    WHERE NOT ("t1"."is_deleted")
+) AS "t0" ON "t"."fk_id_tstint" = "t0"."id"
+LEFT JOIN (
+    SELECT "f"."id", "f"."nachname", "f"."vorname"
+    FROM "fahrer" AS "f"
+    WHERE NOT ("f"."is_deleted")
+) AS "t2" ON "t0"."fk_id_fahrer" = "t2"."id"
+LEFT JOIN (
+    SELECT "k"."id", "k"."Name"
+    FROM "karts" AS "k"
+    WHERE NOT ("k"."is_deleted")
+) AS "t3" ON "t0"."fk_id_kart" = "t3"."id"
+WHERE NOT ("t"."is_deleted") AND "t0"."id" IS NOT NULL AND "t0"."fk_id_training" = @__trainingId_0
+2026-07-31 08:39:12.7413|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "fahrer" AS "f"
+WHERE NOT ("f"."is_deleted")
+2026-07-31 08:39:12.7413|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "karts" AS "k"
+WHERE NOT ("k"."is_deleted")
+2026-07-31 08:39:12.7413|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "training" AS "t"
+WHERE NOT ("t"."is_deleted")
+2026-07-31 08:39:12.7413|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "tstints" AS "t"
+WHERE NOT ("t"."is_deleted")
+2026-07-31 08:39:12.7413|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT CASE
+    WHEN "t0"."id" IS NOT NULL THEN "t0"."fk_id_fahrer"
+    ELSE 0
+END AS "FahrerId", CASE
+    WHEN "t0"."id" IS NOT NULL THEN "t0"."fk_id_training"
+    ELSE 0
+END AS "TrainingId", "t"."rundenzeit" AS "Sekunden", COALESCE("t"."pf", 0) AS "Pylonen", COALESCE("t"."tf", 0) AS "Tore", "t"."ungueltig" AS "Ungueltig"
+FROM "trunden" AS "t"
+LEFT JOIN (
+    SELECT "t1"."id", "t1"."fk_id_fahrer", "t1"."fk_id_training"
+    FROM "tstints" AS "t1"
+    WHERE NOT ("t1"."is_deleted")
+) AS "t0" ON "t"."fk_id_tstint" = "t0"."id"
+WHERE NOT ("t"."is_deleted") AND "t"."rundenzeit" IS NOT NULL AND "t"."rundenzeit" > 0.0
+2026-07-31 08:39:12.7413|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "t"."fk_id_fahrer" AS "FahrerId", COUNT(*) AS "Stints", COUNT(DISTINCT ("t"."fk_id_training")) AS "Trainings"
+FROM "tstints" AS "t"
+WHERE NOT ("t"."is_deleted")
+GROUP BY "t"."fk_id_fahrer"
+2026-07-31 08:39:12.7437|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "f"."id" AS "Id", "f"."vorname" AS "Vorname", COALESCE("f"."nachname", '') AS "Nachname"
+FROM "fahrer" AS "f"
+WHERE NOT ("f"."is_deleted")
+ORDER BY "f"."vorname", "f"."nachname"
+2026-07-31 09:42:10.1091|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "t"."Value"
+FROM (
+    SELECT COUNT(1) AS Value FROM sqlite_master WHERE type='table' AND name='__EFMigrationsHistory'
+) AS "t"
+LIMIT 2
+2026-07-31 09:42:10.1347|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "t"."Value"
+FROM (
+    SELECT COUNT(1) AS Value FROM sqlite_master WHERE type='table' AND name='__EFMigrationsHistory'
+) AS "t"
+LIMIT 2
+2026-07-31 09:42:10.1347|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "t"."Value"
+FROM (
+    SELECT COUNT(1) AS Value FROM __EFMigrationsHistory WHERE MigrationId = '20260713103700_AddBidirectionalSyncMetadataSqlite'
+) AS "t"
+LIMIT 2
+2026-07-31 09:42:10.1432|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*) FROM "sqlite_master" WHERE "name" = '__EFMigrationsHistory' AND "type" = 'table';
+2026-07-31 09:42:10.1432|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*) FROM "sqlite_master" WHERE "name" = '__EFMigrationsHistory' AND "type" = 'table';
+2026-07-31 09:42:10.1432|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+2026-07-31 09:42:10.1559|INFO|Microsoft.EntityFrameworkCore.Migrations|No migrations were applied. The database is already up to date.
+2026-07-31 09:42:10.5137|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (11ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = '__EFMigrationsHistory'
+) AS `t`
+LIMIT 2
+2026-07-31 09:42:10.5291|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (6ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM __EFMigrationsHistory WHERE MigrationId = '20260713103701_AddBidirectionalSyncMetadata'
+) AS `t`
+LIMIT 2
+2026-07-31 09:42:10.5291|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'sync_state'
+) AS `t`
+LIMIT 2
+2026-07-31 09:42:10.5491|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'sync_state'
+) AS `t`
+LIMIT 2
+2026-07-31 09:42:10.5649|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'disziplin' AND COLUMN_NAME = 'updated_at_utc'
+) AS `t`
+LIMIT 2
+2026-07-31 09:42:10.5762|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'disziplin' AND COLUMN_NAME = 'is_deleted'
+) AS `t`
+LIMIT 2
+2026-07-31 09:42:10.5762|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'disziplin' AND COLUMN_NAME = 'deleted_at_utc'
+) AS `t`
+LIMIT 2
+2026-07-31 09:42:10.5978|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (6ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'disziplin_altersklassen' AND COLUMN_NAME = 'updated_at_utc'
+) AS `t`
+LIMIT 2
+2026-07-31 09:42:10.6115|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (7ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'disziplin_altersklassen' AND COLUMN_NAME = 'is_deleted'
+) AS `t`
+LIMIT 2
+2026-07-31 09:42:10.6277|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (10ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'disziplin_altersklassen' AND COLUMN_NAME = 'deleted_at_utc'
+) AS `t`
+LIMIT 2
+2026-07-31 09:42:10.6415|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (7ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'vereine' AND COLUMN_NAME = 'updated_at_utc'
+) AS `t`
+LIMIT 2
+2026-07-31 09:42:10.6415|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'vereine' AND COLUMN_NAME = 'is_deleted'
+) AS `t`
+LIMIT 2
+2026-07-31 09:42:10.6622|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (6ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'vereine' AND COLUMN_NAME = 'deleted_at_utc'
+) AS `t`
+LIMIT 2
+2026-07-31 09:42:10.6703|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'wetter' AND COLUMN_NAME = 'updated_at_utc'
+) AS `t`
+LIMIT 2
+2026-07-31 09:42:10.6703|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (6ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'wetter' AND COLUMN_NAME = 'is_deleted'
+) AS `t`
+LIMIT 2
+2026-07-31 09:42:10.6932|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (6ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'wetter' AND COLUMN_NAME = 'deleted_at_utc'
+) AS `t`
+LIMIT 2
+2026-07-31 09:42:10.7030|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'fahrer' AND COLUMN_NAME = 'updated_at_utc'
+) AS `t`
+LIMIT 2
+2026-07-31 09:42:10.7030|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'fahrer' AND COLUMN_NAME = 'is_deleted'
+) AS `t`
+LIMIT 2
+2026-07-31 09:42:10.7246|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (6ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'fahrer' AND COLUMN_NAME = 'deleted_at_utc'
+) AS `t`
+LIMIT 2
+2026-07-31 09:42:10.7329|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'training' AND COLUMN_NAME = 'updated_at_utc'
+) AS `t`
+LIMIT 2
+2026-07-31 09:42:10.7329|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'training' AND COLUMN_NAME = 'is_deleted'
+) AS `t`
+LIMIT 2
+2026-07-31 09:42:10.7517|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (6ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'training' AND COLUMN_NAME = 'deleted_at_utc'
+) AS `t`
+LIMIT 2
+2026-07-31 09:42:10.7517|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'meisterschaften' AND COLUMN_NAME = 'updated_at_utc'
+) AS `t`
+LIMIT 2
+2026-07-31 09:42:10.7771|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'meisterschaften' AND COLUMN_NAME = 'is_deleted'
+) AS `t`
+LIMIT 2
+2026-07-31 09:42:10.7771|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'meisterschaften' AND COLUMN_NAME = 'deleted_at_utc'
+) AS `t`
+LIMIT 2
+2026-07-31 09:42:10.7979|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (6ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'karts' AND COLUMN_NAME = 'updated_at_utc'
+) AS `t`
+LIMIT 2
+2026-07-31 09:42:10.7979|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (6ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'karts' AND COLUMN_NAME = 'is_deleted'
+) AS `t`
+LIMIT 2
+2026-07-31 09:42:10.8181|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'karts' AND COLUMN_NAME = 'deleted_at_utc'
+) AS `t`
+LIMIT 2
+2026-07-31 09:42:10.8285|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'tstints' AND COLUMN_NAME = 'updated_at_utc'
+) AS `t`
+LIMIT 2
+2026-07-31 09:42:10.8285|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'tstints' AND COLUMN_NAME = 'is_deleted'
+) AS `t`
+LIMIT 2
+2026-07-31 09:42:10.8475|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (6ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'tstints' AND COLUMN_NAME = 'deleted_at_utc'
+) AS `t`
+LIMIT 2
+2026-07-31 09:42:10.8570|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'mstints' AND COLUMN_NAME = 'updated_at_utc'
+) AS `t`
+LIMIT 2
+2026-07-31 09:42:10.8570|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (6ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'mstints' AND COLUMN_NAME = 'is_deleted'
+) AS `t`
+LIMIT 2
+2026-07-31 09:42:10.8783|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'mstints' AND COLUMN_NAME = 'deleted_at_utc'
+) AS `t`
+LIMIT 2
+2026-07-31 09:42:10.8865|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'fahrer_im_training' AND COLUMN_NAME = 'updated_at_utc'
+) AS `t`
+LIMIT 2
+2026-07-31 09:42:10.9044|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (6ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'fahrer_im_training' AND COLUMN_NAME = 'is_deleted'
+) AS `t`
+LIMIT 2
+2026-07-31 09:42:10.9044|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'fahrer_im_training' AND COLUMN_NAME = 'deleted_at_utc'
+) AS `t`
+LIMIT 2
+2026-07-31 09:42:10.9218|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'fahrer_inder_meisterschaft' AND COLUMN_NAME = 'updated_at_utc'
+) AS `t`
+LIMIT 2
+2026-07-31 09:42:10.9218|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'fahrer_inder_meisterschaft' AND COLUMN_NAME = 'is_deleted'
+) AS `t`
+LIMIT 2
+2026-07-31 09:42:10.9401|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'fahrer_inder_meisterschaft' AND COLUMN_NAME = 'deleted_at_utc'
+) AS `t`
+LIMIT 2
+2026-07-31 09:42:10.9501|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'trunden' AND COLUMN_NAME = 'updated_at_utc'
+) AS `t`
+LIMIT 2
+2026-07-31 09:42:10.9501|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'trunden' AND COLUMN_NAME = 'is_deleted'
+) AS `t`
+LIMIT 2
+2026-07-31 09:42:10.9703|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'trunden' AND COLUMN_NAME = 'deleted_at_utc'
+) AS `t`
+LIMIT 2
+2026-07-31 09:42:10.9811|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'mrunden' AND COLUMN_NAME = 'updated_at_utc'
+) AS `t`
+LIMIT 2
+2026-07-31 09:42:10.9811|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'mrunden' AND COLUMN_NAME = 'is_deleted'
+) AS `t`
+LIMIT 2
+2026-07-31 09:42:10.9992|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `t`.`Value`
+FROM (
+    SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'mrunden' AND COLUMN_NAME = 'deleted_at_utc'
+) AS `t`
+LIMIT 2
+2026-07-31 09:42:11.0469|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (7ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='os' AND TABLE_NAME='__EFMigrationsHistory';
+2026-07-31 09:42:11.0890|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (6ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='os' AND TABLE_NAME='__EFMigrationsHistory';
+2026-07-31 09:42:11.1065|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (4ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `MigrationId`, `ProductVersion`
+FROM `__EFMigrationsHistory`
+ORDER BY `MigrationId`;
+2026-07-31 09:42:11.1065|INFO|Microsoft.EntityFrameworkCore.Migrations|No migrations were applied. The database is already up to date.
+2026-07-31 09:42:11.4413|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "t"."id", "t"."fk_id_verein", "t"."fk_id_disziplin", "t"."fk_id_wetter", "t"."name", "t"."beschreibung", "t"."zeitpunkt", "t"."training_abgeschlossen", CASE
+    WHEN "t"."training_abgeschlossen" THEN 'Ja'
+    ELSE 'Nein'
+END, "t0"."vereinsname", "t1"."disziplin", "t2"."wetter"
+FROM "training" AS "t"
+INNER JOIN (
+    SELECT "v"."id", "v"."vereinsname"
+    FROM "vereine" AS "v"
+    WHERE NOT ("v"."is_deleted")
+) AS "t0" ON "t"."fk_id_verein" = "t0"."id"
+INNER JOIN (
+    SELECT "d"."id", "d"."disziplin"
+    FROM "disziplin" AS "d"
+    WHERE NOT ("d"."is_deleted")
+) AS "t1" ON "t"."fk_id_disziplin" = "t1"."id"
+INNER JOIN (
+    SELECT "w"."id", "w"."wetter"
+    FROM "wetter" AS "w"
+    WHERE NOT ("w"."is_deleted")
+) AS "t2" ON "t"."fk_id_wetter" = "t2"."id"
+WHERE NOT ("t"."is_deleted")
+ORDER BY "t"."zeitpunkt" DESC, "t"."name"
+2026-07-31 09:42:11.5098|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "d"."id", "d"."deleted_at_utc", "d"."is_deleted", "d"."disziplin", "d"."updated_at_utc", "d"."pf", "d"."tf", "t"."id", "t"."alter_bis", "t"."alter_von", "t"."bezeichnung", "t"."deleted_at_utc", "t"."fk_id_disziplin", "t"."is_deleted", "t"."updated_at_utc"
+FROM "disziplin" AS "d"
+LEFT JOIN (
+    SELECT "d0"."id", "d0"."alter_bis", "d0"."alter_von", "d0"."bezeichnung", "d0"."deleted_at_utc", "d0"."fk_id_disziplin", "d0"."is_deleted", "d0"."updated_at_utc"
+    FROM "disziplin_altersklassen" AS "d0"
+    WHERE NOT ("d0"."is_deleted")
+) AS "t" ON "d"."id" = "t"."fk_id_disziplin"
+WHERE NOT ("d"."is_deleted")
+ORDER BY "d"."disziplin", "d"."id"
+2026-07-31 09:42:11.5249|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "v"."id", "v"."adresse", "v"."deleted_at_utc", "v"."is_deleted", "v"."logo", "v"."mitglieds_nummer", "v"."ort", "v"."postleitzahl", "v"."updated_at_utc", "v"."vereinsname"
+FROM "vereine" AS "v"
+WHERE NOT ("v"."is_deleted")
+ORDER BY "v"."vereinsname"
+2026-07-31 09:42:11.5870|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "f"."id", "f"."fk_id_verein", "f"."geschlecht", "f"."vorname", COALESCE("f"."nachname", ''), "f"."mitglieds_nummer", "f"."geburtsdatum", "f"."geburtsdatum" IS NOT NULL, "t"."vereinsname"
+FROM "fahrer" AS "f"
+INNER JOIN (
+    SELECT "v"."id", "v"."vereinsname"
+    FROM "vereine" AS "v"
+    WHERE NOT ("v"."is_deleted")
+) AS "t" ON "f"."fk_id_verein" = "t"."id"
+WHERE NOT ("f"."is_deleted")
+ORDER BY "f"."vorname", "f"."nachname"
+2026-07-31 09:42:11.5949|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "k"."id" AS "Id", "k"."fk_id_verein" AS "VereinId", "k"."fk_id_disziplin" AS "DisziplinId", COALESCE("k"."Name", '') AS "Name", COALESCE("k"."Motor", '') AS "Motor", COALESCE("k"."Chassis", '') AS "Chassis", "t"."vereinsname" AS "VereinName", "t0"."disziplin" AS "DisziplinName"
+FROM "karts" AS "k"
+INNER JOIN (
+    SELECT "v"."id", "v"."vereinsname"
+    FROM "vereine" AS "v"
+    WHERE NOT ("v"."is_deleted")
+) AS "t" ON "k"."fk_id_verein" = "t"."id"
+INNER JOIN (
+    SELECT "d"."id", "d"."disziplin"
+    FROM "disziplin" AS "d"
+    WHERE NOT ("d"."is_deleted")
+) AS "t0" ON "k"."fk_id_disziplin" = "t0"."id"
+WHERE NOT ("k"."is_deleted")
+ORDER BY "k"."Name"
+2026-07-31 09:42:11.5949|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "w"."id" AS "Id", "w"."wetter" AS "Name"
+FROM "wetter" AS "w"
+WHERE NOT ("w"."is_deleted")
+ORDER BY "w"."wetter"
+2026-07-31 09:42:11.5949|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "v"."id" AS "Id", "v"."vereinsname" AS "Name"
+FROM "vereine" AS "v"
+WHERE NOT ("v"."is_deleted")
+ORDER BY "v"."vereinsname"
+2026-07-31 09:42:11.6068|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "d"."id" AS "Id", "d"."disziplin" AS "Name"
+FROM "disziplin" AS "d"
+WHERE NOT ("d"."is_deleted")
+ORDER BY "d"."disziplin"
+2026-07-31 09:42:11.6068|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "w"."id" AS "Id", "w"."wetter" AS "Name"
+FROM "wetter" AS "w"
+WHERE NOT ("w"."is_deleted")
+ORDER BY "w"."wetter"
+2026-07-31 09:42:11.6068|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "k"."id", "k"."Name" IS NULL OR trim("k"."Name") = '', "k"."Name"
+FROM "karts" AS "k"
+WHERE NOT ("k"."is_deleted")
+ORDER BY "k"."Name", "k"."id"
+2026-07-31 09:42:11.6974|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "s"."id", "s"."last_sync_utc"
+FROM "sync_state" AS "s"
+WHERE "s"."id" = 'global'
+LIMIT 1
+2026-07-31 09:42:11.7096|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT `s`.`id`, `s`.`last_sync_utc`
+FROM `sync_state` AS `s`
+WHERE `s`.`id` = 'global'
+LIMIT 1
+2026-07-31 09:42:11.7310|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (2ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "disziplin" AS "d"
+WHERE "d"."updated_at_utc" > @__lastSyncUtc_0
+2026-07-31 09:42:11.7310|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "disziplin_altersklassen" AS "d"
+WHERE "d"."updated_at_utc" > @__lastSyncUtc_0
+2026-07-31 09:42:11.7310|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "vereine" AS "v"
+WHERE "v"."updated_at_utc" > @__lastSyncUtc_0
+2026-07-31 09:42:11.7310|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "wetter" AS "w"
+WHERE "w"."updated_at_utc" > @__lastSyncUtc_0
+2026-07-31 09:42:11.7310|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "fahrer" AS "f"
+WHERE "f"."updated_at_utc" > @__lastSyncUtc_0
+2026-07-31 09:42:11.7310|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "training" AS "t"
+WHERE "t"."updated_at_utc" > @__lastSyncUtc_0
+2026-07-31 09:42:11.7310|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "meisterschaften" AS "m"
+WHERE "m"."updated_at_utc" > @__lastSyncUtc_0
+2026-07-31 09:42:11.7310|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "karts" AS "k"
+WHERE "k"."updated_at_utc" > @__lastSyncUtc_0
+2026-07-31 09:42:11.7310|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "tstints" AS "t"
+WHERE "t"."updated_at_utc" > @__lastSyncUtc_0
+2026-07-31 09:42:11.7310|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "mstints" AS "m"
+WHERE "m"."updated_at_utc" > @__lastSyncUtc_0
+2026-07-31 09:42:11.7310|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "fahrer_im_training" AS "f"
+WHERE "f"."updated_at_utc" > @__lastSyncUtc_0
+2026-07-31 09:42:11.7465|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "fahrer_inder_meisterschaft" AS "f"
+WHERE "f"."updated_at_utc" > @__lastSyncUtc_0
+2026-07-31 09:42:11.7465|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "trunden" AS "t"
+WHERE "t"."updated_at_utc" > @__lastSyncUtc_0
+2026-07-31 09:42:11.7465|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "mrunden" AS "m"
+WHERE "m"."updated_at_utc" > @__lastSyncUtc_0
+2026-07-31 09:42:11.7838|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (21ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM `disziplin` AS `d`
+WHERE `d`.`updated_at_utc` > @__lastSyncUtc_0
+2026-07-31 09:42:11.8153|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (6ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM `disziplin_altersklassen` AS `d`
+WHERE `d`.`updated_at_utc` > @__lastSyncUtc_0
+2026-07-31 09:42:11.8271|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (6ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM `vereine` AS `v`
+WHERE `v`.`updated_at_utc` > @__lastSyncUtc_0
+2026-07-31 09:42:11.8271|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM `wetter` AS `w`
+WHERE `w`.`updated_at_utc` > @__lastSyncUtc_0
+2026-07-31 09:42:11.8503|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM `fahrer` AS `f`
+WHERE `f`.`updated_at_utc` > @__lastSyncUtc_0
+2026-07-31 09:42:11.8645|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (6ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM `training` AS `t`
+WHERE `t`.`updated_at_utc` > @__lastSyncUtc_0
+2026-07-31 09:42:11.8773|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (6ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM `meisterschaften` AS `m`
+WHERE `m`.`updated_at_utc` > @__lastSyncUtc_0
+2026-07-31 09:42:11.8872|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM `karts` AS `k`
+WHERE `k`.`updated_at_utc` > @__lastSyncUtc_0
+2026-07-31 09:42:11.8872|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (4ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM `tstints` AS `t`
+WHERE `t`.`updated_at_utc` > @__lastSyncUtc_0
+2026-07-31 09:42:11.9050|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM `mstints` AS `m`
+WHERE `m`.`updated_at_utc` > @__lastSyncUtc_0
+2026-07-31 09:42:11.9050|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM `fahrer_im_training` AS `f`
+WHERE `f`.`updated_at_utc` > @__lastSyncUtc_0
+2026-07-31 09:42:11.9255|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM `fahrer_inder_meisterschaft` AS `f`
+WHERE `f`.`updated_at_utc` > @__lastSyncUtc_0
+2026-07-31 09:42:11.9351|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (5ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM `trunden` AS `t`
+WHERE `t`.`updated_at_utc` > @__lastSyncUtc_0
+2026-07-31 09:42:12.0657|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (126ms) [Parameters=[@__lastSyncUtc_0='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM `mrunden` AS `m`
+WHERE `m`.`updated_at_utc` > @__lastSyncUtc_0
+2026-07-31 09:42:20.0128|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "t"."id", "t"."fk_id_verein", "t"."fk_id_disziplin", "t"."fk_id_wetter", "t"."name", "t"."beschreibung", "t"."zeitpunkt", "t"."training_abgeschlossen", CASE
+    WHEN "t"."training_abgeschlossen" THEN 'Ja'
+    ELSE 'Nein'
+END, "t0"."vereinsname", "t1"."disziplin", "t2"."wetter"
+FROM "training" AS "t"
+INNER JOIN (
+    SELECT "v"."id", "v"."vereinsname"
+    FROM "vereine" AS "v"
+    WHERE NOT ("v"."is_deleted")
+) AS "t0" ON "t"."fk_id_verein" = "t0"."id"
+INNER JOIN (
+    SELECT "d"."id", "d"."disziplin"
+    FROM "disziplin" AS "d"
+    WHERE NOT ("d"."is_deleted")
+) AS "t1" ON "t"."fk_id_disziplin" = "t1"."id"
+INNER JOIN (
+    SELECT "w"."id", "w"."wetter"
+    FROM "wetter" AS "w"
+    WHERE NOT ("w"."is_deleted")
+) AS "t2" ON "t"."fk_id_wetter" = "t2"."id"
+WHERE NOT ("t"."is_deleted")
+ORDER BY "t"."zeitpunkt" DESC, "t"."name"
+2026-07-31 09:42:22.3088|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (1ms) [Parameters=[@__trainingId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+SELECT "t"."id", "t"."beschreibung", "t"."deleted_at_utc", "t"."fk_id_disziplin", "t"."is_deleted", "t"."name", "t"."training_abgeschlossen", "t"."updated_at_utc", "t"."fk_id_verein", "t"."fk_id_wetter", "t"."zeitpunkt", "t0"."id", "t0"."deleted_at_utc", "t0"."is_deleted", "t0"."disziplin", "t0"."updated_at_utc", "t0"."pf", "t0"."tf"
+FROM "training" AS "t"
+INNER JOIN (
+    SELECT "d"."id", "d"."deleted_at_utc", "d"."is_deleted", "d"."disziplin", "d"."updated_at_utc", "d"."pf", "d"."tf"
+    FROM "disziplin" AS "d"
+    WHERE NOT ("d"."is_deleted")
+) AS "t0" ON "t"."fk_id_disziplin" = "t0"."id"
+WHERE NOT ("t"."is_deleted") AND "t"."id" = @__trainingId_0
+LIMIT 1
+2026-07-31 09:42:22.3088|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[@__trainingId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+SELECT "t"."fk_id_fahrer" AS "FahrerId", "t"."datum" AS "Datum"
+FROM "tstints" AS "t"
+WHERE NOT ("t"."is_deleted") AND "t"."fk_id_training" = @__trainingId_0
+2026-07-31 09:42:22.3088|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[@__trainingId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+SELECT "t0"."fk_id_fahrer" AS "FahrerId", "t0"."id" AS "StintId", "t2"."vorname" AS "Vorname", COALESCE("t2"."nachname", '') AS "Nachname", "t3"."Name" AS "KartName", "t0"."altersklasse_snapshot" AS "Altersklasse", "t0"."datum" AS "Zeitpunkt", "t"."runde" AS "Runde", "t"."rundenzeit" AS "Rundenzeit", COALESCE("t"."pf", 0) AS "Pylonen", COALESCE("t"."tf", 0) AS "Tore", "t"."ungueltig" AS "Ungueltig"
+FROM "trunden" AS "t"
+LEFT JOIN (
+    SELECT "t1"."id", "t1"."altersklasse_snapshot", "t1"."datum", "t1"."fk_id_fahrer", "t1"."fk_id_kart", "t1"."fk_id_training"
+    FROM "tstints" AS "t1"
+    WHERE NOT ("t1"."is_deleted")
+) AS "t0" ON "t"."fk_id_tstint" = "t0"."id"
+LEFT JOIN (
+    SELECT "f"."id", "f"."nachname", "f"."vorname"
+    FROM "fahrer" AS "f"
+    WHERE NOT ("f"."is_deleted")
+) AS "t2" ON "t0"."fk_id_fahrer" = "t2"."id"
+LEFT JOIN (
+    SELECT "k"."id", "k"."Name"
+    FROM "karts" AS "k"
+    WHERE NOT ("k"."is_deleted")
+) AS "t3" ON "t0"."fk_id_kart" = "t3"."id"
+WHERE NOT ("t"."is_deleted") AND "t0"."id" IS NOT NULL AND "t0"."fk_id_training" = @__trainingId_0
+2026-07-31 09:42:32.5444|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (1ms) [Parameters=[@__trainingId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+SELECT "t"."id", "t"."beschreibung", "t"."deleted_at_utc", "t"."fk_id_disziplin", "t"."is_deleted", "t"."name", "t"."training_abgeschlossen", "t"."updated_at_utc", "t"."fk_id_verein", "t"."fk_id_wetter", "t"."zeitpunkt", "t0"."id", "t0"."adresse", "t0"."deleted_at_utc", "t0"."is_deleted", "t0"."logo", "t0"."mitglieds_nummer", "t0"."ort", "t0"."postleitzahl", "t0"."updated_at_utc", "t0"."vereinsname", "t1"."id", "t1"."deleted_at_utc", "t1"."is_deleted", "t1"."disziplin", "t1"."updated_at_utc", "t1"."pf", "t1"."tf", "t2"."id", "t2"."wetter", "t2"."deleted_at_utc", "t2"."is_deleted", "t2"."updated_at_utc"
+FROM "training" AS "t"
+INNER JOIN (
+    SELECT "v"."id", "v"."adresse", "v"."deleted_at_utc", "v"."is_deleted", "v"."logo", "v"."mitglieds_nummer", "v"."ort", "v"."postleitzahl", "v"."updated_at_utc", "v"."vereinsname"
+    FROM "vereine" AS "v"
+    WHERE NOT ("v"."is_deleted")
+) AS "t0" ON "t"."fk_id_verein" = "t0"."id"
+INNER JOIN (
+    SELECT "d"."id", "d"."deleted_at_utc", "d"."is_deleted", "d"."disziplin", "d"."updated_at_utc", "d"."pf", "d"."tf"
+    FROM "disziplin" AS "d"
+    WHERE NOT ("d"."is_deleted")
+) AS "t1" ON "t"."fk_id_disziplin" = "t1"."id"
+INNER JOIN (
+    SELECT "w"."id", "w"."wetter", "w"."deleted_at_utc", "w"."is_deleted", "w"."updated_at_utc"
+    FROM "wetter" AS "w"
+    WHERE NOT ("w"."is_deleted")
+) AS "t2" ON "t"."fk_id_wetter" = "t2"."id"
+WHERE NOT ("t"."is_deleted") AND "t"."id" = @__trainingId_0
+LIMIT 1
+2026-07-31 09:42:32.5444|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[@__trainingId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+SELECT "t"."zeitpunkt" AS "Zeitpunkt", "t"."fk_id_disziplin" AS "DisziplinId"
+FROM "training" AS "t"
+WHERE NOT ("t"."is_deleted") AND "t"."id" = @__trainingId_0
+LIMIT 1
+2026-07-31 09:42:32.5444|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[@__trainingMeta_DisziplinId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+SELECT "d"."id", "d"."alter_bis", "d"."alter_von", "d"."bezeichnung", "d"."deleted_at_utc", "d"."fk_id_disziplin", "d"."is_deleted", "d"."updated_at_utc"
+FROM "disziplin_altersklassen" AS "d"
+WHERE NOT ("d"."is_deleted") AND "d"."fk_id_disziplin" = @__trainingMeta_DisziplinId_0
+ORDER BY "d"."alter_von", COALESCE("d"."alter_bis", 2147483647)
+2026-07-31 09:42:32.5444|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[@__trainingId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+SELECT "f"."fk_id_fahrer" AS "FahrerId", "f"."reihenfolge" AS "Reihenfolge", "t"."vorname" AS "Vorname", COALESCE("t"."nachname", '') AS "Nachname", "t0"."vereinsname" AS "VereinName", "t"."geburtsdatum" AS "Geburtsdatum"
+FROM "fahrer_im_training" AS "f"
+INNER JOIN (
+    SELECT "f0"."id", "f0"."geburtsdatum", "f0"."nachname", "f0"."fk_id_verein", "f0"."vorname"
+    FROM "fahrer" AS "f0"
+    WHERE NOT ("f0"."is_deleted")
+) AS "t" ON "f"."fk_id_fahrer" = "t"."id"
+INNER JOIN (
+    SELECT "v"."id", "v"."vereinsname"
+    FROM "vereine" AS "v"
+    WHERE NOT ("v"."is_deleted")
+) AS "t0" ON "t"."fk_id_verein" = "t0"."id"
+WHERE NOT ("f"."is_deleted") AND "f"."fk_id_training" = @__trainingId_0
+ORDER BY "f"."reihenfolge", "t"."vorname", "t"."nachname"
+2026-07-31 09:42:32.5661|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[@__trainingId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+SELECT "t0"."tf" AS "Torfehler", "t0"."pf" AS "Pylonenfehler"
+FROM "training" AS "t"
+INNER JOIN (
+    SELECT "d"."id", "d"."pf", "d"."tf"
+    FROM "disziplin" AS "d"
+    WHERE NOT ("d"."is_deleted")
+) AS "t0" ON "t"."fk_id_disziplin" = "t0"."id"
+WHERE NOT ("t"."is_deleted") AND "t"."id" = @__trainingId_0
+LIMIT 1
+2026-07-31 09:42:32.5661|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[@__trainingId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+SELECT "t0"."fk_id_fahrer" AS "FahrerId", "t2"."vorname" AS "Vorname", COALESCE("t2"."nachname", '') AS "Nachname", "t0"."altersklasse_snapshot" AS "AltersklasseSnapshot", "t3"."Name" AS "KartName", "t0"."datum" AS "Zeitpunkt", COALESCE("t"."runde", 0) AS "Runde", "t"."rundenzeit" AS "Rundenzeit", COALESCE("t"."pf", 0) AS "Pylonen", COALESCE("t"."tf", 0) AS "Tore", "t"."ungueltig" AS "Ungueltig"
+FROM "trunden" AS "t"
+LEFT JOIN (
+    SELECT "t1"."id", "t1"."altersklasse_snapshot", "t1"."datum", "t1"."fk_id_fahrer", "t1"."fk_id_kart", "t1"."fk_id_training"
+    FROM "tstints" AS "t1"
+    WHERE NOT ("t1"."is_deleted")
+) AS "t0" ON "t"."fk_id_tstint" = "t0"."id"
+LEFT JOIN (
+    SELECT "f"."id", "f"."nachname", "f"."vorname"
+    FROM "fahrer" AS "f"
+    WHERE NOT ("f"."is_deleted")
+) AS "t2" ON "t0"."fk_id_fahrer" = "t2"."id"
+LEFT JOIN (
+    SELECT "k"."id", "k"."Name"
+    FROM "karts" AS "k"
+    WHERE NOT ("k"."is_deleted")
+) AS "t3" ON "t0"."fk_id_kart" = "t3"."id"
+WHERE NOT ("t"."is_deleted") AND "t0"."id" IS NOT NULL AND "t0"."fk_id_training" = @__trainingId_0
+2026-07-31 09:42:35.0004|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "t"."id", "t"."fk_id_verein", "t"."fk_id_disziplin", "t"."fk_id_wetter", "t"."name", "t"."beschreibung", "t"."zeitpunkt", "t"."training_abgeschlossen", CASE
+    WHEN "t"."training_abgeschlossen" THEN 'Ja'
+    ELSE 'Nein'
+END, "t0"."vereinsname", "t1"."disziplin", "t2"."wetter"
+FROM "training" AS "t"
+INNER JOIN (
+    SELECT "v"."id", "v"."vereinsname"
+    FROM "vereine" AS "v"
+    WHERE NOT ("v"."is_deleted")
+) AS "t0" ON "t"."fk_id_verein" = "t0"."id"
+INNER JOIN (
+    SELECT "d"."id", "d"."disziplin"
+    FROM "disziplin" AS "d"
+    WHERE NOT ("d"."is_deleted")
+) AS "t1" ON "t"."fk_id_disziplin" = "t1"."id"
+INNER JOIN (
+    SELECT "w"."id", "w"."wetter"
+    FROM "wetter" AS "w"
+    WHERE NOT ("w"."is_deleted")
+) AS "t2" ON "t"."fk_id_wetter" = "t2"."id"
+WHERE NOT ("t"."is_deleted")
+ORDER BY "t"."zeitpunkt" DESC, "t"."name"
+2026-07-31 09:42:37.0658|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "fahrer" AS "f"
+WHERE NOT ("f"."is_deleted")
+2026-07-31 09:42:37.0658|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "karts" AS "k"
+WHERE NOT ("k"."is_deleted")
+2026-07-31 09:42:37.0658|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "training" AS "t"
+WHERE NOT ("t"."is_deleted")
+2026-07-31 09:42:37.0658|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "tstints" AS "t"
+WHERE NOT ("t"."is_deleted")
+2026-07-31 09:42:37.0658|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT CASE
+    WHEN "t0"."id" IS NOT NULL THEN "t0"."fk_id_fahrer"
+    ELSE 0
+END AS "FahrerId", CASE
+    WHEN "t0"."id" IS NOT NULL THEN "t0"."fk_id_training"
+    ELSE 0
+END AS "TrainingId", "t"."rundenzeit" AS "Sekunden", COALESCE("t"."pf", 0) AS "Pylonen", COALESCE("t"."tf", 0) AS "Tore", "t"."ungueltig" AS "Ungueltig"
+FROM "trunden" AS "t"
+LEFT JOIN (
+    SELECT "t1"."id", "t1"."fk_id_fahrer", "t1"."fk_id_training"
+    FROM "tstints" AS "t1"
+    WHERE NOT ("t1"."is_deleted")
+) AS "t0" ON "t"."fk_id_tstint" = "t0"."id"
+WHERE NOT ("t"."is_deleted") AND "t"."rundenzeit" IS NOT NULL AND "t"."rundenzeit" > 0.0
+2026-07-31 09:42:37.0856|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "t"."fk_id_fahrer" AS "FahrerId", COUNT(*) AS "Stints", COUNT(DISTINCT ("t"."fk_id_training")) AS "Trainings"
+FROM "tstints" AS "t"
+WHERE NOT ("t"."is_deleted")
+GROUP BY "t"."fk_id_fahrer"
+2026-07-31 09:42:37.0894|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "f"."id" AS "Id", "f"."vorname" AS "Vorname", COALESCE("f"."nachname", '') AS "Nachname"
+FROM "fahrer" AS "f"
+WHERE NOT ("f"."is_deleted")
+ORDER BY "f"."vorname", "f"."nachname"
+2026-07-31 09:42:48.2622|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "v"."id", "v"."adresse", "v"."deleted_at_utc", "v"."is_deleted", "v"."logo", "v"."mitglieds_nummer", "v"."ort", "v"."postleitzahl", "v"."updated_at_utc", "v"."vereinsname"
+FROM "vereine" AS "v"
+WHERE NOT ("v"."is_deleted")
+ORDER BY "v"."vereinsname"
+2026-07-31 09:42:49.9336|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "d"."id", "d"."deleted_at_utc", "d"."is_deleted", "d"."disziplin", "d"."updated_at_utc", "d"."pf", "d"."tf", "t"."id", "t"."alter_bis", "t"."alter_von", "t"."bezeichnung", "t"."deleted_at_utc", "t"."fk_id_disziplin", "t"."is_deleted", "t"."updated_at_utc"
+FROM "disziplin" AS "d"
+LEFT JOIN (
+    SELECT "d0"."id", "d0"."alter_bis", "d0"."alter_von", "d0"."bezeichnung", "d0"."deleted_at_utc", "d0"."fk_id_disziplin", "d0"."is_deleted", "d0"."updated_at_utc"
+    FROM "disziplin_altersklassen" AS "d0"
+    WHERE NOT ("d0"."is_deleted")
+) AS "t" ON "d"."id" = "t"."fk_id_disziplin"
+WHERE NOT ("d"."is_deleted")
+ORDER BY "d"."disziplin", "d"."id"
+2026-07-31 09:42:50.8469|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "f"."id", "f"."fk_id_verein", "f"."geschlecht", "f"."vorname", COALESCE("f"."nachname", ''), "f"."mitglieds_nummer", "f"."geburtsdatum", "f"."geburtsdatum" IS NOT NULL, "t"."vereinsname"
+FROM "fahrer" AS "f"
+INNER JOIN (
+    SELECT "v"."id", "v"."vereinsname"
+    FROM "vereine" AS "v"
+    WHERE NOT ("v"."is_deleted")
+) AS "t" ON "f"."fk_id_verein" = "t"."id"
+WHERE NOT ("f"."is_deleted")
+ORDER BY "f"."vorname", "f"."nachname"
+2026-07-31 09:42:52.4484|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "v"."id" AS "Id", "v"."vereinsname" AS "Name"
+FROM "vereine" AS "v"
+WHERE NOT ("v"."is_deleted")
+ORDER BY "v"."vereinsname"
+2026-07-31 09:42:52.4493|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "d"."id" AS "Id", "d"."disziplin" AS "Name"
+FROM "disziplin" AS "d"
+WHERE NOT ("d"."is_deleted")
+ORDER BY "d"."disziplin"
+2026-07-31 09:42:52.4493|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "w"."id" AS "Id", "w"."wetter" AS "Name"
+FROM "wetter" AS "w"
+WHERE NOT ("w"."is_deleted")
+ORDER BY "w"."wetter"
+2026-07-31 09:42:52.4493|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "k"."id", "k"."Name" IS NULL OR trim("k"."Name") = '', "k"."Name"
+FROM "karts" AS "k"
+WHERE NOT ("k"."is_deleted")
+ORDER BY "k"."Name", "k"."id"
+2026-07-31 09:42:52.4493|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[@__fahrerId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+SELECT "f"."id", "f"."deleted_at_utc", "f"."geburtsdatum", "f"."geschlecht", "f"."is_deleted", "f"."mitglieds_nummer", "f"."nachname", "f"."updated_at_utc", "f"."fk_id_verein", "f"."vorname"
+FROM "fahrer" AS "f"
+WHERE NOT ("f"."is_deleted") AND "f"."id" = @__fahrerId_0
+LIMIT 1
+2026-07-31 09:43:00.0451|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "d"."id", "d"."deleted_at_utc", "d"."is_deleted", "d"."disziplin", "d"."updated_at_utc", "d"."pf", "d"."tf", "t"."id", "t"."alter_bis", "t"."alter_von", "t"."bezeichnung", "t"."deleted_at_utc", "t"."fk_id_disziplin", "t"."is_deleted", "t"."updated_at_utc"
+FROM "disziplin" AS "d"
+LEFT JOIN (
+    SELECT "d0"."id", "d0"."alter_bis", "d0"."alter_von", "d0"."bezeichnung", "d0"."deleted_at_utc", "d0"."fk_id_disziplin", "d0"."is_deleted", "d0"."updated_at_utc"
+    FROM "disziplin_altersklassen" AS "d0"
+    WHERE NOT ("d0"."is_deleted")
+) AS "t" ON "d"."id" = "t"."fk_id_disziplin"
+WHERE NOT ("d"."is_deleted")
+ORDER BY "d"."disziplin", "d"."id"
+2026-07-31 09:43:04.4719|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "f"."id", "f"."fk_id_verein", "f"."geschlecht", "f"."vorname", COALESCE("f"."nachname", ''), "f"."mitglieds_nummer", "f"."geburtsdatum", "f"."geburtsdatum" IS NOT NULL, "t"."vereinsname"
+FROM "fahrer" AS "f"
+INNER JOIN (
+    SELECT "v"."id", "v"."vereinsname"
+    FROM "vereine" AS "v"
+    WHERE NOT ("v"."is_deleted")
+) AS "t" ON "f"."fk_id_verein" = "t"."id"
+WHERE NOT ("f"."is_deleted")
+ORDER BY "f"."vorname", "f"."nachname"
+2026-07-31 09:43:05.1995|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "d"."id", "d"."deleted_at_utc", "d"."is_deleted", "d"."disziplin", "d"."updated_at_utc", "d"."pf", "d"."tf", "t"."id", "t"."alter_bis", "t"."alter_von", "t"."bezeichnung", "t"."deleted_at_utc", "t"."fk_id_disziplin", "t"."is_deleted", "t"."updated_at_utc"
+FROM "disziplin" AS "d"
+LEFT JOIN (
+    SELECT "d0"."id", "d0"."alter_bis", "d0"."alter_von", "d0"."bezeichnung", "d0"."deleted_at_utc", "d0"."fk_id_disziplin", "d0"."is_deleted", "d0"."updated_at_utc"
+    FROM "disziplin_altersklassen" AS "d0"
+    WHERE NOT ("d0"."is_deleted")
+) AS "t" ON "d"."id" = "t"."fk_id_disziplin"
+WHERE NOT ("d"."is_deleted")
+ORDER BY "d"."disziplin", "d"."id"
+2026-07-31 09:43:07.5196|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "f"."id", "f"."fk_id_verein", "f"."geschlecht", "f"."vorname", COALESCE("f"."nachname", ''), "f"."mitglieds_nummer", "f"."geburtsdatum", "f"."geburtsdatum" IS NOT NULL, "t"."vereinsname"
+FROM "fahrer" AS "f"
+INNER JOIN (
+    SELECT "v"."id", "v"."vereinsname"
+    FROM "vereine" AS "v"
+    WHERE NOT ("v"."is_deleted")
+) AS "t" ON "f"."fk_id_verein" = "t"."id"
+WHERE NOT ("f"."is_deleted")
+ORDER BY "f"."vorname", "f"."nachname"
+2026-07-31 09:43:09.9668|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "k"."id" AS "Id", "k"."fk_id_verein" AS "VereinId", "k"."fk_id_disziplin" AS "DisziplinId", COALESCE("k"."Name", '') AS "Name", COALESCE("k"."Motor", '') AS "Motor", COALESCE("k"."Chassis", '') AS "Chassis", "t"."vereinsname" AS "VereinName", "t0"."disziplin" AS "DisziplinName"
+FROM "karts" AS "k"
+INNER JOIN (
+    SELECT "v"."id", "v"."vereinsname"
+    FROM "vereine" AS "v"
+    WHERE NOT ("v"."is_deleted")
+) AS "t" ON "k"."fk_id_verein" = "t"."id"
+INNER JOIN (
+    SELECT "d"."id", "d"."disziplin"
+    FROM "disziplin" AS "d"
+    WHERE NOT ("d"."is_deleted")
+) AS "t0" ON "k"."fk_id_disziplin" = "t0"."id"
+WHERE NOT ("k"."is_deleted")
+ORDER BY "k"."Name"
+2026-07-31 09:43:10.7972|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "w"."id" AS "Id", "w"."wetter" AS "Name"
+FROM "wetter" AS "w"
+WHERE NOT ("w"."is_deleted")
+ORDER BY "w"."wetter"
+2026-07-31 09:43:12.5008|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "k"."id" AS "Id", "k"."fk_id_verein" AS "VereinId", "k"."fk_id_disziplin" AS "DisziplinId", COALESCE("k"."Name", '') AS "Name", COALESCE("k"."Motor", '') AS "Motor", COALESCE("k"."Chassis", '') AS "Chassis", "t"."vereinsname" AS "VereinName", "t0"."disziplin" AS "DisziplinName"
+FROM "karts" AS "k"
+INNER JOIN (
+    SELECT "v"."id", "v"."vereinsname"
+    FROM "vereine" AS "v"
+    WHERE NOT ("v"."is_deleted")
+) AS "t" ON "k"."fk_id_verein" = "t"."id"
+INNER JOIN (
+    SELECT "d"."id", "d"."disziplin"
+    FROM "disziplin" AS "d"
+    WHERE NOT ("d"."is_deleted")
+) AS "t0" ON "k"."fk_id_disziplin" = "t0"."id"
+WHERE NOT ("k"."is_deleted")
+ORDER BY "k"."Name"
+2026-07-31 09:43:12.8529|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "d"."id", "d"."deleted_at_utc", "d"."is_deleted", "d"."disziplin", "d"."updated_at_utc", "d"."pf", "d"."tf", "t"."id", "t"."alter_bis", "t"."alter_von", "t"."bezeichnung", "t"."deleted_at_utc", "t"."fk_id_disziplin", "t"."is_deleted", "t"."updated_at_utc"
+FROM "disziplin" AS "d"
+LEFT JOIN (
+    SELECT "d0"."id", "d0"."alter_bis", "d0"."alter_von", "d0"."bezeichnung", "d0"."deleted_at_utc", "d0"."fk_id_disziplin", "d0"."is_deleted", "d0"."updated_at_utc"
+    FROM "disziplin_altersklassen" AS "d0"
+    WHERE NOT ("d0"."is_deleted")
+) AS "t" ON "d"."id" = "t"."fk_id_disziplin"
+WHERE NOT ("d"."is_deleted")
+ORDER BY "d"."disziplin", "d"."id"
+2026-07-31 09:43:13.1976|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "f"."id", "f"."fk_id_verein", "f"."geschlecht", "f"."vorname", COALESCE("f"."nachname", ''), "f"."mitglieds_nummer", "f"."geburtsdatum", "f"."geburtsdatum" IS NOT NULL, "t"."vereinsname"
+FROM "fahrer" AS "f"
+INNER JOIN (
+    SELECT "v"."id", "v"."vereinsname"
+    FROM "vereine" AS "v"
+    WHERE NOT ("v"."is_deleted")
+) AS "t" ON "f"."fk_id_verein" = "t"."id"
+WHERE NOT ("f"."is_deleted")
+ORDER BY "f"."vorname", "f"."nachname"
+2026-07-31 09:43:15.1912|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "fahrer" AS "f"
+WHERE NOT ("f"."is_deleted")
+2026-07-31 09:43:15.1912|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "karts" AS "k"
+WHERE NOT ("k"."is_deleted")
+2026-07-31 09:43:15.1912|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "training" AS "t"
+WHERE NOT ("t"."is_deleted")
+2026-07-31 09:43:15.1912|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "tstints" AS "t"
+WHERE NOT ("t"."is_deleted")
+2026-07-31 09:43:15.1912|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT CASE
+    WHEN "t0"."id" IS NOT NULL THEN "t0"."fk_id_fahrer"
+    ELSE 0
+END AS "FahrerId", CASE
+    WHEN "t0"."id" IS NOT NULL THEN "t0"."fk_id_training"
+    ELSE 0
+END AS "TrainingId", "t"."rundenzeit" AS "Sekunden", COALESCE("t"."pf", 0) AS "Pylonen", COALESCE("t"."tf", 0) AS "Tore", "t"."ungueltig" AS "Ungueltig"
+FROM "trunden" AS "t"
+LEFT JOIN (
+    SELECT "t1"."id", "t1"."fk_id_fahrer", "t1"."fk_id_training"
+    FROM "tstints" AS "t1"
+    WHERE NOT ("t1"."is_deleted")
+) AS "t0" ON "t"."fk_id_tstint" = "t0"."id"
+WHERE NOT ("t"."is_deleted") AND "t"."rundenzeit" IS NOT NULL AND "t"."rundenzeit" > 0.0
+2026-07-31 09:43:15.1912|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "t"."fk_id_fahrer" AS "FahrerId", COUNT(*) AS "Stints", COUNT(DISTINCT ("t"."fk_id_training")) AS "Trainings"
+FROM "tstints" AS "t"
+WHERE NOT ("t"."is_deleted")
+GROUP BY "t"."fk_id_fahrer"
+2026-07-31 09:43:15.1912|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "f"."id" AS "Id", "f"."vorname" AS "Vorname", COALESCE("f"."nachname", '') AS "Nachname"
+FROM "fahrer" AS "f"
+WHERE NOT ("f"."is_deleted")
+ORDER BY "f"."vorname", "f"."nachname"
+2026-07-31 09:43:15.9915|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "fahrer" AS "f"
+WHERE NOT ("f"."is_deleted")
+2026-07-31 09:43:15.9915|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "karts" AS "k"
+WHERE NOT ("k"."is_deleted")
+2026-07-31 09:43:15.9915|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "training" AS "t"
+WHERE NOT ("t"."is_deleted")
+2026-07-31 09:43:15.9915|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "tstints" AS "t"
+WHERE NOT ("t"."is_deleted")
+2026-07-31 09:43:15.9915|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT CASE
+    WHEN "t0"."id" IS NOT NULL THEN "t0"."fk_id_fahrer"
+    ELSE 0
+END AS "FahrerId", CASE
+    WHEN "t0"."id" IS NOT NULL THEN "t0"."fk_id_training"
+    ELSE 0
+END AS "TrainingId", "t"."rundenzeit" AS "Sekunden", COALESCE("t"."pf", 0) AS "Pylonen", COALESCE("t"."tf", 0) AS "Tore", "t"."ungueltig" AS "Ungueltig"
+FROM "trunden" AS "t"
+LEFT JOIN (
+    SELECT "t1"."id", "t1"."fk_id_fahrer", "t1"."fk_id_training"
+    FROM "tstints" AS "t1"
+    WHERE NOT ("t1"."is_deleted")
+) AS "t0" ON "t"."fk_id_tstint" = "t0"."id"
+WHERE NOT ("t"."is_deleted") AND "t"."rundenzeit" IS NOT NULL AND "t"."rundenzeit" > 0.0
+2026-07-31 09:43:15.9915|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "t"."fk_id_fahrer" AS "FahrerId", COUNT(*) AS "Stints", COUNT(DISTINCT ("t"."fk_id_training")) AS "Trainings"
+FROM "tstints" AS "t"
+WHERE NOT ("t"."is_deleted")
+GROUP BY "t"."fk_id_fahrer"
+2026-07-31 09:43:15.9915|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "f"."id" AS "Id", "f"."vorname" AS "Vorname", COALESCE("f"."nachname", '') AS "Nachname"
+FROM "fahrer" AS "f"
+WHERE NOT ("f"."is_deleted")
+ORDER BY "f"."vorname", "f"."nachname"
+2026-07-31 09:43:20.1190|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "fahrer" AS "f"
+WHERE NOT ("f"."is_deleted")
+2026-07-31 09:43:20.1190|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "karts" AS "k"
+WHERE NOT ("k"."is_deleted")
+2026-07-31 09:43:20.1190|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "training" AS "t"
+WHERE NOT ("t"."is_deleted")
+2026-07-31 09:43:20.1190|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "tstints" AS "t"
+WHERE NOT ("t"."is_deleted")
+2026-07-31 09:43:20.1190|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT CASE
+    WHEN "t0"."id" IS NOT NULL THEN "t0"."fk_id_fahrer"
+    ELSE 0
+END AS "FahrerId", CASE
+    WHEN "t0"."id" IS NOT NULL THEN "t0"."fk_id_training"
+    ELSE 0
+END AS "TrainingId", "t"."rundenzeit" AS "Sekunden", COALESCE("t"."pf", 0) AS "Pylonen", COALESCE("t"."tf", 0) AS "Tore", "t"."ungueltig" AS "Ungueltig"
+FROM "trunden" AS "t"
+LEFT JOIN (
+    SELECT "t1"."id", "t1"."fk_id_fahrer", "t1"."fk_id_training"
+    FROM "tstints" AS "t1"
+    WHERE NOT ("t1"."is_deleted")
+) AS "t0" ON "t"."fk_id_tstint" = "t0"."id"
+WHERE NOT ("t"."is_deleted") AND "t"."rundenzeit" IS NOT NULL AND "t"."rundenzeit" > 0.0
+2026-07-31 09:43:20.1209|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "t"."fk_id_fahrer" AS "FahrerId", COUNT(*) AS "Stints", COUNT(DISTINCT ("t"."fk_id_training")) AS "Trainings"
+FROM "tstints" AS "t"
+WHERE NOT ("t"."is_deleted")
+GROUP BY "t"."fk_id_fahrer"
+2026-07-31 09:43:20.1209|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "f"."id" AS "Id", "f"."vorname" AS "Vorname", COALESCE("f"."nachname", '') AS "Nachname"
+FROM "fahrer" AS "f"
+WHERE NOT ("f"."is_deleted")
+ORDER BY "f"."vorname", "f"."nachname"
+2026-07-31 09:43:21.3094|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (1ms) [Parameters=[@__trainingId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+SELECT "t"."id", "t"."beschreibung", "t"."deleted_at_utc", "t"."fk_id_disziplin", "t"."is_deleted", "t"."name", "t"."training_abgeschlossen", "t"."updated_at_utc", "t"."fk_id_verein", "t"."fk_id_wetter", "t"."zeitpunkt", "t0"."id", "t0"."adresse", "t0"."deleted_at_utc", "t0"."is_deleted", "t0"."logo", "t0"."mitglieds_nummer", "t0"."ort", "t0"."postleitzahl", "t0"."updated_at_utc", "t0"."vereinsname", "t1"."id", "t1"."deleted_at_utc", "t1"."is_deleted", "t1"."disziplin", "t1"."updated_at_utc", "t1"."pf", "t1"."tf", "t2"."id", "t2"."wetter", "t2"."deleted_at_utc", "t2"."is_deleted", "t2"."updated_at_utc"
+FROM "training" AS "t"
+INNER JOIN (
+    SELECT "v"."id", "v"."adresse", "v"."deleted_at_utc", "v"."is_deleted", "v"."logo", "v"."mitglieds_nummer", "v"."ort", "v"."postleitzahl", "v"."updated_at_utc", "v"."vereinsname"
+    FROM "vereine" AS "v"
+    WHERE NOT ("v"."is_deleted")
+) AS "t0" ON "t"."fk_id_verein" = "t0"."id"
+INNER JOIN (
+    SELECT "d"."id", "d"."deleted_at_utc", "d"."is_deleted", "d"."disziplin", "d"."updated_at_utc", "d"."pf", "d"."tf"
+    FROM "disziplin" AS "d"
+    WHERE NOT ("d"."is_deleted")
+) AS "t1" ON "t"."fk_id_disziplin" = "t1"."id"
+INNER JOIN (
+    SELECT "w"."id", "w"."wetter", "w"."deleted_at_utc", "w"."is_deleted", "w"."updated_at_utc"
+    FROM "wetter" AS "w"
+    WHERE NOT ("w"."is_deleted")
+) AS "t2" ON "t"."fk_id_wetter" = "t2"."id"
+WHERE NOT ("t"."is_deleted") AND "t"."id" = @__trainingId_0
+LIMIT 1
+2026-07-31 09:43:21.3094|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[@__trainingId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+SELECT "t"."zeitpunkt" AS "Zeitpunkt", "t"."fk_id_disziplin" AS "DisziplinId"
+FROM "training" AS "t"
+WHERE NOT ("t"."is_deleted") AND "t"."id" = @__trainingId_0
+LIMIT 1
+2026-07-31 09:43:21.3094|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[@__trainingMeta_DisziplinId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+SELECT "d"."id", "d"."alter_bis", "d"."alter_von", "d"."bezeichnung", "d"."deleted_at_utc", "d"."fk_id_disziplin", "d"."is_deleted", "d"."updated_at_utc"
+FROM "disziplin_altersklassen" AS "d"
+WHERE NOT ("d"."is_deleted") AND "d"."fk_id_disziplin" = @__trainingMeta_DisziplinId_0
+ORDER BY "d"."alter_von", COALESCE("d"."alter_bis", 2147483647)
+2026-07-31 09:43:21.3094|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[@__trainingId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+SELECT "f"."fk_id_fahrer" AS "FahrerId", "f"."reihenfolge" AS "Reihenfolge", "t"."vorname" AS "Vorname", COALESCE("t"."nachname", '') AS "Nachname", "t0"."vereinsname" AS "VereinName", "t"."geburtsdatum" AS "Geburtsdatum"
+FROM "fahrer_im_training" AS "f"
+INNER JOIN (
+    SELECT "f0"."id", "f0"."geburtsdatum", "f0"."nachname", "f0"."fk_id_verein", "f0"."vorname"
+    FROM "fahrer" AS "f0"
+    WHERE NOT ("f0"."is_deleted")
+) AS "t" ON "f"."fk_id_fahrer" = "t"."id"
+INNER JOIN (
+    SELECT "v"."id", "v"."vereinsname"
+    FROM "vereine" AS "v"
+    WHERE NOT ("v"."is_deleted")
+) AS "t0" ON "t"."fk_id_verein" = "t0"."id"
+WHERE NOT ("f"."is_deleted") AND "f"."fk_id_training" = @__trainingId_0
+ORDER BY "f"."reihenfolge", "t"."vorname", "t"."nachname"
+2026-07-31 09:43:21.3094|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[@__trainingId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+SELECT "t0"."tf" AS "Torfehler", "t0"."pf" AS "Pylonenfehler"
+FROM "training" AS "t"
+INNER JOIN (
+    SELECT "d"."id", "d"."pf", "d"."tf"
+    FROM "disziplin" AS "d"
+    WHERE NOT ("d"."is_deleted")
+) AS "t0" ON "t"."fk_id_disziplin" = "t0"."id"
+WHERE NOT ("t"."is_deleted") AND "t"."id" = @__trainingId_0
+LIMIT 1
+2026-07-31 09:43:21.3094|INFO|Microsoft.EntityFrameworkCore.Database.Command|Executed DbCommand (0ms) [Parameters=[@__trainingId_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+SELECT "t0"."fk_id_fahrer" AS "FahrerId", "t2"."vorname" AS "Vorname", COALESCE("t2"."nachname", '') AS "Nachname", "t0"."altersklasse_snapshot" AS "AltersklasseSnapshot", "t3"."Name" AS "KartName", "t0"."datum" AS "Zeitpunkt", COALESCE("t"."runde", 0) AS "Runde", "t"."rundenzeit" AS "Rundenzeit", COALESCE("t"."pf", 0) AS "Pylonen", COALESCE("t"."tf", 0) AS "Tore", "t"."ungueltig" AS "Ungueltig"
+FROM "trunden" AS "t"
+LEFT JOIN (
+    SELECT "t1"."id", "t1"."altersklasse_snapshot", "t1"."datum", "t1"."fk_id_fahrer", "t1"."fk_id_kart", "t1"."fk_id_training"
+    FROM "tstints" AS "t1"
+    WHERE NOT ("t1"."is_deleted")
+) AS "t0" ON "t"."fk_id_tstint" = "t0"."id"
+LEFT JOIN (
+    SELECT "f"."id", "f"."nachname", "f"."vorname"
+    FROM "fahrer" AS "f"
+    WHERE NOT ("f"."is_deleted")
+) AS "t2" ON "t0"."fk_id_fahrer" = "t2"."id"
+LEFT JOIN (
+    SELECT "k"."id", "k"."Name"
+    FROM "karts" AS "k"
+    WHERE NOT ("k"."is_deleted")
+) AS "t3" ON "t0"."fk_id_kart" = "t3"."id"
+WHERE NOT ("t"."is_deleted") AND "t0"."id" IS NOT NULL AND "t0"."fk_id_training" = @__trainingId_0
