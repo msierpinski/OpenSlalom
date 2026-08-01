@@ -41,11 +41,11 @@
                               HeadersVisibility="Column"
                               GridLinesVisibility="None"
                               BorderThickness="0"
-                              RowHeaderWidth="0"
-                              MinRowHeight="36"
-                              VerticalContentAlignment="Center"
-                              SelectionMode="Single"
-                              AlternationCount="2"
+                               RowHeaderWidth="0"
+                               MinRowHeight="36"
+                               VerticalContentAlignment="Center"
+                               SelectionMode="Single"
+                               AlternationCount="2"
                               ColumnHeaderStyle="{StaticResource StandardDataGridHeaderStyle}"
                               CellStyle="{StaticResource StandardDataGridCellStyle}"
                               RowStyle="{StaticResource StandardDataGridRowStyle}">
@@ -349,9 +349,15 @@
                                     </Grid>
                                 </TabItem.Header>
                                 <Grid Margin="10">
-                                    <DataGrid x:Name="TrainingStarterDataGrid" x:FieldModifier="internal"
-                                              ItemsSource="{Binding TrainingStarterListItems}"
-                                              Background="Transparent"
+                                     <DataGrid x:Name="TrainingStarterDataGrid" x:FieldModifier="internal"
+                                               ItemsSource="{Binding TrainingStarterListItems}"
+                                               ToolTip="Doppelklick weist den Fahrer der ersten verfügbaren Zeitnahme zu."
+                                               AllowDrop="True"
+                                               PreviewMouseLeftButtonDown="TrainingStarterDataGrid_OnPreviewMouseLeftButtonDown"
+                                               PreviewMouseMove="TrainingStarterDataGrid_OnPreviewMouseMove"
+                                               DragOver="TrainingStarterDataGrid_OnDragOver"
+                                               Drop="TrainingStarterDataGrid_OnDrop"
+                                               Background="Transparent"
                                               AutoGenerateColumns="False"
                                               CanUserAddRows="False"
                                               IsReadOnly="True"
@@ -365,14 +371,26 @@
                                               AlternationCount="2"
                                               ColumnHeaderStyle="{StaticResource StandardDataGridHeaderStyle}"
                                               CellStyle="{StaticResource StandardDataGridCellStyle}">
-                                        <DataGrid.RowStyle>
-                                            <Style TargetType="DataGridRow" BasedOn="{StaticResource StandardDataGridRowStyle}">
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding IsAktiv}" Value="True">
-                                                        <Setter Property="Background" Value="#00BB00" />
-                                                        <Setter Property="FontWeight" Value="SemiBold" />
-                                                    </DataTrigger>
-                                                </Style.Triggers>
+                                         <DataGrid.RowStyle>
+                                             <Style TargetType="DataGridRow" BasedOn="{StaticResource StandardDataGridRowStyle}">
+                                                 <EventSetter Event="MouseDoubleClick" Handler="TrainingStarterRow_OnMouseDoubleClick" />
+                                                 <Style.Triggers>
+                                                     <DataTrigger Binding="{Binding IsAktiv}" Value="True">
+                                                         <Setter Property="Background" Value="#00BB00" />
+                                                         <Setter Property="FontWeight" Value="SemiBold" />
+                                                     </DataTrigger>
+                                                     <DataTrigger Binding="{Binding IsAktivZweiteZeitnahme}" Value="True">
+                                                         <Setter Property="Background" Value="#F59E0B" />
+                                                         <Setter Property="FontWeight" Value="SemiBold" />
+                                                     </DataTrigger>
+                                                     <DataTrigger Binding="{Binding IsBeingDragged}" Value="True">
+                                                         <Setter Property="Background" Value="#BFDBFE" />
+                                                         <Setter Property="BorderBrush" Value="#1F84DE" />
+                                                         <Setter Property="BorderThickness" Value="2" />
+                                                         <Setter Property="Cursor" Value="SizeAll" />
+                                                         <Setter Property="Opacity" Value="0.65" />
+                                                     </DataTrigger>
+                                                 </Style.Triggers>
                                             </Style>
                                         </DataGrid.RowStyle>
                                         <DataGrid.Columns>
@@ -407,8 +425,135 @@
                                         </DataGrid.Columns>
                                     </DataGrid>
                                 </Grid>
-                            </TabItem>
-                            <TabItem>
+                             </TabItem>
+                             <TabItem>
+                                 <TabItem.Header>
+                                     <Grid>
+                                         <Grid.ColumnDefinitions>
+                                             <ColumnDefinition Width="Auto" />
+                                             <ColumnDefinition Width="Auto" />
+                                         </Grid.ColumnDefinitions>
+                                         <TextBlock Grid.Column="0" FontFamily="Segoe MDL2 Assets" FontSize="14" VerticalAlignment="Center" Text="&#xE9D2;" Margin="0,0,6,0" />
+                                         <TextBlock Grid.Column="1" VerticalAlignment="Center" Text="Gefahrene Stints" />
+                                     </Grid>
+                                 </TabItem.Header>
+                                 <Grid Margin="10">
+                                     <Grid.RowDefinitions>
+                                         <RowDefinition Height="Auto" />
+                                         <RowDefinition Height="10" />
+                                         <RowDefinition Height="*" />
+                                     </Grid.RowDefinitions>
+
+                                     <StackPanel Orientation="Horizontal">
+                                         <TextBlock VerticalAlignment="Center" FontWeight="SemiBold" Text="Fahrer:" Margin="0,0,10,0" />
+                                         <ComboBox x:Name="TrainingStoredStintDriverComboBox" x:FieldModifier="internal"
+                                                   Width="260"
+                                                   Height="30"
+                                                   ItemsSource="{Binding TrainingStoredStintDriverItems}"
+                                                   DisplayMemberPath="Fahrer"
+                                                   SelectedValuePath="FahrerId"
+                                                   SelectionChanged="TrainingStoredStintDriverComboBox_OnSelectionChanged" />
+                                     </StackPanel>
+
+                                     <Grid Grid.Row="2">
+                                         <TextBlock x:Name="TrainingStoredStintsEmptyTextBlock" x:FieldModifier="internal"
+                                                    HorizontalAlignment="Center"
+                                                    VerticalAlignment="Center"
+                                                    Foreground="#64748B"
+                                                    Text="Bitte einen Fahrer auswählen." />
+                                         <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                             <ItemsControl x:Name="TrainingStoredStintsItemsControl" x:FieldModifier="internal" ItemsSource="{Binding TrainingStoredStintItems}">
+                                                 <ItemsControl.ItemTemplate>
+                                                     <DataTemplate>
+                                                         <Border Margin="0,0,0,12" Padding="10" Background="#F8FAFC" BorderBrush="#CBD5E1" BorderThickness="1" CornerRadius="8">
+                                                             <Grid>
+                                                                 <Grid.RowDefinitions>
+                                                                     <RowDefinition Height="Auto" />
+                                                                     <RowDefinition Height="8" />
+                                                                     <RowDefinition Height="Auto" />
+                                                                 </Grid.RowDefinitions>
+                                                                 <Grid>
+                                                                     <Grid.ColumnDefinitions>
+                                                                         <ColumnDefinition Width="Auto" />
+                                                                         <ColumnDefinition Width="16" />
+                                                                         <ColumnDefinition Width="*" />
+                                                                         <ColumnDefinition Width="Auto" />
+                                                                     </Grid.ColumnDefinitions>
+                                                                     <StackPanel>
+                                                                         <TextBlock FontWeight="Bold" FontSize="15" Text="{Binding Titel}" />
+                                                                         <TextBlock Margin="0,3,0,0" Foreground="#475569">
+                                                                             <Run Text="{Binding ZeitpunktText}" /><Run Text=" · Kart: " /><Run Text="{Binding Kart}" /><Run Text=" · Klasse: " /><Run Text="{Binding Altersklasse}" />
+                                                                         </TextBlock>
+                                                                     </StackPanel>
+                                                                     <StackPanel Grid.Column="3" HorizontalAlignment="Right">
+                                                                         <TextBlock><Run FontWeight="SemiBold" Text="Gesamt: " /><Run Text="{Binding GesamtzeitText}" /></TextBlock>
+                                                                         <TextBlock Margin="0,3,0,0"><Run FontWeight="SemiBold" Text="Ø: " /><Run Text="{Binding DurchschnittszeitText}" /></TextBlock>
+                                                                     </StackPanel>
+                                                                 </Grid>
+
+                                                                 <DataGrid Grid.Row="2"
+                                                                           ItemsSource="{Binding Runden}"
+                                                                           AutoGenerateColumns="False"
+                                                                           CanUserAddRows="False"
+                                                                           IsReadOnly="True"
+                                                                           HeadersVisibility="Column"
+                                                                           GridLinesVisibility="None"
+                                                                           BorderThickness="0"
+                                                                           RowHeaderWidth="0"
+                                                                           MinRowHeight="36"
+                                                                           Background="Transparent"
+                                                                           ColumnHeaderStyle="{StaticResource StandardDataGridHeaderStyle}"
+                                                                           CellStyle="{StaticResource StandardDataGridCellStyle}"
+                                                                           RowStyle="{StaticResource StandardDataGridRowStyle}">
+                                                                     <DataGrid.Columns>
+                                                                         <DataGridTextColumn Header="Runde" Binding="{Binding Runde}" Width="65" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                                                                         <DataGridTextColumn Header="Zeit" Binding="{Binding RundenzeitText}" Width="*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                                                                         <DataGridTextColumn Header="Zeitstrafe" Binding="{Binding ZeitstrafeSekunden, Converter={StaticResource ZeitstrafeConverter}}" Width="100" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                                                                         <DataGridTemplateColumn Header="PF" Width="90">
+                                                                             <DataGridTemplateColumn.CellTemplate>
+                                                                                 <DataTemplate>
+                                                                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                                                                         <TextBlock Width="36" TextAlignment="Center" VerticalAlignment="Center" Text="{Binding Pylonen}" />
+                                                                                         <StackPanel>
+                                                                                             <Button Content="▲" Width="15" Height="18" Padding="0" BorderThickness="0" Background="Transparent" Tag="Pylonen:+1" Click="StoredTrainingLapNumericAdjust_OnClick" />
+                                                                                             <Button Content="▼" Width="15" Height="18" Padding="0" BorderThickness="0" Background="Transparent" Tag="Pylonen:-1" Click="StoredTrainingLapNumericAdjust_OnClick" />
+                                                                                         </StackPanel>
+                                                                                     </StackPanel>
+                                                                                 </DataTemplate>
+                                                                             </DataGridTemplateColumn.CellTemplate>
+                                                                         </DataGridTemplateColumn>
+                                                                         <DataGridTemplateColumn Header="TF" Width="90">
+                                                                             <DataGridTemplateColumn.CellTemplate>
+                                                                                 <DataTemplate>
+                                                                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                                                                         <TextBlock Width="36" TextAlignment="Center" VerticalAlignment="Center" Text="{Binding Tore}" />
+                                                                                         <StackPanel>
+                                                                                             <Button Content="▲" Width="15" Height="18" Padding="0" BorderThickness="0" Background="Transparent" Tag="Tore:+1" Click="StoredTrainingLapNumericAdjust_OnClick" />
+                                                                                             <Button Content="▼" Width="15" Height="18" Padding="0" BorderThickness="0" Background="Transparent" Tag="Tore:-1" Click="StoredTrainingLapNumericAdjust_OnClick" />
+                                                                                         </StackPanel>
+                                                                                     </StackPanel>
+                                                                                 </DataTemplate>
+                                                                             </DataGridTemplateColumn.CellTemplate>
+                                                                         </DataGridTemplateColumn>
+                                                                         <DataGridTemplateColumn Header="Ungültig" Width="85">
+                                                                             <DataGridTemplateColumn.CellTemplate>
+                                                                                 <DataTemplate>
+                                                                                     <CheckBox HorizontalAlignment="Center" VerticalAlignment="Center" IsChecked="{Binding Ungueltig, Mode=TwoWay}" Click="StoredTrainingLapInvalidCheckBox_OnClick" />
+                                                                                 </DataTemplate>
+                                                                             </DataGridTemplateColumn.CellTemplate>
+                                                                         </DataGridTemplateColumn>
+                                                                     </DataGrid.Columns>
+                                                                 </DataGrid>
+                                                             </Grid>
+                                                         </Border>
+                                                     </DataTemplate>
+                                                 </ItemsControl.ItemTemplate>
+                                             </ItemsControl>
+                                         </ScrollViewer>
+                                     </Grid>
+                                 </Grid>
+                             </TabItem>
+                             <TabItem>
                                 <TabItem.Header>
                                     <Grid>
                                         <Grid.ColumnDefinitions>
@@ -479,16 +624,19 @@
                                         <ColumnDefinition Width="320" />
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                    </Grid.RowDefinitions>
+                                     <Grid.RowDefinitions>
+                                         <RowDefinition Height="Auto" />
+                                         <RowDefinition Height="Auto" />
+                                         <RowDefinition Height="Auto" />
+                                         <RowDefinition Height="Auto" />
+                                         <RowDefinition Height="Auto" />
+                                     </Grid.RowDefinitions>
 
-                                    <TextBlock Grid.ColumnSpan="2" Text="Rundenanzahl für dieses Training" FontWeight="SemiBold" />
-                                    <TextBox x:Name="TrainingRoundsTextBox" x:FieldModifier="internal" Grid.Row="1" Height="30" Width="140" Margin="0,8,0,0" />
-                                    <Button Grid.Row="1" Grid.Column="1" Margin="10,8,0,0" Padding="12,6" Style="{StaticResource RoundedButton}" Content="Übernehmen" Click="SaveTrainingRounds_OnClick" />
-                                    <TextBlock x:Name="TrainingRoundsFeedbackTextBlock" x:FieldModifier="internal" Grid.Row="2" Grid.ColumnSpan="2" Margin="0,10,0,0" Foreground="#475569" Text="" />
+                                     <TextBlock Grid.ColumnSpan="2" Text="Rundenanzahl für dieses Training" FontWeight="SemiBold" />
+                                     <TextBox x:Name="TrainingRoundsTextBox" x:FieldModifier="internal" Grid.Row="1" Height="30" Width="140" Margin="0,8,0,0" TextChanged="TrainingRoundsTextBox_OnTextChanged" />
+                                     <CheckBox x:Name="TrainingAllowExtraRoundsCheckBox" x:FieldModifier="internal" Grid.Row="2" Grid.ColumnSpan="2" Margin="0,12,0,0" VerticalAlignment="Center" Content="Sollrundenzahl darf überschritten werden" Click="TrainingAllowExtraRoundsCheckBox_OnClick" />
+                                     <CheckBox x:Name="TrainingSecondTimingCheckBox" x:FieldModifier="internal" Grid.Row="3" Grid.ColumnSpan="2" Margin="0,12,0,0" VerticalAlignment="Center" Content="Zweite Zeitnahme aktivieren" Click="TrainingSecondTimingCheckBox_OnClick" />
+                                     <TextBlock x:Name="TrainingRoundsFeedbackTextBlock" x:FieldModifier="internal" Grid.Row="4" Grid.ColumnSpan="2" Margin="0,10,0,0" Foreground="#475569" Text="" />
                                 </Grid>
                             </TabItem>
                         </TabControl>
@@ -498,7 +646,21 @@
                         </Border>
                     </Grid>
                     <Grid Grid.Column="1">
-                        <Border Background="White" BorderBrush="#D1D5DB" BorderThickness="1" CornerRadius="8">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Border x:Name="TrainingStopwatchBorder" x:FieldModifier="internal" Grid.Row="0" Background="White" BorderBrush="#D1D5DB" BorderThickness="1" CornerRadius="8">
+                            <Border.Style>
+                                <Style TargetType="Border">
+                                    <Setter Property="Grid.RowSpan" Value="2" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsChecked, ElementName=TrainingSecondTimingCheckBox}" Value="True">
+                                            <Setter Property="Grid.RowSpan" Value="1" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
 
                             <Grid Margin="5">
                                 <Grid.RowDefinitions>
@@ -536,14 +698,15 @@
                                             </Border>
                                         </StackPanel>
                                     </Button>
-                                    <Button x:Name="TrainingClearStintButton" x:FieldModifier="internal" Style="{StaticResource RoundedButton}" Background="#DC2626" Width="150" Click="ClearTrainingStint_OnClick">
+                                     <Button x:Name="TrainingClearStintButton" x:FieldModifier="internal" Style="{StaticResource RoundedButton}" Background="#DC2626" Width="150" Click="ClearTrainingStint_OnClick">
                                         <StackPanel Orientation="Horizontal">
                                             <TextBlock VerticalAlignment="Center" Text="🗑 Stint löschen" />
                                             <Border Margin="8,0,0,0" Padding="6,1" CornerRadius="2" Background="White">
                                                 <TextBlock Foreground="Black" FontSize="11" Text="E" />
                                             </Border>
                                         </StackPanel>
-                                    </Button>
+                                     </Button>
+                                     <Button x:Name="TrainingSaveStintButton" x:FieldModifier="internal" Style="{StaticResource RoundedButton}" Background="#64748B" Width="110" Margin="5,0,0,0" IsEnabled="False" Content="Stint speichern" Click="SaveFirstTrainingStint_OnClick" />
                                 </StackPanel>
 
                                 <Grid Grid.Row="4" Margin="0,2,0,0">
@@ -638,6 +801,52 @@
                                 </DataGrid>
                             </Grid>
 
+                        </Border>
+                        <Border x:Name="TrainingSecondStopwatchPanel" x:FieldModifier="internal" Grid.Row="1" Margin="0,5,0,0" Visibility="Collapsed" Background="#FFF7ED" BorderBrush="#F59E0B" BorderThickness="2" CornerRadius="8">
+                            <Grid Margin="5">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="32" />
+                                    <RowDefinition Height="58" />
+                                    <RowDefinition Height="28" />
+                                    <RowDefinition Height="42" />
+                                    <RowDefinition Height="26" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Foreground="#9A3412" FontWeight="SemiBold" Text="⏱ ZEITNAHME 2 - FAHRER:" />
+                                    <TextBlock x:Name="TrainingSecondActiveDriverTextBlock" x:FieldModifier="internal" Margin="5,0,0,0" Foreground="#9A3412" FontWeight="SemiBold" Text="-" />
+                                </StackPanel>
+                                <TextBlock x:Name="TrainingSecondStopwatchTextBlock" x:FieldModifier="internal" Grid.Row="1" HorizontalAlignment="Center" FontSize="42" FontWeight="Bold" FontFamily="Consolas" Text="00.000" />
+                                <TextBlock x:Name="TrainingSecondLapCounterTextBlock" x:FieldModifier="internal" Grid.Row="2" HorizontalAlignment="Center" FontSize="14" Text="Runde: -/-" />
+                                <StackPanel Grid.Row="3" Orientation="Horizontal" Height="30" VerticalAlignment="Top">
+                                    <Button x:Name="TrainingSecondStartButton" x:FieldModifier="internal" Style="{StaticResource RoundedButton}" Background="#00AA00" Width="105" Margin="0,0,5,0" Click="TrainingSecondStart_OnClick">
+                                        <StackPanel Orientation="Horizontal"><TextBlock Text="Start" /><Border Margin="8,0,0,0" Padding="6,1" Background="White" CornerRadius="2"><TextBlock Foreground="Black" FontSize="11" Text="A" /></Border></StackPanel>
+                                    </Button>
+                                    <Button x:Name="TrainingSecondLapButton" x:FieldModifier="internal" Style="{StaticResource RoundedButton}" Background="#1F84DE" Width="105" Margin="0,0,5,0" Click="TrainingSecondLap_OnClick">
+                                        <StackPanel Orientation="Horizontal"><TextBlock Text="Runde" /><Border Margin="8,0,0,0" Padding="6,1" Background="White" CornerRadius="2"><TextBlock Foreground="Black" FontSize="11" Text="S" /></Border></StackPanel>
+                                    </Button>
+                                     <Button x:Name="TrainingSecondClearButton" x:FieldModifier="internal" Style="{StaticResource RoundedButton}" Background="#DC2626" Width="130" Click="TrainingSecondClear_OnClick">
+                                        <StackPanel Orientation="Horizontal"><TextBlock Text="Stint löschen" /><Border Margin="8,0,0,0" Padding="6,1" Background="White" CornerRadius="2"><TextBlock Foreground="Black" FontSize="11" Text="D" /></Border></StackPanel>
+                                     </Button>
+                                     <Button x:Name="TrainingSecondSaveStintButton" x:FieldModifier="internal" Style="{StaticResource RoundedButton}" Background="#64748B" Width="110" Margin="5,0,0,0" IsEnabled="False" Content="Stint speichern" Click="SaveSecondTrainingStint_OnClick" />
+                                </StackPanel>
+                                <Grid Grid.Row="4">
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /><ColumnDefinition Width="Auto" /><ColumnDefinition Width="14" /><ColumnDefinition Width="Auto" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+                                    <TextBlock Foreground="#9A3412" Text="RUNDEN" />
+                                    <TextBlock Grid.Column="1" FontWeight="SemiBold" Text="Gesamt: " /><TextBlock x:Name="TrainingSecondTotalTimeTextBlock" x:FieldModifier="internal" Grid.Column="2" Text="-" />
+                                    <TextBlock Grid.Column="4" FontWeight="SemiBold" Text="Ø " /><TextBlock x:Name="TrainingSecondAverageTimeTextBlock" x:FieldModifier="internal" Grid.Column="5" Text="-" />
+                                </Grid>
+                                <DataGrid x:Name="TrainingSecondLapTimesDataGrid" x:FieldModifier="internal" Grid.Row="5" ItemsSource="{Binding TrainingSecondLapTimeItems}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" HeadersVisibility="Column" GridLinesVisibility="None" BorderThickness="0" RowHeaderWidth="0" MinRowHeight="34" Background="Transparent" ColumnHeaderStyle="{StaticResource StandardDataGridHeaderStyle}" CellStyle="{StaticResource StandardDataGridCellStyle}" RowStyle="{StaticResource StandardDataGridRowStyle}">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="#" Binding="{Binding Nummer}" Width="36" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                                        <DataGridTextColumn Header="Zeit" Binding="{Binding RundenzeitText}" Width="*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                                        <DataGridTextColumn Header="Strafe" Binding="{Binding ZeitstrafeSekunden, Converter={StaticResource ZeitstrafeConverter}}" Width="70" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                                        <DataGridTemplateColumn Header="PF" Width="72"><DataGridTemplateColumn.CellTemplate><DataTemplate><StackPanel Orientation="Horizontal" HorizontalAlignment="Center"><TextBlock Width="30" TextAlignment="Center" VerticalAlignment="Center" Text="{Binding Pylonen}" /><StackPanel><Button Content="▲" Width="13" Height="17" Padding="0" BorderThickness="0" Background="Transparent" Tag="Pylonen:+1" Click="SecondLapNumericAdjust_OnClick" /><Button Content="▼" Width="13" Height="17" Padding="0" BorderThickness="0" Background="Transparent" Tag="Pylonen:-1" Click="SecondLapNumericAdjust_OnClick" /></StackPanel></StackPanel></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                                        <DataGridTemplateColumn Header="TF" Width="72"><DataGridTemplateColumn.CellTemplate><DataTemplate><StackPanel Orientation="Horizontal" HorizontalAlignment="Center"><TextBlock Width="30" TextAlignment="Center" VerticalAlignment="Center" Text="{Binding Tore}" /><StackPanel><Button Content="▲" Width="13" Height="17" Padding="0" BorderThickness="0" Background="Transparent" Tag="Tore:+1" Click="SecondLapNumericAdjust_OnClick" /><Button Content="▼" Width="13" Height="17" Padding="0" BorderThickness="0" Background="Transparent" Tag="Tore:-1" Click="SecondLapNumericAdjust_OnClick" /></StackPanel></StackPanel></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                                        <DataGridTemplateColumn Header="Ungültig" Width="70"><DataGridTemplateColumn.CellTemplate><DataTemplate><CheckBox HorizontalAlignment="Center" IsChecked="{Binding Ungueltig, Mode=TwoWay}" Click="SecondLapInvalidCheckBox_OnClick" /></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </Grid>
                         </Border>
                     </Grid>
                 </Grid>

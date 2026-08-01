@@ -33,6 +33,9 @@ public partial class MainWindow
         CloseTrainingDriverSelectionDialog();
         TrainingStarterListItems.Clear();
         TrainingFastestLapItems.Clear();
+        TrainingStoredStintDriverItems.Clear();
+        TrainingStoredStintItems.Clear();
+        _selectedTrainingStoredStintDriverId = null;
         TrainingStatisticsBestLapItems.Clear();
         TrainingStatisticsDriverSections.Clear();
         ResetTrainingStopwatchView();

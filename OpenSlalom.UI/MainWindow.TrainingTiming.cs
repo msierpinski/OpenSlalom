@@ -18,6 +18,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Shell;
 using System.Windows.Threading;
@@ -181,10 +182,7 @@ public partial class MainWindow
 
         if (_trainingStopwatchContext is null)
         {
-            if (_trainingStopwatchTimer.IsEnabled)
-            {
-                _trainingStopwatchTimer.Stop();
-            }
+            StopTrainingStopwatchTimerIfIdle();
 
             TrainingLapTimeItems.Clear();
             TrainingsViewControl.TrainingStopwatchTextBlock.Text = "00.000";
@@ -200,6 +198,7 @@ public partial class MainWindow
             currentState.Stopwatch.Reset();
             currentState.LapRecords.Clear();
             currentState.LastLapCheckpoint = TimeSpan.Zero;
+            currentState.IsFinished = false;
         }
 
         RefreshTrainingLapTimesTable();
@@ -212,9 +211,9 @@ public partial class MainWindow
                 _trainingStopwatchTimer.Start();
             }
         }
-        else if (_trainingStopwatchTimer.IsEnabled)
+        else
         {
-            _trainingStopwatchTimer.Stop();
+            StopTrainingStopwatchTimerIfIdle();
         }
 
         UpdateTrainingStopwatchButtonsState();
@@ -230,21 +229,20 @@ public partial class MainWindow
         }
 
         _trainingStopwatchContext = null;
-        if (_trainingStopwatchTimer.IsEnabled)
-        {
-            _trainingStopwatchTimer.Stop();
-        }
+        StopTrainingStopwatchTimerIfIdle();
 
         TrainingLapTimeItems.Clear();
         TrainingsViewControl.TrainingStopwatchTextBlock.Text = "00.000";
         UpdateTrainingLapSummaryDisplay();
         UpdateTrainingLapProgressDisplay();
         UpdateTrainingStopwatchButtonsState();
+        ResetSecondTrainingStopwatchView();
     }
 
     private void TrainingStopwatchTimer_OnTick(object? sender, EventArgs e)
     {
         UpdateTrainingStopwatchDisplay();
+        UpdateSecondTrainingStopwatchDisplay();
     }
 
     internal void TrainingStopwatchStart_OnClick(object sender, RoutedEventArgs e)
@@ -256,6 +254,23 @@ public partial class MainWindow
         }
 
         var state = GetOrCreateTrainingStintState(_trainingStopwatchContext.Value);
+        if (state.Stopwatch.IsRunning)
+        {
+            state.Stopwatch.Stop();
+            state.IsFinished = true;
+            StopTrainingStopwatchTimerIfIdle();
+
+            UpdateTrainingStopwatchDisplay();
+            UpdateTrainingStopwatchButtonsState();
+            UpdateTrainingDriverButtonsState();
+            return;
+        }
+
+        if (state.IsFinished)
+        {
+            return;
+        }
+
         state.Stopwatch.Start();
         if (!_trainingStopwatchTimer.IsEnabled)
         {
@@ -305,13 +320,13 @@ public partial class MainWindow
         var roundsTarget = _selectedTrainingDetailId is null
             ? 0
             : GetRoundsTargetForTraining(_selectedTrainingDetailId.Value);
-        if (roundsTarget > 0 && state.LapRecords.Count >= roundsTarget)
+        var canExceedRoundsTarget = _selectedTrainingDetailId is not null &&
+                                    CanExceedRoundsTargetForTraining(_selectedTrainingDetailId.Value);
+        if (!canExceedRoundsTarget && roundsTarget > 0 && state.LapRecords.Count >= roundsTarget)
         {
             state.Stopwatch.Stop();
-            if (_trainingStopwatchTimer.IsEnabled)
-            {
-                _trainingStopwatchTimer.Stop();
-            }
+            state.IsFinished = true;
+            StopTrainingStopwatchTimerIfIdle();
         }
 
         RefreshTrainingLapTimesTable();
@@ -333,12 +348,10 @@ public partial class MainWindow
             state.Stopwatch.Reset();
             state.LapRecords.Clear();
             state.LastLapCheckpoint = TimeSpan.Zero;
+            state.IsFinished = false;
         }
 
-        if (_trainingStopwatchTimer.IsEnabled)
-        {
-            _trainingStopwatchTimer.Stop();
-        }
+        StopTrainingStopwatchTimerIfIdle();
 
         RefreshTrainingLapTimesTable();
         UpdateTrainingStopwatchDisplay();
@@ -371,28 +384,46 @@ public partial class MainWindow
         if (_trainingStopwatchContext is null)
         {
             TrainingsViewControl.TrainingStopwatchStartButton.IsEnabled = false;
+            TrainingsViewControl.TrainingStopwatchStartButton.Content = BuildShortcutButtonContent("Start", "Q");
             TrainingsViewControl.TrainingStopwatchStopButton.IsEnabled = false;
             TrainingsViewControl.TrainingStopwatchStopButton.Content = BuildShortcutButtonContent("Runde", "W");
+            TrainingsViewControl.TrainingSaveStintButton.IsEnabled = false;
+            TrainingsViewControl.TrainingSaveStintButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#64748B"));
+            UpdateTrainingRoundsTargetPulse();
             return;
         }
 
         var state = GetOrCreateTrainingStintState(_trainingStopwatchContext.Value);
         var roundsTarget = _selectedTrainingDetailId is null ? 0 : GetRoundsTargetForTraining(_selectedTrainingDetailId.Value);
-        var isLastLap = roundsTarget > 0 && state.LapRecords.Count >= roundsTarget - 1;
-        var stintFinished = roundsTarget > 0 && state.LapRecords.Count >= roundsTarget;
+        var canExceedRoundsTarget = _selectedTrainingDetailId is not null &&
+                                    CanExceedRoundsTargetForTraining(_selectedTrainingDetailId.Value);
+        var isLastLap = !canExceedRoundsTarget && roundsTarget > 0 && state.LapRecords.Count >= roundsTarget - 1;
+        var stintFinished = state.IsFinished ||
+                            (!canExceedRoundsTarget && roundsTarget > 0 && state.LapRecords.Count >= roundsTarget);
 
-        if (!state.Stopwatch.IsRunning && !stintFinished)
+        if (state.Stopwatch.IsRunning)
+        {
+            TrainingsViewControl.TrainingStopwatchStartButton.IsEnabled = true;
+            TrainingsViewControl.TrainingStopwatchStartButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#DC2626"));
+            TrainingsViewControl.TrainingStopwatchStartButton.Content = BuildShortcutButtonContent("Stop", "Q");
+        }
+        else if (!stintFinished)
         {
             TrainingsViewControl.TrainingStopwatchStartButton.IsEnabled = true;
             TrainingsViewControl.TrainingStopwatchStartButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#00AA00"));
+            TrainingsViewControl.TrainingStopwatchStartButton.Content = BuildShortcutButtonContent("Start", "Q");
         }
         else
         {
             TrainingsViewControl.TrainingStopwatchStartButton.IsEnabled = false;
             TrainingsViewControl.TrainingStopwatchStartButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#BBBBBB"));
+            TrainingsViewControl.TrainingStopwatchStartButton.Content = BuildShortcutButtonContent("Start", "Q");
         }
         TrainingsViewControl.TrainingStopwatchStopButton.IsEnabled = state.Stopwatch.IsRunning;
         TrainingsViewControl.TrainingStopwatchStopButton.Content = BuildShortcutButtonContent(isLastLap ? "Stop" : "Runde", "W");
+        var canSaveStint = !_nextDriverSwitchInProgress && !state.Stopwatch.IsRunning && stintFinished;
+        TrainingsViewControl.TrainingSaveStintButton.IsEnabled = canSaveStint;
+        TrainingsViewControl.TrainingSaveStintButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(canSaveStint ? "#16A34A" : "#64748B"));
 
         if (isLastLap)
         {
@@ -404,6 +435,43 @@ public partial class MainWindow
         {
             TrainingsViewControl.TrainingStopwatchStopButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#1F84DE"));
         }
+
+        UpdateTrainingRoundsTargetPulse();
+    }
+
+    private void UpdateTrainingRoundsTargetPulse()
+    {
+        var targetReached = false;
+        if (_selectedTrainingDetailId is not null &&
+            _trainingStopwatchContext is not null &&
+            _trainingStintsByDriver.TryGetValue(_trainingStopwatchContext.Value, out var state))
+        {
+            var roundsTarget = GetRoundsTargetForTraining(_selectedTrainingDetailId.Value);
+            targetReached = roundsTarget > 0 && state.LapRecords.Count >= roundsTarget;
+        }
+
+        if (_trainingRoundsTargetPulseActive == targetReached)
+        {
+            return;
+        }
+
+        _trainingRoundsTargetPulseActive = targetReached;
+        var background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(targetReached ? "#DCFCE7" : "#FFFFFF"));
+        TrainingsViewControl.TrainingStopwatchBorder.Background = background;
+
+        if (!targetReached)
+        {
+            return;
+        }
+
+        background.BeginAnimation(SolidColorBrush.ColorProperty, new ColorAnimation
+        {
+            From = (Color)ColorConverter.ConvertFromString("#DCFCE7"),
+            To = (Color)ColorConverter.ConvertFromString("#4ADE80"),
+            Duration = TimeSpan.FromMilliseconds(700),
+            AutoReverse = true,
+            RepeatBehavior = RepeatBehavior.Forever
+        });
     }
 
     internal void LapNumericAdjust_OnClick(object sender, RoutedEventArgs e)
@@ -470,6 +538,27 @@ public partial class MainWindow
 
         if (modifiers != ModifierKeys.None)
         {
+            return;
+        }
+
+        if (e.Key == Key.A && TrainingsViewControl.TrainingSecondStartButton.IsEnabled && TrainingsViewControl.TrainingSecondStopwatchPanel.Visibility == Visibility.Visible)
+        {
+            TrainingsViewControl.TrainingSecondStartButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            e.Handled = true;
+            return;
+        }
+
+        if (e.Key == Key.S && TrainingsViewControl.TrainingSecondLapButton.IsEnabled && TrainingsViewControl.TrainingSecondStopwatchPanel.Visibility == Visibility.Visible)
+        {
+            TrainingsViewControl.TrainingSecondLapButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            e.Handled = true;
+            return;
+        }
+
+        if (e.Key == Key.D && TrainingsViewControl.TrainingSecondClearButton.IsEnabled && TrainingsViewControl.TrainingSecondStopwatchPanel.Visibility == Visibility.Visible)
+        {
+            TrainingsViewControl.TrainingSecondClearButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            e.Handled = true;
             return;
         }
 

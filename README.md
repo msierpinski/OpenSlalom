@@ -1,5 +1,8 @@
 # OpenSlalom.Data
 
+Die Änderungen der einzelnen Versionen sind im [Changelog](CHANGELOG.md) dokumentiert.
+Neue relevante Funktionen, Verhaltensänderungen und Fehlerbehebungen werden dort zunächst unter `Unreleased` eingetragen und bei einer Veröffentlichung einer Versionsnummer zugeordnet.
+
 Diese Library bildet die vorhandene MariaDB/MySQL-Datenbankstruktur mit Entity Framework Core ab.
 Die initiale Struktur ist als Migration enthalten, damit die Datenbank bei einer neuen Installation automatisch erzeugt werden kann.
 

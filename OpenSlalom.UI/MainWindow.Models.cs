@@ -141,9 +141,13 @@ public partial class MainWindow
 
         public required int FahrerId { get; init; }
 
-        public required int Reihenfolge { get; init; }
+        public required int Reihenfolge { get; set; }
 
         public bool IsAktiv { get; set; }
+
+        public bool IsAktivZweiteZeitnahme { get; set; }
+
+        public bool IsBeingDragged { get; set; }
 
         public bool FahrerFaehrt { get; set; }
 
@@ -265,6 +269,53 @@ public partial class MainWindow
         public int Runden { get; init; }
     }
 
+    public sealed class TrainingStoredStintDriverListItem
+    {
+        public required int FahrerId { get; init; }
+
+        public required string Fahrer { get; init; }
+    }
+
+    public sealed class TrainingStoredStintListItem
+    {
+        public required int StintId { get; init; }
+
+        public required string Titel { get; init; }
+
+        public required string ZeitpunktText { get; init; }
+
+        public required string Kart { get; init; }
+
+        public required string Altersklasse { get; init; }
+
+        public string GesamtzeitText { get; set; } = "-";
+
+        public string DurchschnittszeitText { get; set; } = "-";
+
+        public ObservableCollection<TrainingStoredStintLapListItem> Runden { get; init; } = [];
+    }
+
+    public sealed class TrainingStoredStintLapListItem
+    {
+        public required int RundenId { get; init; }
+
+        public required int StintId { get; init; }
+
+        public required int Runde { get; init; }
+
+        public required double RundenzeitSekunden { get; init; }
+
+        public required string RundenzeitText { get; init; }
+
+        public double ZeitstrafeSekunden { get; set; }
+
+        public int Pylonen { get; set; }
+
+        public int Tore { get; set; }
+
+        public bool Ungueltig { get; set; }
+    }
+
     public sealed class TrainingStatisticsBestLapListItem
     {
         public int Position { get; init; }
@@ -325,6 +376,8 @@ public partial class MainWindow
         public List<TrainingLapTimeListItem> LapRecords { get; } = [];
 
         public TimeSpan LastLapCheckpoint { get; set; } = TimeSpan.Zero;
+
+        public bool IsFinished { get; set; }
     }
 
     public sealed class KartListItem
@@ -388,6 +441,10 @@ public partial class MainWindow
         public int DefaultRundenanzahlProStint { get; set; } = 10;
 
         public Dictionary<int, int> TrainingRundenanzahlOverrides { get; set; } = [];
+
+        public Dictionary<int, bool> TrainingSollrundenUeberschreitenOverrides { get; set; } = [];
+
+        public Dictionary<int, bool> TrainingZweiteZeitnahmeOverrides { get; set; } = [];
     }
 
     public sealed class TrainingDriverSelectionItem

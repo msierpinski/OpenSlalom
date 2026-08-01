@@ -104,6 +104,8 @@ public partial class MainWindow
                 _selectedTrainingPylonenfehlerPenaltySeconds = 0d;
                 TrainingStarterListItems.Clear();
                 TrainingFastestLapItems.Clear();
+                TrainingStoredStintDriverItems.Clear();
+                TrainingStoredStintItems.Clear();
                 UpdateTrainingDriverButtonsState();
                 TrainingsViewControl.TrainingDetailTitleTextBlock.Text = "Training nicht gefunden";
                 TrainingsViewControl.TrainingDetailSubtitleTextBlock.Text = "Das ausgewaehlte Training ist nicht mehr verfuegbar.";
@@ -131,6 +133,7 @@ public partial class MainWindow
             UpdateTrainingLapSummaryDisplay();
             await LoadTrainingStarterListAsync(training.Id);
             await LoadTrainingFastestLapsAsync(training.Id);
+            await LoadTrainingStoredStintDriversAsync(training.Id);
             ApplyTrainingRoundsToUi();
         }
         catch (Exception ex)
@@ -140,6 +143,8 @@ public partial class MainWindow
             Logger.Error(ex, "Fehler beim Laden der Trainingsdetailansicht.");
             TrainingStarterListItems.Clear();
             TrainingFastestLapItems.Clear();
+            TrainingStoredStintDriverItems.Clear();
+            TrainingStoredStintItems.Clear();
             UpdateTrainingDriverButtonsState();
             TrainingsViewControl.TrainingDetailTitleTextBlock.Text = "Trainingsdetail nicht verfuegbar";
             TrainingsViewControl.TrainingDetailSubtitleTextBlock.Text = "Fehler beim Laden der Daten.";
@@ -196,6 +201,7 @@ public partial class MainWindow
             if (starter.Count == 0)
             {
                 _trainingActiveDriverByTrainingId.Remove(trainingId);
+                _trainingSecondActiveDriverByTrainingId.Remove(trainingId);
             }
             else
             {
@@ -217,12 +223,18 @@ public partial class MainWindow
                 }
 
                 var enabledStarter = starter.Where(x => x.FahrerFaehrt).ToList();
+                var reservedSecondDriverId = IsSecondTrainingTimingEnabled(trainingId) &&
+                                             _trainingSecondActiveDriverByTrainingId.TryGetValue(trainingId, out var reservedSecondId) &&
+                                             enabledStarter.Any(x => x.FahrerId == reservedSecondId)
+                    ? reservedSecondId
+                    : (int?)null;
                 if (!_trainingActiveDriverByTrainingId.TryGetValue(trainingId, out var activeFahrerId) ||
                     enabledStarter.All(x => x.FahrerId != activeFahrerId))
                 {
-                    if (enabledStarter.Count > 0)
+                    var replacement = enabledStarter.FirstOrDefault(x => x.FahrerId != reservedSecondDriverId);
+                    if (replacement is not null)
                     {
-                        activeFahrerId = enabledStarter[0].FahrerId;
+                        activeFahrerId = replacement.FahrerId;
                         _trainingActiveDriverByTrainingId[trainingId] = activeFahrerId;
                     }
                     else
@@ -231,11 +243,20 @@ public partial class MainWindow
                     }
                 }
 
+                if (!IsSecondTrainingTimingEnabled(trainingId) ||
+                    !_trainingSecondActiveDriverByTrainingId.TryGetValue(trainingId, out var secondActiveFahrerId) ||
+                    enabledStarter.All(x => x.FahrerId != secondActiveFahrerId) ||
+                    secondActiveFahrerId == activeFahrerId)
+                {
+                    _trainingSecondActiveDriverByTrainingId.Remove(trainingId);
+                }
+
                 for (var i = 0; i < starter.Count; i++)
                 {
                     var item = starter[i];
                     item.Nummer = i + 1;
                     item.IsAktiv = _trainingActiveDriverByTrainingId.TryGetValue(trainingId, out var currentActiveId) && item.FahrerId == currentActiveId;
+                    item.IsAktivZweiteZeitnahme = _trainingSecondActiveDriverByTrainingId.TryGetValue(trainingId, out var currentSecondActiveId) && item.FahrerId == currentSecondActiveId;
                 }
             }
 
@@ -374,9 +395,15 @@ public partial class MainWindow
         }
     }
 
-    internal void SkipTrainingDriver_OnClick(object sender, RoutedEventArgs e)
+    internal async void SkipTrainingDriver_OnClick(object sender, RoutedEventArgs e)
     {
         if (_selectedTrainingDetailId is null || TrainingStarterListItems.Count == 0)
+        {
+            return;
+        }
+
+        var station = GetAvailableTrainingTimingStation();
+        if (station == 0)
         {
             return;
         }
@@ -392,19 +419,234 @@ public partial class MainWindow
             return;
         }
 
-        var currentIndex = ordered.FindIndex(x => x.IsAktiv);
-        var nextIndex = currentIndex < 0 ? 0 : (currentIndex + 1) % ordered.Count;
-        var nextActive = ordered[nextIndex].FahrerId;
-
-        _trainingActiveDriverByTrainingId[_selectedTrainingDetailId.Value] = nextActive;
-
-        foreach (var item in TrainingStarterListItems)
+        var referenceDriver = GetActiveTrainingDriver(station) ?? GetActiveTrainingDriver(1);
+        var referenceIndex = referenceDriver is null ? -1 : ordered.FindIndex(x => x.FahrerId == referenceDriver.FahrerId);
+        for (var offset = 1; offset <= ordered.Count; offset++)
         {
-            item.IsAktiv = item.FahrerId == nextActive;
+            var candidateIndex = (referenceIndex + offset + ordered.Count) % ordered.Count;
+            var candidate = ordered[candidateIndex];
+            if (candidate.IsAktiv || candidate.IsAktivZweiteZeitnahme)
+            {
+                continue;
+            }
+
+            await SwitchTrainingDriverAsync(candidate.FahrerId, station);
+            return;
+        }
+    }
+
+    internal async void TrainingStarterRow_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
+    {
+        if (sender is not DataGridRow row || row.DataContext is not TrainingStarterListItem targetDriver)
+        {
+            return;
         }
 
-        TrainingsViewControl.TrainingStarterDataGrid.Items.Refresh();
-        UpdateTrainingDriverButtonsState();
+        for (var source = e.OriginalSource as DependencyObject; source is not null && source != row; source = GetTrainingStarterParent(source))
+        {
+            if (source is CheckBox or ComboBox)
+            {
+                return;
+            }
+        }
+
+        e.Handled = true;
+        if (targetDriver.IsAktiv || targetDriver.IsAktivZweiteZeitnahme)
+        {
+            return;
+        }
+
+        var station = GetAvailableTrainingTimingStation();
+        if (station > 0)
+        {
+            await SwitchTrainingDriverAsync(targetDriver.FahrerId, station);
+        }
+    }
+
+    internal void TrainingStarterDataGrid_OnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+    {
+        _trainingStarterDraggedItem = null;
+        _trainingStarterDragOriginalIndex = -1;
+        if (sender is not DataGrid dataGrid || e.OriginalSource is not DependencyObject source)
+        {
+            return;
+        }
+
+        var row = ItemsControl.ContainerFromElement(dataGrid, source) as DataGridRow;
+        if (row?.DataContext is not TrainingStarterListItem item || IsTrainingStarterInteractiveControl(source, row))
+        {
+            return;
+        }
+
+        _trainingStarterDragStartPoint = e.GetPosition(dataGrid);
+        _trainingStarterDraggedItem = item;
+        _trainingStarterDragOriginalIndex = TrainingStarterListItems.IndexOf(item);
+    }
+
+    internal void TrainingStarterDataGrid_OnPreviewMouseMove(object sender, MouseEventArgs e)
+    {
+        if (sender is not DataGrid dataGrid ||
+            e.LeftButton != MouseButtonState.Pressed ||
+            _trainingStarterDraggedItem is null ||
+            _trainingStarterOrderSaveInProgress)
+        {
+            return;
+        }
+
+        var currentPosition = e.GetPosition(dataGrid);
+        if (Math.Abs(currentPosition.X - _trainingStarterDragStartPoint.X) < SystemParameters.MinimumHorizontalDragDistance &&
+            Math.Abs(currentPosition.Y - _trainingStarterDragStartPoint.Y) < SystemParameters.MinimumVerticalDragDistance)
+        {
+            return;
+        }
+
+        var draggedItem = _trainingStarterDraggedItem;
+        _trainingStarterDraggedItem = null;
+        draggedItem.IsBeingDragged = true;
+        dataGrid.Items.Refresh();
+
+        var result = DragDrop.DoDragDrop(dataGrid, draggedItem, DragDropEffects.Move);
+        draggedItem.IsBeingDragged = false;
+
+        if (result != DragDropEffects.Move)
+        {
+            var currentIndex = TrainingStarterListItems.IndexOf(draggedItem);
+            if (currentIndex >= 0 && _trainingStarterDragOriginalIndex >= 0 && currentIndex != _trainingStarterDragOriginalIndex)
+            {
+                TrainingStarterListItems.Move(currentIndex, _trainingStarterDragOriginalIndex);
+            }
+
+            UpdateTrainingStarterDisplayOrder(updatePersistentOrder: false);
+        }
+
+        _trainingStarterDragOriginalIndex = -1;
+        dataGrid.Items.Refresh();
+    }
+
+    internal void TrainingStarterDataGrid_OnDragOver(object sender, DragEventArgs e)
+    {
+        if (_trainingStarterOrderSaveInProgress ||
+            sender is not DataGrid dataGrid ||
+            !e.Data.GetDataPresent(typeof(TrainingStarterListItem)) ||
+            e.OriginalSource is not DependencyObject source ||
+            ItemsControl.ContainerFromElement(dataGrid, source) is not DataGridRow targetRow ||
+            targetRow.DataContext is not TrainingStarterListItem targetItem ||
+            e.Data.GetData(typeof(TrainingStarterListItem)) is not TrainingStarterListItem draggedItem)
+        {
+            e.Effects = DragDropEffects.None;
+            e.Handled = true;
+            return;
+        }
+
+        var currentIndex = TrainingStarterListItems.IndexOf(draggedItem);
+        var targetIndex = TrainingStarterListItems.IndexOf(targetItem);
+        if (currentIndex >= 0 && targetIndex >= 0 && currentIndex != targetIndex)
+        {
+            TrainingStarterListItems.Move(currentIndex, targetIndex);
+            UpdateTrainingStarterDisplayOrder(updatePersistentOrder: false);
+            dataGrid.Items.Refresh();
+        }
+
+        e.Effects = DragDropEffects.Move;
+        e.Handled = true;
+    }
+
+    internal async void TrainingStarterDataGrid_OnDrop(object sender, DragEventArgs e)
+    {
+        if (_trainingStarterOrderSaveInProgress ||
+            _selectedTrainingDetailId is null ||
+            sender is not DataGrid dataGrid ||
+            e.Data.GetData(typeof(TrainingStarterListItem)) is not TrainingStarterListItem draggedItem ||
+            e.OriginalSource is not DependencyObject source ||
+            ItemsControl.ContainerFromElement(dataGrid, source) is not DataGridRow)
+        {
+            return;
+        }
+
+        var currentIndex = TrainingStarterListItems.IndexOf(draggedItem);
+        if (currentIndex < 0)
+        {
+            return;
+        }
+
+        var trainingId = _selectedTrainingDetailId.Value;
+        _trainingStarterOrderSaveInProgress = true;
+        UpdateTrainingStarterDisplayOrder(updatePersistentOrder: true);
+        dataGrid.Items.Refresh();
+        e.Effects = DragDropEffects.Move;
+        e.Handled = true;
+
+        try
+        {
+            await using var dbContext = await _localDbContextFactory.CreateDbContextAsync();
+            var assignments = await dbContext.FahrerImTrainings
+                .Where(x => x.TrainingId == trainingId)
+                .ToDictionaryAsync(x => x.FahrerId);
+
+            foreach (var item in TrainingStarterListItems)
+            {
+                if (assignments.TryGetValue(item.FahrerId, out var assignment))
+                {
+                    assignment.Reihenfolge = item.Reihenfolge;
+                }
+            }
+
+            await dbContext.SaveChangesAsync();
+            await RefreshSyncStatusAsync();
+        }
+        catch (Exception ex)
+        {
+            Logger.Error(ex, "Reihenfolge der Trainingsfahrer konnte nicht gespeichert werden.");
+            MessageBox.Show("Die neue Fahrerreihenfolge konnte nicht gespeichert werden. Details stehen im Log.", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
+            if (_selectedTrainingDetailId == trainingId)
+            {
+                await LoadTrainingStarterListAsync(trainingId);
+            }
+        }
+        finally
+        {
+            _trainingStarterOrderSaveInProgress = false;
+        }
+    }
+
+    private void UpdateTrainingStarterDisplayOrder(bool updatePersistentOrder)
+    {
+        for (var index = 0; index < TrainingStarterListItems.Count; index++)
+        {
+            TrainingStarterListItems[index].Nummer = index + 1;
+            if (updatePersistentOrder)
+            {
+                TrainingStarterListItems[index].Reihenfolge = index + 1;
+            }
+        }
+    }
+
+    private static bool IsTrainingStarterInteractiveControl(DependencyObject source, DataGridRow row)
+    {
+        for (var current = source; current is not null && current != row; current = GetTrainingStarterParent(current))
+        {
+            if (current is CheckBox or ComboBox)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static DependencyObject? GetTrainingStarterParent(DependencyObject element)
+    {
+        if (element is Visual)
+        {
+            return VisualTreeHelper.GetParent(element);
+        }
+
+        if (element is FrameworkContentElement contentElement)
+        {
+            return contentElement.Parent ?? ContentOperations.GetParent(contentElement);
+        }
+
+        return LogicalTreeHelper.GetParent(element);
     }
 
     internal async void FinishTraining_OnClick(object sender, RoutedEventArgs e)
@@ -452,14 +694,21 @@ public partial class MainWindow
         }
     }
 
-    private bool IsCurrentStintFinished()
+    private TrainingStarterListItem? GetActiveTrainingDriver(int station)
+    {
+        return station == 2
+            ? TrainingStarterListItems.FirstOrDefault(x => x.IsAktivZweiteZeitnahme && x.FahrerFaehrt)
+            : TrainingStarterListItems.FirstOrDefault(x => x.IsAktiv && x.FahrerFaehrt);
+    }
+
+    private bool IsCurrentStintFinished(int station = 1)
     {
         if (_selectedTrainingDetailId is null)
         {
             return false;
         }
 
-        var activeDriver = TrainingStarterListItems.FirstOrDefault(x => x.IsAktiv && x.FahrerFaehrt);
+        var activeDriver = GetActiveTrainingDriver(station);
         if (activeDriver is null)
         {
             return false;
@@ -472,30 +721,114 @@ public partial class MainWindow
         }
 
         var roundsTarget = GetRoundsTargetForTraining(_selectedTrainingDetailId.Value);
-        return roundsTarget > 0 && state.LapRecords.Count >= roundsTarget;
+        var canExceedRoundsTarget = CanExceedRoundsTargetForTraining(_selectedTrainingDetailId.Value);
+        return state.IsFinished ||
+               (!canExceedRoundsTarget && roundsTarget > 0 && state.LapRecords.Count >= roundsTarget);
+    }
+
+    private bool IsCurrentStintNotStarted(int station = 1)
+    {
+        if (_selectedTrainingDetailId is null)
+        {
+            return false;
+        }
+
+        var activeDriver = GetActiveTrainingDriver(station);
+        if (activeDriver is null)
+        {
+            return false;
+        }
+
+        var context = (_selectedTrainingDetailId.Value, activeDriver.FahrerId);
+        return !_trainingStintsByDriver.TryGetValue(context, out var state) ||
+               (!state.IsFinished && !state.Stopwatch.IsRunning && state.Stopwatch.Elapsed == TimeSpan.Zero && state.LapRecords.Count == 0);
+    }
+
+    private bool CanReplaceTrainingTimingDriver(int station)
+    {
+        return GetActiveTrainingDriver(station) is null || IsCurrentStintNotStarted(station) || IsCurrentStintFinished(station);
+    }
+
+    private int GetAvailableTrainingTimingStation()
+    {
+        if (CanReplaceTrainingTimingDriver(1))
+        {
+            return 1;
+        }
+
+        if (_selectedTrainingDetailId is not null &&
+            IsSecondTrainingTimingEnabled(_selectedTrainingDetailId.Value) &&
+            CanReplaceTrainingTimingDriver(2))
+        {
+            return 2;
+        }
+
+        return 0;
+    }
+
+    private int GetNextDriverTrainingTimingStation()
+    {
+        if (IsCurrentStintFinished(1))
+        {
+            return 1;
+        }
+
+        if (GetActiveTrainingDriver(1) is null)
+        {
+            return 1;
+        }
+
+        if (_selectedTrainingDetailId is not null &&
+            IsSecondTrainingTimingEnabled(_selectedTrainingDetailId.Value) &&
+            (IsCurrentStintFinished(2) || GetActiveTrainingDriver(2) is null))
+        {
+            return 2;
+        }
+
+        return 0;
+    }
+
+    private TrainingStarterListItem? GetTimingStationReferenceDriver(int station)
+    {
+        var activeDriver = GetActiveTrainingDriver(station);
+        if (activeDriver is not null || _selectedTrainingDetailId is null)
+        {
+            return activeDriver;
+        }
+
+        return _trainingLastDriverByTimingStation.TryGetValue((_selectedTrainingDetailId.Value, station), out var driverId)
+            ? TrainingStarterListItems.FirstOrDefault(x => x.FahrerId == driverId)
+            : null;
+    }
+
+    private bool HasNextAssignableTrainingDriver(int station)
+    {
+        var referenceDriverId = GetTimingStationReferenceDriver(station)?.FahrerId;
+        return TrainingStarterListItems.Any(x =>
+            x.FahrerFaehrt &&
+            !x.IsAktiv &&
+            !x.IsAktivZweiteZeitnahme &&
+            x.FahrerId != referenceDriverId);
+    }
+
+    private bool CanDisableSecondTrainingTiming()
+    {
+        return GetActiveTrainingDriver(2) is null || IsCurrentStintNotStarted(2);
     }
 
     internal async void NextTrainingDriver_OnClick(object sender, RoutedEventArgs e)
     {
-        if (_nextDriverSwitchInProgress)
-        {
-            return;
-        }
-
-        _nextDriverSwitchInProgress = true;
-        UpdateTrainingDriverButtonsState();
-
         if (_selectedTrainingDetailId is null)
         {
-            _nextDriverSwitchInProgress = false;
-            UpdateTrainingDriverButtonsState();
             return;
         }
 
-        TrainingsViewControl.TrainingLapTimesDataGrid.CommitEdit(DataGridEditingUnit.Cell, true);
-        TrainingsViewControl.TrainingLapTimesDataGrid.CommitEdit(DataGridEditingUnit.Row, true);
+        var station = GetNextDriverTrainingTimingStation();
+        if (station == 0)
+        {
+            return;
+        }
 
-        var trainingId = _selectedTrainingDetailId.Value;
         var ordered = TrainingStarterListItems
             .Where(x => x.FahrerFaehrt)
             .OrderBy(x => x.Reihenfolge)
@@ -504,94 +837,216 @@ public partial class MainWindow
 
         if (ordered.Count == 0)
         {
-            _nextDriverSwitchInProgress = false;
-            UpdateTrainingDriverButtonsState();
             return;
         }
 
-        var currentIndex = ordered.FindIndex(x => x.IsAktiv);
+        var referenceDriver = GetTimingStationReferenceDriver(station) ?? GetActiveTrainingDriver(1);
+        var currentIndex = referenceDriver is null ? -1 : ordered.FindIndex(x => x.FahrerId == referenceDriver.FahrerId);
         if (currentIndex < 0)
         {
-            _nextDriverSwitchInProgress = false;
-            UpdateTrainingDriverButtonsState();
             return;
         }
 
-        var currentDriverId = ordered[currentIndex].FahrerId;
-        var currentKartId = ordered[currentIndex].KartId;
-        var currentAltersklasse = ordered[currentIndex].Altersklasse;
-        var currentContext = (trainingId, currentDriverId);
-
-        if (!_trainingStintsByDriver.TryGetValue(currentContext, out var currentState) || currentState.Stopwatch.IsRunning)
+        for (var offset = 1; offset <= ordered.Count; offset++)
         {
-            _nextDriverSwitchInProgress = false;
-            UpdateTrainingDriverButtonsState();
+            var candidate = ordered[(currentIndex + offset) % ordered.Count];
+            if (candidate.IsAktiv || candidate.IsAktivZweiteZeitnahme)
+            {
+                continue;
+            }
+
+            if (candidate.FahrerId == referenceDriver?.FahrerId)
+            {
+                continue;
+            }
+
+            await SwitchTrainingDriverAsync(candidate.FahrerId, station);
+            return;
+        }
+    }
+
+    private async Task SwitchTrainingDriverAsync(int targetDriverId, int station = 1)
+    {
+        if (_nextDriverSwitchInProgress || _selectedTrainingDetailId is null)
+        {
             return;
         }
 
-        var roundsTarget = GetRoundsTargetForTraining(trainingId);
-        if (roundsTarget <= 0 || currentState.LapRecords.Count < roundsTarget)
+        var targetDriver = TrainingStarterListItems.FirstOrDefault(x => x.FahrerId == targetDriverId && x.FahrerFaehrt);
+        var currentDriver = GetActiveTrainingDriver(station);
+        var targetUsedByOtherStation = station == 1 ? targetDriver?.IsAktivZweiteZeitnahme == true : targetDriver?.IsAktiv == true;
+        if (targetDriver is null || targetUsedByOtherStation || targetDriver.FahrerId == currentDriver?.FahrerId)
         {
-            _nextDriverSwitchInProgress = false;
-            UpdateTrainingDriverButtonsState();
             return;
         }
+
+        _nextDriverSwitchInProgress = true;
+        UpdateTrainingDriverButtonsState();
 
         try
         {
-            await using var dbContext = await _localDbContextFactory.CreateDbContextAsync();
+            var lapGrid = station == 2 ? TrainingsViewControl.TrainingSecondLapTimesDataGrid : TrainingsViewControl.TrainingLapTimesDataGrid;
+            lapGrid.CommitEdit(DataGridEditingUnit.Cell, true);
+            lapGrid.CommitEdit(DataGridEditingUnit.Row, true);
 
-            var stint = new Tstint
+            var trainingId = _selectedTrainingDetailId.Value;
+            (int TrainingId, int FahrerId)? currentContext = currentDriver is null ? null : (trainingId, currentDriver.FahrerId);
+            TrainingStintState? currentState = null;
+            if (currentContext is not null)
             {
-                TrainingId = trainingId,
-                FahrerId = currentDriverId,
-                KartId = currentKartId,
-                AltersklasseSnapshot = NormalizeAltersklasseSnapshot(currentAltersklasse),
-                Datum = DateTime.Now
-            };
-            dbContext.Tstints.Add(stint);
-
-            foreach (var lap in currentState.LapRecords.OrderBy(x => x.Nummer))
-            {
-                dbContext.Trunden.Add(new Trunde
-                {
-                    Tstint = stint,
-                    Runde = lap.Nummer,
-                    Rundenzeit = lap.Rundenzeit.TotalSeconds,
-                    Pf = lap.Pylonen,
-                    Tf = lap.Tore,
-                    Ungueltig = lap.Ungueltig
-                });
+                _trainingStintsByDriver.TryGetValue(currentContext.Value, out currentState);
             }
 
-            await dbContext.SaveChangesAsync();
-            await LoadTrainingFastestLapsAsync(trainingId);
-            await RefreshSyncStatusAsync();
+            var stintNotStarted = currentDriver is null || currentState is null ||
+                                  (!currentState.IsFinished && !currentState.Stopwatch.IsRunning && currentState.Stopwatch.Elapsed == TimeSpan.Zero && currentState.LapRecords.Count == 0);
+            var roundsTarget = GetRoundsTargetForTraining(trainingId);
+            var canExceedRoundsTarget = CanExceedRoundsTargetForTraining(trainingId);
+            var stintFinished = currentState is not null &&
+                                !currentState.Stopwatch.IsRunning &&
+                                (currentState.IsFinished ||
+                                 (!canExceedRoundsTarget && roundsTarget > 0 && currentState.LapRecords.Count >= roundsTarget));
+
+            if (!stintNotStarted && !stintFinished)
+            {
+                return;
+            }
+
+            if (stintFinished)
+            {
+                await SaveTrainingStintAsync(trainingId, currentDriver!, currentState!);
+            }
+
+            if (currentContext is not null)
+            {
+                _trainingStintsByDriver.Remove(currentContext.Value);
+            }
+            _trainingStintsByDriver.Remove((trainingId, targetDriver.FahrerId));
+
+            if (station == 2)
+            {
+                _trainingSecondActiveDriverByTrainingId[trainingId] = targetDriver.FahrerId;
+            }
+            else
+            {
+                _trainingActiveDriverByTrainingId[trainingId] = targetDriver.FahrerId;
+            }
+            foreach (var item in TrainingStarterListItems)
+            {
+                if (station == 2) item.IsAktivZweiteZeitnahme = item.FahrerId == targetDriver.FahrerId;
+                else item.IsAktiv = item.FahrerId == targetDriver.FahrerId;
+            }
+
+            TrainingsViewControl.TrainingStarterDataGrid.Items.Refresh();
         }
         catch (Exception ex)
         {
             Logger.Error(ex, "Stint konnte nicht gespeichert werden.");
             MessageBox.Show("Stint konnte nicht gespeichert werden. Details stehen im Log.", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+        finally
+        {
             _nextDriverSwitchInProgress = false;
             UpdateTrainingDriverButtonsState();
+        }
+    }
+
+    internal async void SaveFirstTrainingStint_OnClick(object sender, RoutedEventArgs e)
+    {
+        await SaveAndReleaseTrainingTimingStationAsync(1);
+    }
+
+    internal async void SaveSecondTrainingStint_OnClick(object sender, RoutedEventArgs e)
+    {
+        await SaveAndReleaseTrainingTimingStationAsync(2);
+    }
+
+    private async Task SaveAndReleaseTrainingTimingStationAsync(int station)
+    {
+        if (_nextDriverSwitchInProgress || _selectedTrainingDetailId is null || !IsCurrentStintFinished(station))
+        {
             return;
         }
 
-        var nextIndex = (currentIndex + 1) % ordered.Count;
-        var nextDriverId = ordered[nextIndex].FahrerId;
-
-        _trainingStintsByDriver.Remove(currentContext);
-        _trainingStintsByDriver.Remove((trainingId, nextDriverId));
-
-        _trainingActiveDriverByTrainingId[trainingId] = nextDriverId;
-        foreach (var item in TrainingStarterListItems)
+        var driver = GetActiveTrainingDriver(station);
+        if (driver is null)
         {
-            item.IsAktiv = item.FahrerId == nextDriverId;
+            return;
         }
 
-        TrainingsViewControl.TrainingStarterDataGrid.Items.Refresh();
-        _nextDriverSwitchInProgress = false;
+        var trainingId = _selectedTrainingDetailId.Value;
+        var context = (trainingId, driver.FahrerId);
+        if (!_trainingStintsByDriver.TryGetValue(context, out var state) || state.Stopwatch.IsRunning)
+        {
+            return;
+        }
+
+        _nextDriverSwitchInProgress = true;
         UpdateTrainingDriverButtonsState();
+        try
+        {
+            var lapGrid = station == 2 ? TrainingsViewControl.TrainingSecondLapTimesDataGrid : TrainingsViewControl.TrainingLapTimesDataGrid;
+            lapGrid.CommitEdit(DataGridEditingUnit.Cell, true);
+            lapGrid.CommitEdit(DataGridEditingUnit.Row, true);
+
+            await SaveTrainingStintAsync(trainingId, driver, state);
+            _trainingLastDriverByTimingStation[(trainingId, station)] = driver.FahrerId;
+            _trainingStintsByDriver.Remove(context);
+
+            if (station == 2)
+            {
+                _trainingSecondActiveDriverByTrainingId.Remove(trainingId);
+                driver.IsAktivZweiteZeitnahme = false;
+            }
+            else
+            {
+                _trainingActiveDriverByTrainingId.Remove(trainingId);
+                driver.IsAktiv = false;
+            }
+
+            TrainingsViewControl.TrainingStarterDataGrid.Items.Refresh();
+        }
+        catch (Exception ex)
+        {
+            Logger.Error(ex, "Stint konnte nicht gespeichert und die Zeitnahme nicht freigegeben werden.");
+            MessageBox.Show("Stint konnte nicht gespeichert werden. Details stehen im Log.", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+        finally
+        {
+            _nextDriverSwitchInProgress = false;
+            UpdateTrainingDriverButtonsState();
+        }
+    }
+
+    private async Task SaveTrainingStintAsync(int trainingId, TrainingStarterListItem driver, TrainingStintState state)
+    {
+        await using var dbContext = await _localDbContextFactory.CreateDbContextAsync();
+        var stint = new Tstint
+        {
+            TrainingId = trainingId,
+            FahrerId = driver.FahrerId,
+            KartId = driver.KartId,
+            AltersklasseSnapshot = NormalizeAltersklasseSnapshot(driver.Altersklasse),
+            Datum = DateTime.Now
+        };
+        dbContext.Tstints.Add(stint);
+
+        foreach (var lap in state.LapRecords.OrderBy(x => x.Nummer))
+        {
+            dbContext.Trunden.Add(new Trunde
+            {
+                Tstint = stint,
+                Runde = lap.Nummer,
+                Rundenzeit = lap.Rundenzeit.TotalSeconds,
+                Pf = lap.Pylonen,
+                Tf = lap.Tore,
+                Ungueltig = lap.Ungueltig
+            });
+        }
+
+        await dbContext.SaveChangesAsync();
+        await LoadTrainingFastestLapsAsync(trainingId);
+        await LoadTrainingStoredStintDriversAsync(trainingId);
+        await RefreshSyncStatusAsync();
     }
 
     internal void TrainingStarterFaehrtCheckBox_OnClick(object sender, RoutedEventArgs e)
@@ -601,8 +1056,23 @@ public partial class MainWindow
             return;
         }
 
-        selected.FahrerFaehrt = checkBox.IsChecked == true;
+        var willDrive = checkBox.IsChecked == true;
+        var activeStation = selected.IsAktiv ? 1 : selected.IsAktivZweiteZeitnahme ? 2 : 0;
+        if (!willDrive && activeStation > 0 && !IsCurrentStintNotStarted(activeStation))
+        {
+            checkBox.IsChecked = true;
+            selected.FahrerFaehrt = true;
+            MessageBox.Show("Ein bereits begonnener oder beendeter Stint muss vor dem Abwählen des Fahrers gespeichert oder gelöscht werden.", "Hinweis", MessageBoxButton.OK, MessageBoxImage.Information);
+            return;
+        }
+
+        selected.FahrerFaehrt = willDrive;
         _trainingDriverEnabledByDriver[(_selectedTrainingDetailId.Value, selected.FahrerId)] = selected.FahrerFaehrt;
+        if (!selected.FahrerFaehrt && selected.IsAktivZweiteZeitnahme)
+        {
+            _trainingSecondActiveDriverByTrainingId.Remove(_selectedTrainingDetailId.Value);
+            selected.IsAktivZweiteZeitnahme = false;
+        }
 
         var enabledOrdered = TrainingStarterListItems
             .Where(x => x.FahrerFaehrt)
@@ -613,9 +1083,11 @@ public partial class MainWindow
         if (enabledOrdered.Count == 0)
         {
             _trainingActiveDriverByTrainingId.Remove(_selectedTrainingDetailId.Value);
+            _trainingSecondActiveDriverByTrainingId.Remove(_selectedTrainingDetailId.Value);
             foreach (var item in TrainingStarterListItems)
             {
                 item.IsAktiv = false;
+                item.IsAktivZweiteZeitnahme = false;
             }
 
             TrainingsViewControl.TrainingStarterDataGrid.Items.Refresh();
@@ -626,8 +1098,10 @@ public partial class MainWindow
         if (!_trainingActiveDriverByTrainingId.TryGetValue(_selectedTrainingDetailId.Value, out var activeId) ||
             enabledOrdered.All(x => x.FahrerId != activeId))
         {
-            activeId = enabledOrdered[0].FahrerId;
-            _trainingActiveDriverByTrainingId[_selectedTrainingDetailId.Value] = activeId;
+            var replacement = enabledOrdered.FirstOrDefault(x => !x.IsAktivZweiteZeitnahme);
+            activeId = replacement?.FahrerId ?? 0;
+            if (replacement is null) _trainingActiveDriverByTrainingId.Remove(_selectedTrainingDetailId.Value);
+            else _trainingActiveDriverByTrainingId[_selectedTrainingDetailId.Value] = activeId;
         }
 
         foreach (var item in TrainingStarterListItems)
@@ -648,17 +1122,33 @@ public partial class MainWindow
 
         item.KartId = comboBox.SelectedValue as int?;
         _trainingKartSelectionByDriver[(_selectedTrainingDetailId.Value, item.FahrerId)] = item.KartId;
+
+        if (comboBox.IsKeyboardFocusWithin)
+        {
+            comboBox.Dispatcher.BeginInvoke(DispatcherPriority.Input, () =>
+            {
+                comboBox.IsDropDownOpen = false;
+                Keyboard.ClearFocus();
+                TrainingsViewControl.TrainingStarterDataGrid.Focus();
+            });
+        }
     }
 
     private void UpdateTrainingDriverButtonsState()
     {
         var hasStarter = TrainingStarterListItems.Count > 0;
-        var hasActive = TrainingStarterListItems.Any(x => x.IsAktiv);
         var hasEnabled = TrainingStarterListItems.Any(x => x.FahrerFaehrt);
         var stopwatchRunning = IsCurrentTrainingStopwatchRunning();
-        var canSwitchToNextDriver = !_nextDriverSwitchInProgress && hasStarter && hasActive && IsCurrentStintFinished();
-        var canSkipDriver = hasStarter && hasEnabled && !stopwatchRunning;
-        var canFinishTraining = !_finishTrainingInProgress && _selectedTrainingDetailId is not null && !stopwatchRunning;
+        var secondStopwatchRunning = IsSecondTrainingStopwatchRunning();
+        var assignableStation = GetAvailableTrainingTimingStation();
+        var hasUnassignedDriver = TrainingStarterListItems.Any(x => x.FahrerFaehrt && !x.IsAktiv && !x.IsAktivZweiteZeitnahme);
+        var nextDriverStation = GetNextDriverTrainingTimingStation();
+        var canSwitchToNextDriver = !_nextDriverSwitchInProgress &&
+                                    hasStarter &&
+                                    nextDriverStation > 0 &&
+                                    HasNextAssignableTrainingDriver(nextDriverStation);
+        var canSkipDriver = !_nextDriverSwitchInProgress && hasStarter && hasEnabled && assignableStation > 0 && hasUnassignedDriver;
+        var canFinishTraining = !_finishTrainingInProgress && _selectedTrainingDetailId is not null && !stopwatchRunning && !secondStopwatchRunning;
 
         TrainingsViewControl.NextDriverButton.IsEnabled = canSwitchToNextDriver;
         TrainingsViewControl.NextDriverButton.Background = canSwitchToNextDriver
@@ -676,11 +1166,13 @@ public partial class MainWindow
             : new SolidColorBrush((Color)ColorConverter.ConvertFromString("#64748B"));
 
         UpdateActiveDriverDisplay();
+        UpdateSecondTrainingStopwatchContextWithActiveDriver();
     }
 
     private bool IsCurrentTrainingStopwatchRunning()
     {
         SyncTrainingStopwatchContextWithActiveDriver(resetIfContextChanges: false);
+        UpdateSecondTrainingStopwatchContextWithActiveDriver();
         if (_trainingStopwatchContext is null)
         {
             return false;

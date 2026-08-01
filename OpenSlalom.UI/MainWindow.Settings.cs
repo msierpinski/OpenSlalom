@@ -46,6 +46,8 @@ public partial class MainWindow
             }
 
             _localUiSettings.TrainingRundenanzahlOverrides ??= new Dictionary<int, int>();
+            _localUiSettings.TrainingSollrundenUeberschreitenOverrides ??= new Dictionary<int, bool>();
+            _localUiSettings.TrainingZweiteZeitnahmeOverrides ??= new Dictionary<int, bool>();
 
             ApplySettingsToUi();
         }
@@ -80,6 +82,16 @@ public partial class MainWindow
         return _localUiSettings.DefaultRundenanzahlProStint;
     }
 
+    private bool CanExceedRoundsTargetForTraining(int trainingId)
+    {
+        return _localUiSettings.TrainingSollrundenUeberschreitenOverrides.TryGetValue(trainingId, out var canExceed) && canExceed;
+    }
+
+    private bool IsSecondTrainingTimingEnabled(int trainingId)
+    {
+        return _localUiSettings.TrainingZweiteZeitnahmeOverrides.TryGetValue(trainingId, out var enabled) && enabled;
+    }
+
     private void ApplyTrainingRoundsToUi()
     {
         if (TrainingsViewControl.TrainingRoundsTextBox is null || TrainingsViewControl.TrainingLapCounterTextBlock is null)
@@ -87,9 +99,32 @@ public partial class MainWindow
             return;
         }
 
-        if (_selectedTrainingDetailId is null)
+        _applyingTrainingSettingsToUi = true;
+        try
         {
-            TrainingsViewControl.TrainingRoundsTextBox.Text = _localUiSettings.DefaultRundenanzahlProStint.ToString();
+            if (_selectedTrainingDetailId is null)
+            {
+                TrainingsViewControl.TrainingRoundsTextBox.Text = _localUiSettings.DefaultRundenanzahlProStint.ToString();
+                TrainingsViewControl.TrainingAllowExtraRoundsCheckBox.IsChecked = false;
+                TrainingsViewControl.TrainingSecondTimingCheckBox.IsChecked = false;
+                TrainingsViewControl.TrainingSecondStopwatchPanel.Visibility = Visibility.Collapsed;
+                if (TrainingsViewControl.TrainingRoundsFeedbackTextBlock is not null)
+                {
+                    TrainingsViewControl.TrainingRoundsFeedbackTextBlock.Text = string.Empty;
+                }
+
+                UpdateTrainingLapProgressDisplay();
+                UpdateTrainingStopwatchButtonsState();
+
+                return;
+            }
+
+            var rounds = GetRoundsTargetForTraining(_selectedTrainingDetailId.Value);
+            TrainingsViewControl.TrainingRoundsTextBox.Text = rounds.ToString();
+            TrainingsViewControl.TrainingAllowExtraRoundsCheckBox.IsChecked = CanExceedRoundsTargetForTraining(_selectedTrainingDetailId.Value);
+            var secondTimingEnabled = IsSecondTrainingTimingEnabled(_selectedTrainingDetailId.Value);
+            TrainingsViewControl.TrainingSecondTimingCheckBox.IsChecked = secondTimingEnabled;
+            TrainingsViewControl.TrainingSecondStopwatchPanel.Visibility = secondTimingEnabled ? Visibility.Visible : Visibility.Collapsed;
             if (TrainingsViewControl.TrainingRoundsFeedbackTextBlock is not null)
             {
                 TrainingsViewControl.TrainingRoundsFeedbackTextBlock.Text = string.Empty;
@@ -97,19 +132,12 @@ public partial class MainWindow
 
             UpdateTrainingLapProgressDisplay();
             UpdateTrainingStopwatchButtonsState();
-
-            return;
+            UpdateSecondTrainingStopwatchButtonsState();
         }
-
-        var rounds = GetRoundsTargetForTraining(_selectedTrainingDetailId.Value);
-        TrainingsViewControl.TrainingRoundsTextBox.Text = rounds.ToString();
-        if (TrainingsViewControl.TrainingRoundsFeedbackTextBlock is not null)
+        finally
         {
-            TrainingsViewControl.TrainingRoundsFeedbackTextBlock.Text = string.Empty;
+            _applyingTrainingSettingsToUi = false;
         }
-
-        UpdateTrainingLapProgressDisplay();
-        UpdateTrainingStopwatchButtonsState();
     }
 
     private async Task SaveLocalUiSettingsAsync()
@@ -150,12 +178,29 @@ public partial class MainWindow
         }
     }
 
-    internal async void SaveTrainingRounds_OnClick(object sender, RoutedEventArgs e)
+    internal void TrainingRoundsTextBox_OnTextChanged(object sender, TextChangedEventArgs e)
+    {
+        if (_applyingTrainingSettingsToUi || _selectedTrainingDetailId is null)
+        {
+            return;
+        }
+
+        _trainingSettingsSaveTimer.Stop();
+        _trainingSettingsSaveTimer.Start();
+        TrainingsViewControl.TrainingRoundsFeedbackTextBlock.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#475569"));
+        TrainingsViewControl.TrainingRoundsFeedbackTextBlock.Text = "Änderung wird automatisch gespeichert ...";
+    }
+
+    private async void TrainingSettingsSaveTimer_OnTick(object? sender, EventArgs e)
+    {
+        _trainingSettingsSaveTimer.Stop();
+        await SaveTrainingRoundsAutomaticallyAsync();
+    }
+
+    private async Task SaveTrainingRoundsAutomaticallyAsync()
     {
         if (_selectedTrainingDetailId is null)
         {
-            TrainingsViewControl.TrainingRoundsFeedbackTextBlock.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#B91C1C"));
-            TrainingsViewControl.TrainingRoundsFeedbackTextBlock.Text = "Bitte zuerst ein Training auswaehlen.";
             return;
         }
 
@@ -168,16 +213,105 @@ public partial class MainWindow
 
         try
         {
-            _localUiSettings.TrainingRundenanzahlOverrides[_selectedTrainingDetailId.Value] = trainingRounds;
+            var trainingId = _selectedTrainingDetailId.Value;
+            _localUiSettings.TrainingRundenanzahlOverrides[trainingId] = trainingRounds;
             await SaveLocalUiSettingsAsync();
-            ApplyTrainingRoundsToUi();
+            if (_selectedTrainingDetailId != trainingId)
+            {
+                return;
+            }
+
+            UpdateTrainingLapProgressDisplay();
+            UpdateTrainingStopwatchButtonsState();
+            UpdateTrainingDriverButtonsState();
 
             TrainingsViewControl.TrainingRoundsFeedbackTextBlock.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#166534"));
-            TrainingsViewControl.TrainingRoundsFeedbackTextBlock.Text = "Rundenanzahl fuer das Training gespeichert.";
+            TrainingsViewControl.TrainingRoundsFeedbackTextBlock.Text = "Rundenanzahl automatisch gespeichert.";
         }
         catch (Exception ex)
         {
             Logger.Error(ex, "Trainingsspezifische Rundenanzahl konnte nicht gespeichert werden.");
+            TrainingsViewControl.TrainingRoundsFeedbackTextBlock.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#B91C1C"));
+            TrainingsViewControl.TrainingRoundsFeedbackTextBlock.Text = "Speichern fehlgeschlagen. Details stehen im Log.";
+        }
+    }
+
+    internal async void TrainingAllowExtraRoundsCheckBox_OnClick(object sender, RoutedEventArgs e)
+    {
+        if (_applyingTrainingSettingsToUi || _selectedTrainingDetailId is null || sender is not CheckBox checkBox)
+        {
+            return;
+        }
+
+        var trainingId = _selectedTrainingDetailId.Value;
+        _localUiSettings.TrainingSollrundenUeberschreitenOverrides[trainingId] = checkBox.IsChecked == true;
+
+        try
+        {
+            await SaveLocalUiSettingsAsync();
+            if (_selectedTrainingDetailId != trainingId)
+            {
+                return;
+            }
+
+            UpdateTrainingStopwatchButtonsState();
+            UpdateTrainingDriverButtonsState();
+            TrainingsViewControl.TrainingRoundsFeedbackTextBlock.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#166534"));
+            TrainingsViewControl.TrainingRoundsFeedbackTextBlock.Text = "Einstellung automatisch gespeichert.";
+        }
+        catch (Exception ex)
+        {
+            Logger.Error(ex, "Einstellung zum Überschreiten der Sollrunden konnte nicht gespeichert werden.");
+            TrainingsViewControl.TrainingRoundsFeedbackTextBlock.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#B91C1C"));
+            TrainingsViewControl.TrainingRoundsFeedbackTextBlock.Text = "Speichern fehlgeschlagen. Details stehen im Log.";
+        }
+    }
+
+    internal async void TrainingSecondTimingCheckBox_OnClick(object sender, RoutedEventArgs e)
+    {
+        if (_applyingTrainingSettingsToUi || _selectedTrainingDetailId is null || sender is not CheckBox checkBox)
+        {
+            return;
+        }
+
+        var trainingId = _selectedTrainingDetailId.Value;
+        var enabled = checkBox.IsChecked == true;
+        if (!enabled && !CanDisableSecondTrainingTiming())
+        {
+            _applyingTrainingSettingsToUi = true;
+            checkBox.IsChecked = true;
+            _applyingTrainingSettingsToUi = false;
+            MessageBox.Show("Die zweite Zeitnahme kann erst deaktiviert werden, wenn ihr Stint noch nicht begonnen wurde.", "Hinweis", MessageBoxButton.OK, MessageBoxImage.Information);
+            return;
+        }
+
+        _localUiSettings.TrainingZweiteZeitnahmeOverrides[trainingId] = enabled;
+        if (!enabled)
+        {
+            _trainingSecondActiveDriverByTrainingId.Remove(trainingId);
+            _trainingSecondStopwatchContext = null;
+            TrainingSecondLapTimeItems.Clear();
+            foreach (var item in TrainingStarterListItems)
+            {
+                item.IsAktivZweiteZeitnahme = false;
+            }
+
+            TrainingsViewControl.TrainingStarterDataGrid.Items.Refresh();
+        }
+
+        TrainingsViewControl.TrainingSecondStopwatchPanel.Visibility = enabled ? Visibility.Visible : Visibility.Collapsed;
+
+        try
+        {
+            await SaveLocalUiSettingsAsync();
+            UpdateSecondTrainingStopwatchContextWithActiveDriver();
+            UpdateTrainingDriverButtonsState();
+            TrainingsViewControl.TrainingRoundsFeedbackTextBlock.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#166534"));
+            TrainingsViewControl.TrainingRoundsFeedbackTextBlock.Text = "Einstellung automatisch gespeichert.";
+        }
+        catch (Exception ex)
+        {
+            Logger.Error(ex, "Einstellung für die zweite Zeitnahme konnte nicht gespeichert werden.");
             TrainingsViewControl.TrainingRoundsFeedbackTextBlock.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#B91C1C"));
             TrainingsViewControl.TrainingRoundsFeedbackTextBlock.Text = "Speichern fehlgeschlagen. Details stehen im Log.";
         }
