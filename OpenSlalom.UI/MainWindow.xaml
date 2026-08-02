@@ -45,9 +45,9 @@
                     <TextBlock Margin="56,0,0,0" VerticalAlignment="Center" FontSize="20" Foreground="#1F84DE" FontWeight="Bold" Text="openSlalom" />
 
                     <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="0,0,5,0">
-                        <Image Source="/icons/minimize.png" Width="30" HorizontalAlignment="Left" Margin="15,0,0,0" MouseLeftButtonDown="MinimizeButton_OnClick"/>
-                        <Image x:Name="MaximizeRestoreImage" Source="/icons/maximize.png" Width="30" HorizontalAlignment="Left" Margin="15,0,0,0" MouseLeftButtonDown="MaximizeButton_OnClick"/>
-                        <Image Source="/icons/close.png" Width="30" HorizontalAlignment="Left" Margin="15,0,0,0" MouseLeftButtonDown="CloseButton_OnClick"/>
+                        <Image Source="/icons/minus.png" Height="32" Width="32" HorizontalAlignment="Left" Margin="15,0,0,0" MouseLeftButtonDown="MinimizeButton_OnClick"/>
+                        <Image Source="/icons/window-maximize.png" Height="32" Width="32" x:Name="MaximizeRestoreImage" HorizontalAlignment="Left" Margin="15,0,0,0" MouseLeftButtonDown="MaximizeButton_OnClick"/>
+                        <Image Source="/icons/x.png" Height="32" Width="32" HorizontalAlignment="Left" Margin="15,0,0,0" MouseLeftButtonDown="CloseButton_OnClick"/>
                     </StackPanel>
                 </Grid>
             </Border>

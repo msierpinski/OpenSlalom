@@ -41,8 +41,8 @@ public partial class MainWindow
         }
 
         var iconPath = WindowState == WindowState.Maximized
-            ? "pack://application:,,,/icons/window.png"
-            : "pack://application:,,,/icons/maximize.png";
+            ? "pack://application:,,,/icons/window-minimize.png"
+            : "pack://application:,,,/icons/window-maximize.png";
         MaximizeRestoreImage.Source = new BitmapImage(new Uri(iconPath, UriKind.Absolute));
     }
 
