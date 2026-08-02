@@ -7,7 +7,7 @@
              d:Background="White">
     <Border Background="Transparent">
         <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
-            <Image x:Name="LogoImage" Height="320" Stretch="Uniform" Source="/icons/logo.png" ImageFailed="LogoImage_OnImageFailed" />
+            <Image x:Name="LogoImage" Height="256" Width="256" Stretch="Uniform" Source="/icons/logo.png" ImageFailed="LogoImage_OnImageFailed" />
             <TextBlock Margin="0,20,0,0" FontSize="48" FontWeight="Bold" Foreground="#1F84DE" Text="openSlalom" HorizontalAlignment="Center"/>
         </StackPanel>
     </Border>

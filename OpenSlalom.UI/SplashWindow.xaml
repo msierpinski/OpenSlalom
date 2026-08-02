@@ -20,7 +20,7 @@
             </Grid.RowDefinitions>
 
             <StackPanel VerticalAlignment="Center">
-                <Image Height="140" Stretch="Uniform" Source="/icons/logo.png" />
+                <Image Height="128" Width="128" Stretch="Uniform" Source="/icons/logo.png" />
                 <TextBlock Margin="0,14,0,0"
                            Text="openSlalom"
                            FontSize="26"
