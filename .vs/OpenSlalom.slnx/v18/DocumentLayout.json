@@ -102,7 +102,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 7,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Document",
@@ -131,6 +131,19 @@
             },
             {
               "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "App.xaml.cs",
+              "DocumentMoniker": "C:\\Projekte\\OpenSlalom\\OpenSlalom.UI\\App.xaml.cs",
+              "RelativeDocumentMoniker": "OpenSlalom.UI\\App.xaml.cs",
+              "ToolTip": "C:\\Projekte\\OpenSlalom\\OpenSlalom.UI\\App.xaml.cs",
+              "RelativeToolTip": "OpenSlalom.UI\\App.xaml.cs",
+              "ViewState": "AgIAABwAAAAAAAAAAAAgwDwAAAA6AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-14T06:57:13.176Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 2,
               "Title": "appsettings.json",
               "DocumentMoniker": "C:\\Projekte\\OpenSlalom\\OpenSlalom.UI\\appsettings.json",
@@ -139,8 +152,7 @@
               "RelativeToolTip": "OpenSlalom.UI\\appsettings.json",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAoAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2026-07-14T06:45:11.852Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-07-14T06:45:11.852Z"
             },
             {
               "$type": "Document",
@@ -151,8 +163,7 @@
               "ToolTip": "C:\\Projekte\\OpenSlalom\\OpenSlalom.UI\\Views\\EinstellungenView.xaml",
               "RelativeToolTip": "OpenSlalom.UI\\Views\\EinstellungenView.xaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2026-07-31T07:44:41.075Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-07-31T07:44:41.075Z"
             },
             {
               "$type": "Document",
@@ -185,21 +196,7 @@
               "ToolTip": "C:\\Projekte\\OpenSlalom\\OpenSlalom.UI\\App.xaml",
               "RelativeToolTip": "OpenSlalom.UI\\App.xaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2026-07-14T06:57:17.663Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "App.xaml.cs",
-              "DocumentMoniker": "C:\\Projekte\\OpenSlalom\\OpenSlalom.UI\\App.xaml.cs",
-              "RelativeDocumentMoniker": "OpenSlalom.UI\\App.xaml.cs",
-              "ToolTip": "C:\\Projekte\\OpenSlalom\\OpenSlalom.UI\\App.xaml.cs",
-              "RelativeToolTip": "OpenSlalom.UI\\App.xaml.cs",
-              "ViewState": "AgIAABwAAAAAAAAAAAAgwDwAAAA6AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-07-14T06:57:13.176Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-07-14T06:57:17.663Z"
             },
             {
               "$type": "Document",
@@ -358,8 +355,7 @@
               "RelativeToolTip": "OpenSlalom.Data\\ServiceCollectionExtensions.cs",
               "ViewState": "AgIAACcAAAAAAAAAAAAawD0AAAAMAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-07-13T19:25:31.179Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-07-13T19:25:31.179Z"
             },
             {
               "$type": "Document",

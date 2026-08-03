@@ -26,6 +26,7 @@ die Versionsnummern folgen der [semantischen Versionierung](https://semver.org/l
 - Die neue PHP-WebUI beschreibt openSlalom und stellt synchronisierte Trainingsergebnisse über eine schreibgeschützte UUID-Route bereit.
 - Die öffentliche Trainingsansicht der WebUI enthält einen Statistik-Tab mit trainingsbezogenen Kennzahlen und Fahrerstatistiken.
 - Trainings können in der Desktop-App für die öffentliche WebUI freigegeben oder privat gehalten werden.
+- Die Trainingsdetailansicht der Desktop-App zeigt einen QR-Code für die öffentliche Webadresse des Trainings an.
 - Die WebUI besitzt eine Anmeldung mit den Rollen Administrator, Trainingsleiter und Fahrer sowie eine Administrator-Benutzerverwaltung.
 
 ### Geändert

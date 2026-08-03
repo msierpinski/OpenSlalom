@@ -269,6 +269,7 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="200" />
                         <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
 
                     <StackPanel Grid.Column="0">
@@ -294,6 +295,12 @@
                                 <TextBlock x:Name="TrainingDetailBeschreibungTextBlock" x:FieldModifier="internal" Margin="0,4,0,0" TextWrapping="Wrap" Text="Beschreibung: -" />
                             </StackPanel>
                         </Grid>
+                    </Border>
+                    <Border Grid.Column="2" Margin="10,0,0,0" Padding="6" Background="White" BorderBrush="#D1D5DB" BorderThickness="1" CornerRadius="8">
+                        <StackPanel HorizontalAlignment="Center">
+                            <Image x:Name="TrainingDetailQrCodeImage" x:FieldModifier="internal" Width="88" Height="88" Stretch="Uniform" />
+                            <TextBlock Margin="0,3,0,0" FontSize="10" Foreground="#475569" Text="Training online" TextAlignment="Center" />
+                        </StackPanel>
                     </Border>
 
                 </Grid>

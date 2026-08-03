@@ -22,6 +22,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shell;
 using System.Windows.Threading;
 using Microsoft.Win32;
+using QRCoder;
 
 namespace OpenSlalom.UI;
 
@@ -115,6 +116,7 @@ public partial class MainWindow
                 TrainingsViewControl.TrainingDetailDisziplinTextBlock.Text = "Disziplin: -";
                 TrainingsViewControl.TrainingDetailWetterTextBlock.Text = "Wetter: -";
                 TrainingsViewControl.TrainingDetailBeschreibungTextBlock.Text = "Beschreibung: -";
+                TrainingsViewControl.TrainingDetailQrCodeImage.Source = null;
                 ApplyTrainingRoundsToUi();
                 return;
             }
@@ -127,6 +129,7 @@ public partial class MainWindow
             TrainingsViewControl.TrainingDetailDisziplinTextBlock.Text = $"Disziplin: {training.Disziplin.Name}";
             TrainingsViewControl.TrainingDetailWetterTextBlock.Text = $"Wetter: {training.Wetter.Bezeichnung}";
             TrainingsViewControl.TrainingDetailBeschreibungTextBlock.Text = $"Beschreibung: {training.Beschreibung}";
+            TrainingsViewControl.TrainingDetailQrCodeImage.Source = CreateTrainingQrCodeImage(training.Uuid);
             _selectedTrainingTorfehlerPenaltySeconds = training.Disziplin.ZeitstrafeTorfehler;
             _selectedTrainingPylonenfehlerPenaltySeconds = training.Disziplin.ZeitstrafePylonenfehler;
             RecalculateLapPenaltiesForCurrentContext();
@@ -154,6 +157,7 @@ public partial class MainWindow
             TrainingsViewControl.TrainingDetailDisziplinTextBlock.Text = "Disziplin: -";
             TrainingsViewControl.TrainingDetailWetterTextBlock.Text = "Wetter: -";
             TrainingsViewControl.TrainingDetailBeschreibungTextBlock.Text = "Beschreibung: -";
+            TrainingsViewControl.TrainingDetailQrCodeImage.Source = null;
             ApplyTrainingRoundsToUi();
         }
     }
@@ -433,6 +437,22 @@ public partial class MainWindow
             await SwitchTrainingDriverAsync(candidate.FahrerId, station);
             return;
         }
+    }
+
+    private static BitmapImage CreateTrainingQrCodeImage(Guid trainingUuid)
+    {
+        var url = $"https://www.openslalom.de/training/{trainingUuid:D}";
+        using var generator = new QRCodeGenerator();
+        using var data = generator.CreateQrCode(url, QRCodeGenerator.ECCLevel.Q);
+        var png = new PngByteQRCode(data).GetGraphic(10);
+        var image = new BitmapImage();
+        using var stream = new MemoryStream(png);
+        image.BeginInit();
+        image.CacheOption = BitmapCacheOption.OnLoad;
+        image.StreamSource = stream;
+        image.EndInit();
+        image.Freeze();
+        return image;
     }
 
     internal async void TrainingStarterRow_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
