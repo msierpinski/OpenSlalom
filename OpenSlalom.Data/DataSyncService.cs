@@ -203,6 +203,7 @@ public sealed class DataSyncService(
                 x => new Training
                 {
                     Id = x.Id,
+                    Uuid = x.Uuid,
                     VereinId = x.VereinId,
                     DisziplinId = x.DisziplinId,
                     WetterId = x.WetterId,
@@ -210,12 +211,14 @@ public sealed class DataSyncService(
                     Beschreibung = x.Beschreibung,
                     Zeitpunkt = x.Zeitpunkt,
                     TrainingAbgeschlossen = x.TrainingAbgeschlossen,
+                    IstVeroeffentlicht = x.IstVeroeffentlicht,
                     UpdatedAtUtc = x.UpdatedAtUtc,
                     IsDeleted = x.IsDeleted,
                     DeletedAtUtc = x.DeletedAtUtc
                 },
                 (target, source) =>
                 {
+                    target.Uuid = source.Uuid;
                     target.VereinId = source.VereinId;
                     target.DisziplinId = source.DisziplinId;
                     target.WetterId = source.WetterId;
@@ -223,6 +226,7 @@ public sealed class DataSyncService(
                     target.Beschreibung = source.Beschreibung;
                     target.Zeitpunkt = source.Zeitpunkt;
                     target.TrainingAbgeschlossen = source.TrainingAbgeschlossen;
+                    target.IstVeroeffentlicht = source.IstVeroeffentlicht;
                     CopySyncFields(target, source);
                 }, cancellationToken);
 
@@ -231,6 +235,7 @@ public sealed class DataSyncService(
                 x => new Meisterschaft
                 {
                     Id = x.Id,
+                    Uuid = x.Uuid,
                     GastgeberId = x.GastgeberId,
                     DisziplinId = x.DisziplinId,
                     WetterId = x.WetterId,
@@ -245,6 +250,7 @@ public sealed class DataSyncService(
                 },
                 (target, source) =>
                 {
+                    target.Uuid = source.Uuid;
                     target.GastgeberId = source.GastgeberId;
                     target.DisziplinId = source.DisziplinId;
                     target.WetterId = source.WetterId;
@@ -453,6 +459,34 @@ public sealed class DataSyncService(
             await HasIntKeyDriftAsync(localDb.Mstints, remoteDb.Mstints, x => x.Id, cancellationToken) ||
             await HasIntKeyDriftAsync(localDb.Trunden, remoteDb.Trunden, x => x.Id, cancellationToken) ||
             await HasIntKeyDriftAsync(localDb.Mrunden, remoteDb.Mrunden, x => x.Id, cancellationToken))
+        {
+            return true;
+        }
+
+        var localTrainingUuids = await localDb.Trainings
+            .IgnoreQueryFilters()
+            .Select(x => new { x.Id, x.Uuid })
+            .ToDictionaryAsync(x => x.Id, x => x.Uuid, cancellationToken);
+        var remoteTrainingUuids = await remoteDb.Trainings
+            .IgnoreQueryFilters()
+            .Select(x => new { x.Id, x.Uuid })
+            .ToDictionaryAsync(x => x.Id, x => x.Uuid, cancellationToken);
+
+        if (localTrainingUuids.Any(x => remoteTrainingUuids.GetValueOrDefault(x.Key) != x.Value))
+        {
+            return true;
+        }
+
+        var localMeisterschaftUuids = await localDb.Meisterschaften
+            .IgnoreQueryFilters()
+            .Select(x => new { x.Id, x.Uuid })
+            .ToDictionaryAsync(x => x.Id, x => x.Uuid, cancellationToken);
+        var remoteMeisterschaftUuids = await remoteDb.Meisterschaften
+            .IgnoreQueryFilters()
+            .Select(x => new { x.Id, x.Uuid })
+            .ToDictionaryAsync(x => x.Id, x => x.Uuid, cancellationToken);
+
+        if (localMeisterschaftUuids.Any(x => remoteMeisterschaftUuids.GetValueOrDefault(x.Key) != x.Value))
         {
             return true;
         }

@@ -3,6 +3,22 @@
   "WorkspaceRootPath": "C:\\Projekte\\OpenSlalom\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{99027C76-37E3-ABC2-9C84-C2D50B4E90EC}|OpenSlalom.UI\\OpenSlalom.UI.csproj|c:\\projekte\\openslalom\\openslalom.ui\\app.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{99027C76-37E3-ABC2-9C84-C2D50B4E90EC}|OpenSlalom.UI\\OpenSlalom.UI.csproj|solutionrelative:openslalom.ui\\app.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{99027C76-37E3-ABC2-9C84-C2D50B4E90EC}|OpenSlalom.UI\\OpenSlalom.UI.csproj|c:\\projekte\\openslalom\\openslalom.ui\\app.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{99027C76-37E3-ABC2-9C84-C2D50B4E90EC}|OpenSlalom.UI\\OpenSlalom.UI.csproj|solutionrelative:openslalom.ui\\app.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{99027C76-37E3-ABC2-9C84-C2D50B4E90EC}|OpenSlalom.UI\\OpenSlalom.UI.csproj|c:\\projekte\\openslalom\\openslalom.ui\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{99027C76-37E3-ABC2-9C84-C2D50B4E90EC}|OpenSlalom.UI\\OpenSlalom.UI.csproj|solutionrelative:openslalom.ui\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{99027C76-37E3-ABC2-9C84-C2D50B4E90EC}|OpenSlalom.UI\\OpenSlalom.UI.csproj|c:\\projekte\\openslalom\\openslalom.ui\\views\\einstellungenview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{99027C76-37E3-ABC2-9C84-C2D50B4E90EC}|OpenSlalom.UI\\OpenSlalom.UI.csproj|solutionrelative:openslalom.ui\\views\\einstellungenview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{99027C76-37E3-ABC2-9C84-C2D50B4E90EC}|OpenSlalom.UI\\OpenSlalom.UI.csproj|c:\\projekte\\openslalom\\openslalom.ui\\views\\wetterview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
       "RelativeMoniker": "D:0:0:{99027C76-37E3-ABC2-9C84-C2D50B4E90EC}|OpenSlalom.UI\\OpenSlalom.UI.csproj|solutionrelative:openslalom.ui\\views\\wetterview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
@@ -21,10 +37,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{99027C76-37E3-ABC2-9C84-C2D50B4E90EC}|OpenSlalom.UI\\OpenSlalom.UI.csproj|c:\\projekte\\openslalom\\openslalom.ui\\views\\disziplinenview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
       "RelativeMoniker": "D:0:0:{99027C76-37E3-ABC2-9C84-C2D50B4E90EC}|OpenSlalom.UI\\OpenSlalom.UI.csproj|solutionrelative:openslalom.ui\\views\\disziplinenview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{99027C76-37E3-ABC2-9C84-C2D50B4E90EC}|OpenSlalom.UI\\OpenSlalom.UI.csproj|c:\\projekte\\openslalom\\openslalom.ui\\views\\einstellungenview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{99027C76-37E3-ABC2-9C84-C2D50B4E90EC}|OpenSlalom.UI\\OpenSlalom.UI.csproj|solutionrelative:openslalom.ui\\views\\einstellungenview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{99027C76-37E3-ABC2-9C84-C2D50B4E90EC}|OpenSlalom.UI\\OpenSlalom.UI.csproj|c:\\projekte\\openslalom\\openslalom.ui\\views\\kartsview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
@@ -67,18 +79,6 @@
       "RelativeMoniker": "D:0:0:{9232E5CB-485F-9F53-FFD6-860B2A997C16}|OpenSlalom.Data\\OpenSlalom.Data.csproj|solutionrelative:openslalom.data\\servicecollectionextensions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{99027C76-37E3-ABC2-9C84-C2D50B4E90EC}|OpenSlalom.UI\\OpenSlalom.UI.csproj|c:\\projekte\\openslalom\\openslalom.ui\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{99027C76-37E3-ABC2-9C84-C2D50B4E90EC}|OpenSlalom.UI\\OpenSlalom.UI.csproj|solutionrelative:openslalom.ui\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{99027C76-37E3-ABC2-9C84-C2D50B4E90EC}|OpenSlalom.UI\\OpenSlalom.UI.csproj|c:\\projekte\\openslalom\\openslalom.ui\\app.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{99027C76-37E3-ABC2-9C84-C2D50B4E90EC}|OpenSlalom.UI\\OpenSlalom.UI.csproj|solutionrelative:openslalom.ui\\app.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{99027C76-37E3-ABC2-9C84-C2D50B4E90EC}|OpenSlalom.UI\\OpenSlalom.UI.csproj|c:\\projekte\\openslalom\\openslalom.ui\\app.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{99027C76-37E3-ABC2-9C84-C2D50B4E90EC}|OpenSlalom.UI\\OpenSlalom.UI.csproj|solutionrelative:openslalom.ui\\app.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{99027C76-37E3-ABC2-9C84-C2D50B4E90EC}|OpenSlalom.UI\\OpenSlalom.UI.csproj|c:\\projekte\\openslalom\\openslalom.ui\\splashwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
       "RelativeMoniker": "D:0:0:{99027C76-37E3-ABC2-9C84-C2D50B4E90EC}|OpenSlalom.UI\\OpenSlalom.UI.csproj|solutionrelative:openslalom.ui\\splashwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
@@ -102,11 +102,11 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 6,
+          "SelectedChildIndex": 7,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 13,
               "Title": "MainWindow.xaml",
               "DocumentMoniker": "C:\\Projekte\\OpenSlalom\\OpenSlalom.UI\\MainWindow.xaml",
               "RelativeDocumentMoniker": "OpenSlalom.UI\\MainWindow.xaml",
@@ -114,12 +114,11 @@
               "RelativeToolTip": "OpenSlalom.UI\\MainWindow.xaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
               "WhenOpened": "2026-07-14T04:59:46.239Z",
-              "IsPinned": true,
-              "EditorCaption": ""
+              "IsPinned": true
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 16,
               "Title": "MainWindow.xaml.cs",
               "DocumentMoniker": "C:\\Projekte\\OpenSlalom\\OpenSlalom.UI\\MainWindow.xaml.cs",
               "RelativeDocumentMoniker": "OpenSlalom.UI\\MainWindow.xaml.cs",
@@ -132,67 +131,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "StatistikenView.xaml",
-              "DocumentMoniker": "C:\\Projekte\\OpenSlalom\\OpenSlalom.UI\\Views\\StatistikenView.xaml",
-              "RelativeDocumentMoniker": "OpenSlalom.UI\\Views\\StatistikenView.xaml",
-              "ToolTip": "C:\\Projekte\\OpenSlalom\\OpenSlalom.UI\\Views\\StatistikenView.xaml",
-              "RelativeToolTip": "OpenSlalom.UI\\Views\\StatistikenView.xaml",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2026-07-31T07:44:34.624Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "DisziplinenView.xaml",
-              "DocumentMoniker": "C:\\Projekte\\OpenSlalom\\OpenSlalom.UI\\Views\\DisziplinenView.xaml",
-              "RelativeDocumentMoniker": "OpenSlalom.UI\\Views\\DisziplinenView.xaml",
-              "ToolTip": "C:\\Projekte\\OpenSlalom\\OpenSlalom.UI\\Views\\DisziplinenView.xaml",
-              "RelativeToolTip": "OpenSlalom.UI\\Views\\DisziplinenView.xaml",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2026-07-31T07:44:38.18Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "TrainingsView.xaml",
-              "DocumentMoniker": "C:\\Projekte\\OpenSlalom\\OpenSlalom.UI\\Views\\TrainingsView.xaml",
-              "RelativeDocumentMoniker": "OpenSlalom.UI\\Views\\TrainingsView.xaml",
-              "ToolTip": "C:\\Projekte\\OpenSlalom\\OpenSlalom.UI\\Views\\TrainingsView.xaml",
-              "RelativeToolTip": "OpenSlalom.UI\\Views\\TrainingsView.xaml",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2026-07-31T07:44:02.614Z",
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Projekte\\OpenSlalom\\OpenSlalom.UI\\appsettings.json",
+              "RelativeDocumentMoniker": "OpenSlalom.UI\\appsettings.json",
+              "ToolTip": "C:\\Projekte\\OpenSlalom\\OpenSlalom.UI\\appsettings.json",
+              "RelativeToolTip": "OpenSlalom.UI\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAoAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-07-14T06:45:11.852Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "VereineView.xaml",
-              "DocumentMoniker": "C:\\Projekte\\OpenSlalom\\OpenSlalom.UI\\Views\\VereineView.xaml",
-              "RelativeDocumentMoniker": "OpenSlalom.UI\\Views\\VereineView.xaml",
-              "ToolTip": "C:\\Projekte\\OpenSlalom\\OpenSlalom.UI\\Views\\VereineView.xaml",
-              "RelativeToolTip": "OpenSlalom.UI\\Views\\VereineView.xaml",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2026-07-31T07:44:54.532Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "WetterView.xaml",
-              "DocumentMoniker": "C:\\Projekte\\OpenSlalom\\OpenSlalom.UI\\Views\\WetterView.xaml",
-              "RelativeDocumentMoniker": "OpenSlalom.UI\\Views\\WetterView.xaml",
-              "ToolTip": "C:\\Projekte\\OpenSlalom\\OpenSlalom.UI\\Views\\WetterView.xaml",
-              "RelativeToolTip": "OpenSlalom.UI\\Views\\WetterView.xaml",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2026-07-31T07:44:53.467Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 3,
               "Title": "EinstellungenView.xaml",
               "DocumentMoniker": "C:\\Projekte\\OpenSlalom\\OpenSlalom.UI\\Views\\EinstellungenView.xaml",
               "RelativeDocumentMoniker": "OpenSlalom.UI\\Views\\EinstellungenView.xaml",
@@ -204,55 +156,131 @@
             },
             {
               "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "VereineView.xaml",
+              "DocumentMoniker": "C:\\Projekte\\OpenSlalom\\OpenSlalom.UI\\Views\\VereineView.xaml",
+              "RelativeDocumentMoniker": "OpenSlalom.UI\\Views\\VereineView.xaml",
+              "ToolTip": "C:\\Projekte\\OpenSlalom\\OpenSlalom.UI\\Views\\VereineView.xaml",
+              "RelativeToolTip": "OpenSlalom.UI\\Views\\VereineView.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2026-07-31T07:44:54.532Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "WetterView.xaml",
+              "DocumentMoniker": "C:\\Projekte\\OpenSlalom\\OpenSlalom.UI\\Views\\WetterView.xaml",
+              "RelativeDocumentMoniker": "OpenSlalom.UI\\Views\\WetterView.xaml",
+              "ToolTip": "C:\\Projekte\\OpenSlalom\\OpenSlalom.UI\\Views\\WetterView.xaml",
+              "RelativeToolTip": "OpenSlalom.UI\\Views\\WetterView.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2026-07-31T07:44:53.467Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "App.xaml",
+              "DocumentMoniker": "C:\\Projekte\\OpenSlalom\\OpenSlalom.UI\\App.xaml",
+              "RelativeDocumentMoniker": "OpenSlalom.UI\\App.xaml",
+              "ToolTip": "C:\\Projekte\\OpenSlalom\\OpenSlalom.UI\\App.xaml",
+              "RelativeToolTip": "OpenSlalom.UI\\App.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2026-07-14T06:57:17.663Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "App.xaml.cs",
+              "DocumentMoniker": "C:\\Projekte\\OpenSlalom\\OpenSlalom.UI\\App.xaml.cs",
+              "RelativeDocumentMoniker": "OpenSlalom.UI\\App.xaml.cs",
+              "ToolTip": "C:\\Projekte\\OpenSlalom\\OpenSlalom.UI\\App.xaml.cs",
+              "RelativeToolTip": "OpenSlalom.UI\\App.xaml.cs",
+              "ViewState": "AgIAABwAAAAAAAAAAAAgwDwAAAA6AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-14T06:57:13.176Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "StatistikenView.xaml",
+              "DocumentMoniker": "C:\\Projekte\\OpenSlalom\\OpenSlalom.UI\\Views\\StatistikenView.xaml",
+              "RelativeDocumentMoniker": "OpenSlalom.UI\\Views\\StatistikenView.xaml",
+              "ToolTip": "C:\\Projekte\\OpenSlalom\\OpenSlalom.UI\\Views\\StatistikenView.xaml",
+              "RelativeToolTip": "OpenSlalom.UI\\Views\\StatistikenView.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2026-07-31T07:44:34.624Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "DisziplinenView.xaml",
+              "DocumentMoniker": "C:\\Projekte\\OpenSlalom\\OpenSlalom.UI\\Views\\DisziplinenView.xaml",
+              "RelativeDocumentMoniker": "OpenSlalom.UI\\Views\\DisziplinenView.xaml",
+              "ToolTip": "C:\\Projekte\\OpenSlalom\\OpenSlalom.UI\\Views\\DisziplinenView.xaml",
+              "RelativeToolTip": "OpenSlalom.UI\\Views\\DisziplinenView.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2026-07-31T07:44:38.18Z"
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 6,
+              "Title": "TrainingsView.xaml",
+              "DocumentMoniker": "C:\\Projekte\\OpenSlalom\\OpenSlalom.UI\\Views\\TrainingsView.xaml",
+              "RelativeDocumentMoniker": "OpenSlalom.UI\\Views\\TrainingsView.xaml",
+              "ToolTip": "C:\\Projekte\\OpenSlalom\\OpenSlalom.UI\\Views\\TrainingsView.xaml",
+              "RelativeToolTip": "OpenSlalom.UI\\Views\\TrainingsView.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2026-07-31T07:44:02.614Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
               "Title": "KartsView.xaml",
               "DocumentMoniker": "C:\\Projekte\\OpenSlalom\\OpenSlalom.UI\\Views\\KartsView.xaml",
               "RelativeDocumentMoniker": "OpenSlalom.UI\\Views\\KartsView.xaml",
               "ToolTip": "C:\\Projekte\\OpenSlalom\\OpenSlalom.UI\\Views\\KartsView.xaml",
               "RelativeToolTip": "OpenSlalom.UI\\Views\\KartsView.xaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2026-07-31T07:45:54.194Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-07-31T07:45:54.194Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 10,
               "Title": "StartseiteView.xaml",
               "DocumentMoniker": "C:\\Projekte\\OpenSlalom\\OpenSlalom.UI\\Views\\StartseiteView.xaml",
               "RelativeDocumentMoniker": "OpenSlalom.UI\\Views\\StartseiteView.xaml",
               "ToolTip": "C:\\Projekte\\OpenSlalom\\OpenSlalom.UI\\Views\\StartseiteView.xaml",
               "RelativeToolTip": "OpenSlalom.UI\\Views\\StartseiteView.xaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2026-07-31T07:45:56.273Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-07-31T07:45:56.273Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 11,
               "Title": "MeisterschaftenView.xaml",
               "DocumentMoniker": "C:\\Projekte\\OpenSlalom\\OpenSlalom.UI\\Views\\MeisterschaftenView.xaml",
               "RelativeDocumentMoniker": "OpenSlalom.UI\\Views\\MeisterschaftenView.xaml",
               "ToolTip": "C:\\Projekte\\OpenSlalom\\OpenSlalom.UI\\Views\\MeisterschaftenView.xaml",
               "RelativeToolTip": "OpenSlalom.UI\\Views\\MeisterschaftenView.xaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2026-07-31T07:45:55.195Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-07-31T07:45:55.195Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 12,
               "Title": "FahrerView.xaml",
               "DocumentMoniker": "C:\\Projekte\\OpenSlalom\\OpenSlalom.UI\\Views\\FahrerView.xaml",
               "RelativeDocumentMoniker": "OpenSlalom.UI\\Views\\FahrerView.xaml",
               "ToolTip": "C:\\Projekte\\OpenSlalom\\OpenSlalom.UI\\Views\\FahrerView.xaml",
               "RelativeToolTip": "OpenSlalom.UI\\Views\\FahrerView.xaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2026-07-31T07:45:53.184Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-07-31T07:45:53.184Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 14,
               "Title": "OpenSlalom.UI",
               "DocumentMoniker": "C:\\Projekte\\OpenSlalom\\OpenSlalom.UI\\OpenSlalom.UI.csproj",
               "RelativeDocumentMoniker": "OpenSlalom.UI\\OpenSlalom.UI.csproj",
@@ -263,7 +291,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 15,
               "Title": "App.g.cs",
               "DocumentMoniker": "C:\\Projekte\\OpenSlalom\\OpenSlalom.UI\\obj\\Debug\\net8.0-windows7.0\\App.g.cs",
               "RelativeDocumentMoniker": "OpenSlalom.UI\\obj\\Debug\\net8.0-windows7.0\\App.g.cs",
@@ -323,42 +351,6 @@
             {
               "$type": "Document",
               "DocumentIndex": 18,
-              "Title": "App.xaml",
-              "DocumentMoniker": "C:\\Projekte\\OpenSlalom\\OpenSlalom.UI\\App.xaml",
-              "RelativeDocumentMoniker": "OpenSlalom.UI\\App.xaml",
-              "ToolTip": "C:\\Projekte\\OpenSlalom\\OpenSlalom.UI\\App.xaml",
-              "RelativeToolTip": "OpenSlalom.UI\\App.xaml",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2026-07-14T06:57:17.663Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 17,
-              "Title": "App.xaml.cs",
-              "DocumentMoniker": "C:\\Projekte\\OpenSlalom\\OpenSlalom.UI\\App.xaml.cs",
-              "RelativeDocumentMoniker": "OpenSlalom.UI\\App.xaml.cs",
-              "ToolTip": "C:\\Projekte\\OpenSlalom\\OpenSlalom.UI\\App.xaml.cs",
-              "RelativeToolTip": "OpenSlalom.UI\\App.xaml.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-07-14T06:57:13.176Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 16,
-              "Title": "appsettings.json",
-              "DocumentMoniker": "C:\\Projekte\\OpenSlalom\\OpenSlalom.UI\\appsettings.json",
-              "RelativeDocumentMoniker": "OpenSlalom.UI\\appsettings.json",
-              "ToolTip": "C:\\Projekte\\OpenSlalom\\OpenSlalom.UI\\appsettings.json",
-              "RelativeToolTip": "OpenSlalom.UI\\appsettings.json",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAoAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2026-07-14T06:45:11.852Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 15,
               "Title": "ServiceCollectionExtensions.cs",
               "DocumentMoniker": "C:\\Projekte\\OpenSlalom\\OpenSlalom.Data\\ServiceCollectionExtensions.cs",
               "RelativeDocumentMoniker": "OpenSlalom.Data\\ServiceCollectionExtensions.cs",
@@ -371,7 +363,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 17,
               "Title": "DataSyncService.cs",
               "DocumentMoniker": "C:\\Projekte\\OpenSlalom\\OpenSlalom.Data\\DataSyncService.cs",
               "RelativeDocumentMoniker": "OpenSlalom.Data\\DataSyncService.cs",

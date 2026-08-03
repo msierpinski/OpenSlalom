@@ -34,6 +34,7 @@ OpenSlalom.UI/[Bb]in/
 OpenSlalom.UI/[Oo]bj/
 OpenSlalom.Data/[Bb]in/
 OpenSlalom.Data/[Oo]bj/
+OpenSlalom.WebUI/config.php
 
 
 # Visual Studio 2015/2017 cache/options directory

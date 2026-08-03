@@ -23,19 +23,69 @@
 
             <Grid Grid.Row="2" Grid.ColumnSpan="2">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="30" />
-                    <RowDefinition Height="30" />
-                    <RowDefinition Height="30" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="200" />
-                    <ColumnDefinition Width="150" />
+                    <ColumnDefinition Width="300" />
                 </Grid.ColumnDefinitions>
 
-                <TextBlock Grid.Row="0" Grid.Column="0" Text="Default Rundenanzahl pro Stint" VerticalAlignment="Center" />
-                <TextBox Grid.Row="0" Grid.Column="1" x:Name="DefaultStintRoundsTextBox" x:FieldModifier="internal" Height="25" Width="50" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" />
+                <GroupBox Grid.Row="0" Grid.ColumnSpan="2" Header="Remote-Datenbank">
+                    <Grid Margin="8">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30" />
+                            <RowDefinition Height="30" />
+                            <RowDefinition Height="30" />
+                            <RowDefinition Height="30" />
+                            <RowDefinition Height="30" />
+                            <RowDefinition Height="40" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="180" />
+                            <ColumnDefinition Width="240" />
+                        </Grid.ColumnDefinitions>
 
-                <Button Grid.Row="2" Grid.ColumnSpan="2" Width="220" Height="30" HorizontalAlignment="Left" Background="#0EA5E9" Style="{StaticResource RoundedButton}" Content="Remote Verbindung neu aufbauen" Click="ReconnectRemote_OnClick" />
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Server" VerticalAlignment="Center" />
+                        <TextBox Grid.Row="0" Grid.Column="1" x:Name="RemoteDbServerTextBox" x:FieldModifier="internal" Height="25" />
+
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Port" VerticalAlignment="Center" />
+                        <TextBox Grid.Row="1" Grid.Column="1" x:Name="RemoteDbPortTextBox" x:FieldModifier="internal" Height="25" Width="80" HorizontalAlignment="Left" />
+
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Datenbank" VerticalAlignment="Center" />
+                        <TextBox Grid.Row="2" Grid.Column="1" x:Name="RemoteDbDatabaseTextBox" x:FieldModifier="internal" Height="25" />
+
+                        <TextBlock Grid.Row="3" Grid.Column="0" Text="Benutzer" VerticalAlignment="Center" />
+                        <TextBox Grid.Row="3" Grid.Column="1" x:Name="RemoteDbUserTextBox" x:FieldModifier="internal" Height="25" />
+
+                        <TextBlock Grid.Row="4" Grid.Column="0" Text="Passwort" VerticalAlignment="Center" />
+                        <PasswordBox Grid.Row="4" Grid.Column="1" x:Name="RemoteDbPasswordBox" x:FieldModifier="internal" Height="25" />
+
+                        <Button Grid.Row="5" Grid.ColumnSpan="2" Width="220" Height="30" HorizontalAlignment="Left" Background="#0EA5E9" Style="{StaticResource RoundedButton}" Content="Remote Verbindung neu aufbauen" Click="ReconnectRemote_OnClick" />
+                    </Grid>
+                </GroupBox>
+
+                <GroupBox Grid.Row="1" Grid.ColumnSpan="2" Margin="0,8,0,0" Header="Defaultwerte für Trainings">
+                    <Grid Margin="8">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30" />
+                            <RowDefinition Height="32" />
+                            <RowDefinition Height="32" />
+                            <RowDefinition Height="32" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="280" />
+                            <ColumnDefinition Width="80" />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Default Rundenanzahl pro Stint" VerticalAlignment="Center" />
+                        <TextBox Grid.Row="0" Grid.Column="1" x:Name="DefaultStintRoundsTextBox" x:FieldModifier="internal" Height="25" Width="50" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" />
+
+                        <CheckBox Grid.Row="1" Grid.ColumnSpan="2" x:Name="DefaultAllowExtraRoundsCheckBox" x:FieldModifier="internal" VerticalAlignment="Center" Content="Sollrundenzahl darf überschritten werden" />
+                        <CheckBox Grid.Row="2" Grid.ColumnSpan="2" x:Name="DefaultSecondTimingCheckBox" x:FieldModifier="internal" VerticalAlignment="Center" Content="Zweite Zeitnahme aktivieren" />
+                        <CheckBox Grid.Row="3" Grid.ColumnSpan="2" x:Name="DefaultAutoSyncRemoteDbCheckBox" x:FieldModifier="internal" VerticalAlignment="Center" Content="Gespeicherte Stints automatisch zur Remote-Datenbank synchronisieren" />
+                    </Grid>
+                </GroupBox>
             </Grid>
 
             <Button Grid.Row="4" Width="120" Height="30" HorizontalAlignment="Left" Background="#1F84DE" Style="{StaticResource RoundedButton}" Content="Speichern" Click="SaveSettings_OnClick" />

@@ -4,6 +4,8 @@ public sealed class Meisterschaft : ISyncEntity
 {
     public int Id { get; set; }
 
+    public Guid Uuid { get; set; } = Guid.NewGuid();
+
     public int GastgeberId { get; set; }
 
     public int DisziplinId { get; set; }

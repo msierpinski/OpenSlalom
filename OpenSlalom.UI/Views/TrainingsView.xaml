@@ -56,7 +56,8 @@
                             <DataGridTextColumn Header="Verein" Binding="{Binding VereinName}" Width="16*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
                             <DataGridTextColumn Header="Disziplin" Binding="{Binding DisziplinName}" Width="80" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
                             <DataGridTextColumn Header="Wetter" Binding="{Binding WetterName}" Width="120" ElementStyle="{StaticResource StandardDataGridTextElementStyle}"/>
-                            <DataGridTextColumn Header="Finished" Binding="{Binding TrainingAbgeschlossenText}" Width="80" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                             <DataGridTextColumn Header="Finished" Binding="{Binding TrainingAbgeschlossenText}" Width="80" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+                             <DataGridTextColumn Header="Veröffentlicht" Binding="{Binding IstVeroeffentlichtText}" Width="95" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
                             <DataGridTemplateColumn Header="Aktionen" Width="125">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
@@ -102,7 +103,8 @@
                             <ComboBox x:Name="CreateTrainingDisziplinComboBox" x:FieldModifier="internal" Height="30" DisplayMemberPath="Name" SelectedValuePath="Id" />
                             <TextBlock Margin="0,12,0,4" Text="Wetter" />
                             <ComboBox x:Name="CreateTrainingWetterComboBox" x:FieldModifier="internal" Height="30" DisplayMemberPath="Name" SelectedValuePath="Id" />
-                            <CheckBox x:Name="CreateTrainingAbgeschlossenCheckBox" x:FieldModifier="internal" Margin="0,12,0,0" Content="Training abgeschlossen" />
+                             <CheckBox x:Name="CreateTrainingAbgeschlossenCheckBox" x:FieldModifier="internal" Margin="0,12,0,0" Content="Training abgeschlossen" />
+                             <CheckBox x:Name="CreateTrainingIstVeroeffentlichtCheckBox" x:FieldModifier="internal" Margin="0,8,0,0" Content="Training veröffentlichen" />
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
                                 <Button Style="{StaticResource RoundedButton}" Background="#1F84DE" Width="120"  Height="30"  Margin="0,0,8,0" Click="CancelTrainingPage_OnClick" Content="Abbrechen" />
                                 <Button Style="{StaticResource RoundedButton}" Background="green" Width="120" Height="30"  Click="SaveCreateTraining_OnClick" Content="Speichern" />
@@ -125,7 +127,8 @@
                             <ComboBox x:Name="EditTrainingDisziplinComboBox" x:FieldModifier="internal" Height="30" DisplayMemberPath="Name" SelectedValuePath="Id" />
                             <TextBlock Margin="0,12,0,4" Text="Wetter" />
                             <ComboBox x:Name="EditTrainingWetterComboBox" x:FieldModifier="internal" Height="30" DisplayMemberPath="Name" SelectedValuePath="Id" />
-                            <CheckBox x:Name="EditTrainingAbgeschlossenCheckBox" x:FieldModifier="internal" Margin="0,12,0,0" Content="Training abgeschlossen" />
+                             <CheckBox x:Name="EditTrainingAbgeschlossenCheckBox" x:FieldModifier="internal" Margin="0,12,0,0" Content="Training abgeschlossen" />
+                             <CheckBox x:Name="EditTrainingIstVeroeffentlichtCheckBox" x:FieldModifier="internal" Margin="0,8,0,0" Content="Training veröffentlichen" />
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
                                 <Button Style="{StaticResource RoundedButton}" Background="#1F84DE" Width="120" Height="30"  Margin="0,0,8,0" Click="CancelTrainingPage_OnClick" Content="Abbrechen" />
                                 <Button Style="{StaticResource RoundedButton}" Background="green" Width="120" Height="30"  Click="SaveEditTraining_OnClick" Content="Speichern" />
@@ -630,13 +633,15 @@
                                          <RowDefinition Height="Auto" />
                                          <RowDefinition Height="Auto" />
                                          <RowDefinition Height="Auto" />
+                                         <RowDefinition Height="Auto" />
                                      </Grid.RowDefinitions>
 
                                      <TextBlock Grid.ColumnSpan="2" Text="Rundenanzahl für dieses Training" FontWeight="SemiBold" />
                                      <TextBox x:Name="TrainingRoundsTextBox" x:FieldModifier="internal" Grid.Row="1" Height="30" Width="140" Margin="0,8,0,0" TextChanged="TrainingRoundsTextBox_OnTextChanged" />
-                                     <CheckBox x:Name="TrainingAllowExtraRoundsCheckBox" x:FieldModifier="internal" Grid.Row="2" Grid.ColumnSpan="2" Margin="0,12,0,0" VerticalAlignment="Center" Content="Sollrundenzahl darf überschritten werden" Click="TrainingAllowExtraRoundsCheckBox_OnClick" />
-                                     <CheckBox x:Name="TrainingSecondTimingCheckBox" x:FieldModifier="internal" Grid.Row="3" Grid.ColumnSpan="2" Margin="0,12,0,0" VerticalAlignment="Center" Content="Zweite Zeitnahme aktivieren" Click="TrainingSecondTimingCheckBox_OnClick" />
-                                     <TextBlock x:Name="TrainingRoundsFeedbackTextBlock" x:FieldModifier="internal" Grid.Row="4" Grid.ColumnSpan="2" Margin="0,10,0,0" Foreground="#475569" Text="" />
+                                      <CheckBox x:Name="TrainingAllowExtraRoundsCheckBox" x:FieldModifier="internal" Grid.Row="2" Grid.ColumnSpan="2" Margin="0,12,0,0" VerticalAlignment="Center" Content="Sollrundenzahl darf überschritten werden" Click="TrainingAllowExtraRoundsCheckBox_OnClick" />
+                                      <CheckBox x:Name="TrainingSecondTimingCheckBox" x:FieldModifier="internal" Grid.Row="3" Grid.ColumnSpan="2" Margin="0,12,0,0" VerticalAlignment="Center" Content="Zweite Zeitnahme aktivieren" Click="TrainingSecondTimingCheckBox_OnClick" />
+                                      <CheckBox x:Name="TrainingAutoSyncRemoteDbCheckBox" x:FieldModifier="internal" Grid.Row="4" Grid.ColumnSpan="2" Margin="0,12,0,0" VerticalAlignment="Center" Content="Gespeicherte Stints automatisch zur Remote-Datenbank synchronisieren" Click="TrainingAutoSyncRemoteDbCheckBox_OnClick" />
+                                      <TextBlock x:Name="TrainingRoundsFeedbackTextBlock" x:FieldModifier="internal" Grid.Row="5" Grid.ColumnSpan="2" Margin="0,10,0,0" Foreground="#475569" Text="" />
                                 </Grid>
                             </TabItem>
                         </TabControl>
@@ -681,33 +686,39 @@
                                 <TextBlock x:Name="TrainingStopwatchTextBlock" x:FieldModifier="internal" Grid.Row="1" HorizontalAlignment="Center" FontSize="60" FontWeight="Bold" FontFamily="Consolas">00.000</TextBlock>
                                 <TextBlock x:Name="TrainingLapCounterTextBlock" x:FieldModifier="internal" Grid.Row="2" HorizontalAlignment="Center" FontSize="16">Runde: -/-</TextBlock>
 
-                                <StackPanel Orientation="Horizontal" Grid.Row="3" Height="30" VerticalAlignment="Top">
-                                    <Button Style="{StaticResource RoundedButton}" Background="green" Width="115" x:Name="TrainingStopwatchStartButton" x:FieldModifier="internal" Click="TrainingStopwatchStart_OnClick" Margin="0,0,5,0">
-                                        <StackPanel Orientation="Horizontal">
-                                            <TextBlock VerticalAlignment="Center" Text="⏱ Start" />
-                                            <Border Margin="8,0,0,0" Padding="6,1" CornerRadius="2" Background="White">
-                                                <TextBlock Foreground="Black" FontSize="11" Text="Q" />
-                                            </Border>
-                                        </StackPanel>
-                                    </Button>
-                                    <Button Style="{StaticResource RoundedButton}" Background="#1F84DE" Width="115" x:Name="TrainingStopwatchStopButton" x:FieldModifier="internal" Click="TrainingStopwatchStop_OnClick" Margin="0,0,5,0">
-                                        <StackPanel Orientation="Horizontal">
-                                            <TextBlock VerticalAlignment="Center" Text="⭮ Runde" />
-                                            <Border Margin="8,0,0,0" Padding="6,1" CornerRadius="2" Background="White">
-                                                <TextBlock Foreground="Black" FontSize="11" Text="W" />
-                                            </Border>
-                                        </StackPanel>
-                                    </Button>
-                                     <Button x:Name="TrainingClearStintButton" x:FieldModifier="internal" Style="{StaticResource RoundedButton}" Background="#DC2626" Width="150" Click="ClearTrainingStint_OnClick">
-                                        <StackPanel Orientation="Horizontal">
-                                            <TextBlock VerticalAlignment="Center" Text="🗑 Stint löschen" />
-                                            <Border Margin="8,0,0,0" Padding="6,1" CornerRadius="2" Background="White">
-                                                <TextBlock Foreground="Black" FontSize="11" Text="E" />
-                                            </Border>
-                                        </StackPanel>
-                                     </Button>
-                                     <Button x:Name="TrainingSaveStintButton" x:FieldModifier="internal" Style="{StaticResource RoundedButton}" Background="#64748B" Width="110" Margin="5,0,0,0" IsEnabled="False" Content="Stint speichern" Click="SaveFirstTrainingStint_OnClick" />
-                                </StackPanel>
+                                <Grid Grid.Row="3" Height="30" VerticalAlignment="Top">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Left">
+                                        <Button Style="{StaticResource RoundedButton}" Background="green" Width="115" x:Name="TrainingStopwatchStartButton" x:FieldModifier="internal" Click="TrainingStopwatchStart_OnClick" Margin="0,0,5,0">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock VerticalAlignment="Center" Text="⏱ Start" />
+                                                <Border Margin="8,0,0,0" Padding="6,1" CornerRadius="2" Background="White">
+                                                    <TextBlock Foreground="Black" FontSize="11" Text="Q" />
+                                                </Border>
+                                            </StackPanel>
+                                        </Button>
+                                        <Button Style="{StaticResource RoundedButton}" Background="#1F84DE" Width="115" x:Name="TrainingStopwatchStopButton" x:FieldModifier="internal" Click="TrainingStopwatchStop_OnClick" Margin="0,0,5,0">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock VerticalAlignment="Center" Text="⭮ Runde" />
+                                                <Border Margin="8,0,0,0" Padding="6,1" CornerRadius="2" Background="White">
+                                                    <TextBlock Foreground="Black" FontSize="11" Text="W" />
+                                                </Border>
+                                            </StackPanel>
+                                        </Button>
+                                        <Button x:Name="TrainingClearStintButton" x:FieldModifier="internal" Style="{StaticResource RoundedButton}" Background="#DC2626" Width="150" Click="ClearTrainingStint_OnClick">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock VerticalAlignment="Center" Text="🗑 Stint löschen" />
+                                                <Border Margin="8,0,0,0" Padding="6,1" CornerRadius="2" Background="White">
+                                                    <TextBlock Foreground="Black" FontSize="11" Text="E" />
+                                                </Border>
+                                            </StackPanel>
+                                        </Button>
+                                    </StackPanel>
+                                    <Button Grid.Column="1" x:Name="TrainingSaveStintButton" x:FieldModifier="internal" Style="{StaticResource RoundedButton}" Background="#64748B" Width="110" IsEnabled="False" Content="Stint speichern" Click="SaveFirstTrainingStint_OnClick" HorizontalAlignment="Right" />
+                                </Grid>
 
                                 <Grid Grid.Row="4" Margin="0,2,0,0">
                                     <Grid.ColumnDefinitions>
@@ -818,18 +829,24 @@
                                 </StackPanel>
                                 <TextBlock x:Name="TrainingSecondStopwatchTextBlock" x:FieldModifier="internal" Grid.Row="1" HorizontalAlignment="Center" FontSize="42" FontWeight="Bold" FontFamily="Consolas" Text="00.000" />
                                 <TextBlock x:Name="TrainingSecondLapCounterTextBlock" x:FieldModifier="internal" Grid.Row="2" HorizontalAlignment="Center" FontSize="14" Text="Runde: -/-" />
-                                <StackPanel Grid.Row="3" Orientation="Horizontal" Height="30" VerticalAlignment="Top">
-                                    <Button x:Name="TrainingSecondStartButton" x:FieldModifier="internal" Style="{StaticResource RoundedButton}" Background="#00AA00" Width="105" Margin="0,0,5,0" Click="TrainingSecondStart_OnClick">
-                                        <StackPanel Orientation="Horizontal"><TextBlock Text="Start" /><Border Margin="8,0,0,0" Padding="6,1" Background="White" CornerRadius="2"><TextBlock Foreground="Black" FontSize="11" Text="A" /></Border></StackPanel>
-                                    </Button>
-                                    <Button x:Name="TrainingSecondLapButton" x:FieldModifier="internal" Style="{StaticResource RoundedButton}" Background="#1F84DE" Width="105" Margin="0,0,5,0" Click="TrainingSecondLap_OnClick">
-                                        <StackPanel Orientation="Horizontal"><TextBlock Text="Runde" /><Border Margin="8,0,0,0" Padding="6,1" Background="White" CornerRadius="2"><TextBlock Foreground="Black" FontSize="11" Text="S" /></Border></StackPanel>
-                                    </Button>
-                                     <Button x:Name="TrainingSecondClearButton" x:FieldModifier="internal" Style="{StaticResource RoundedButton}" Background="#DC2626" Width="130" Click="TrainingSecondClear_OnClick">
-                                        <StackPanel Orientation="Horizontal"><TextBlock Text="Stint löschen" /><Border Margin="8,0,0,0" Padding="6,1" Background="White" CornerRadius="2"><TextBlock Foreground="Black" FontSize="11" Text="D" /></Border></StackPanel>
-                                     </Button>
-                                     <Button x:Name="TrainingSecondSaveStintButton" x:FieldModifier="internal" Style="{StaticResource RoundedButton}" Background="#64748B" Width="110" Margin="5,0,0,0" IsEnabled="False" Content="Stint speichern" Click="SaveSecondTrainingStint_OnClick" />
-                                </StackPanel>
+                                <Grid Grid.Row="3" Height="30" VerticalAlignment="Top">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Left">
+                                        <Button x:Name="TrainingSecondStartButton" x:FieldModifier="internal" Style="{StaticResource RoundedButton}" Background="#00AA00" Width="105" Margin="0,0,5,0" Click="TrainingSecondStart_OnClick">
+                                            <StackPanel Orientation="Horizontal"><TextBlock Text="Start" /><Border Margin="8,0,0,0" Padding="6,1" Background="White" CornerRadius="2"><TextBlock Foreground="Black" FontSize="11" Text="A" /></Border></StackPanel>
+                                        </Button>
+                                        <Button x:Name="TrainingSecondLapButton" x:FieldModifier="internal" Style="{StaticResource RoundedButton}" Background="#1F84DE" Width="105" Margin="0,0,5,0" Click="TrainingSecondLap_OnClick">
+                                            <StackPanel Orientation="Horizontal"><TextBlock Text="Runde" /><Border Margin="8,0,0,0" Padding="6,1" Background="White" CornerRadius="2"><TextBlock Foreground="Black" FontSize="11" Text="S" /></Border></StackPanel>
+                                        </Button>
+                                        <Button x:Name="TrainingSecondClearButton" x:FieldModifier="internal" Style="{StaticResource RoundedButton}" Background="#DC2626" Width="130" Click="TrainingSecondClear_OnClick">
+                                            <StackPanel Orientation="Horizontal"><TextBlock Text="Stint löschen" /><Border Margin="8,0,0,0" Padding="6,1" Background="White" CornerRadius="2"><TextBlock Foreground="Black" FontSize="11" Text="D" /></Border></StackPanel>
+                                        </Button>
+                                    </StackPanel>
+                                    <Button Grid.Column="1" x:Name="TrainingSecondSaveStintButton" x:FieldModifier="internal" Style="{StaticResource RoundedButton}" Background="#64748B" Width="110" IsEnabled="False" Content="Stint speichern" Click="SaveSecondTrainingStint_OnClick" HorizontalAlignment="Right" />
+                                </Grid>
                                 <Grid Grid.Row="4">
                                     <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /><ColumnDefinition Width="Auto" /><ColumnDefinition Width="14" /><ColumnDefinition Width="Auto" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
                                     <TextBlock Foreground="#9A3412" Text="RUNDEN" />

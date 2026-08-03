@@ -326,6 +326,13 @@ public class OpenSlalomDbContext : DbContext
                 .HasColumnName("id")
                 .ValueGeneratedOnAdd();
 
+            entity.Property(x => x.Uuid)
+                .HasColumnName("uuid")
+                .IsRequired();
+
+            entity.HasIndex(x => x.Uuid)
+                .IsUnique();
+
             entity.Property(x => x.VereinId)
                 .HasColumnName("fk_id_verein")
                 .IsRequired();
@@ -358,6 +365,11 @@ public class OpenSlalomDbContext : DbContext
                 .HasDefaultValue(false)
                 .IsRequired();
 
+            entity.Property(x => x.IstVeroeffentlicht)
+                .HasColumnName("ist_veroeffentlicht")
+                .HasDefaultValue(false)
+                .IsRequired();
+
             ConfigureSyncEntity(entity);
 
             entity.HasOne(x => x.Verein)
@@ -387,6 +399,13 @@ public class OpenSlalomDbContext : DbContext
             entity.Property(x => x.Id)
                 .HasColumnName("id")
                 .ValueGeneratedOnAdd();
+
+            entity.Property(x => x.Uuid)
+                .HasColumnName("uuid")
+                .IsRequired();
+
+            entity.HasIndex(x => x.Uuid)
+                .IsUnique();
 
             entity.Property(x => x.GastgeberId)
                 .HasColumnName("fk_id_gastgeber")

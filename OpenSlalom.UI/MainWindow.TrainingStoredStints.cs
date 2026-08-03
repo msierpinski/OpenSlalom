@@ -246,6 +246,10 @@ public partial class MainWindow
             }
 
             await RefreshSyncStatusAsync();
+            if (_selectedTrainingDetailId is not null && IsAutomaticRemoteSyncEnabled(_selectedTrainingDetailId.Value))
+            {
+                await SynchronizeAsync(reloadData: false);
+            }
         }
         catch (Exception ex)
         {

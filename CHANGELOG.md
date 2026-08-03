@@ -12,6 +12,40 @@ die Versionsnummern folgen der [semantischen Versionierung](https://semver.org/l
 
 ### Behoben
 
+- Die UUID-Nachrüstung für Trainings und Meisterschaften markiert bestehende Datensätze nicht mehr fälschlich als ausstehende Synchronisierungsänderungen.
+
+## [0.8.8-Beta] - 2026-08-03
+
+### Hinzugefügt
+
+- Die Remote-Datenbankverbindung kann in den allgemeinen Einstellungen konfiguriert und gespeichert werden.
+- Für Trainings können globale Defaultwerte für Rundenanzahl, das Überschreiten der Sollrundenzahl und die zweite Zeitnahme festgelegt werden.
+- Eine automatische Synchronisierung gespeicherter Stints und nachträglich geänderter Runden zur Remote-Datenbank kann global oder training-spezifisch aktiviert werden.
+- Jedes Training erhält eine dauerhaft eindeutige UUID, die in der lokalen und der Remote-Datenbank gespeichert wird.
+- Jede Meisterschaft erhält eine dauerhaft eindeutige UUID, die in der lokalen und der Remote-Datenbank gespeichert wird.
+- Die neue PHP-WebUI beschreibt openSlalom und stellt synchronisierte Trainingsergebnisse über eine schreibgeschützte UUID-Route bereit.
+- Die öffentliche Trainingsansicht der WebUI enthält einen Statistik-Tab mit trainingsbezogenen Kennzahlen und Fahrerstatistiken.
+- Trainings können in der Desktop-App für die öffentliche WebUI freigegeben oder privat gehalten werden.
+- Die WebUI besitzt eine Anmeldung mit den Rollen Administrator, Trainingsleiter und Fahrer sowie eine Administrator-Benutzerverwaltung.
+
+### Geändert
+
+- Die Buttons "Start", "Runde" und "Stint löschen" sind linksbündig angeordnet, während "Stint speichern" rechtsbündig angezeigt wird.
+- Änderungen an der Remote-Datenbankverbindung werden nach dem Neuaufbau der Verbindung ohne Neustart wirksam.
+- Automatische und manuelle Synchronisierungen werden geschützt nacheinander ausgeführt.
+- Die WebUI-Landingpage bietet einen hervorgehobenen Zugang zur Anmeldung bzw. zum internen Bereich; das Anmeldeformular wurde neu gestaltet.
+- Der interne WebUI-Bereich besitzt eine horizontale Navigation für Trainings und Benutzerverwaltung.
+- WebUI-Benutzer können mit E-Mail-Adresse, Rolle, Fahrerzuordnung, Aktivstatus und optional neuem Passwort bearbeitet werden.
+- Fahrerprofile können in der WebUI jeder Benutzerrolle zugeordnet werden; für die Rolle Fahrer bleibt die Zuordnung verpflichtend.
+- Die WebUI unterstützt zeitlich begrenzte Passwort-Reset-Links per E-Mail.
+- Die WebUI-Anmeldung akzeptiert Benutzername oder E-Mail-Adresse als Anmeldebezeichner.
+- Die WebUI enthält öffentlich verlinkte Seiten für Impressum und Datenschutz mit konfigurierbaren Betreiber-, Hosting- und Aufsichtsangaben.
+- Neue WebUI-Benutzer können sich selbst mit der Rolle Registriert anmelden; Administratoren werden per E-Mail informiert und weisen später Rolle sowie Fahrerprofil zu.
+- Administratoren und Trainingsleiter können Trainings im internen WebUI-Bereich anlegen und vorhandene Trainings bearbeiten.
+- Angemeldete WebUI-Benutzer können ihr Passwort ändern oder nach Sicherheitsbestätigung das eigene WebUI-Konto löschen.
+- Die WebUI enthält CRUD-Ansichten für Vereine, Fahrer, Disziplinen mit Altersklassen, Karts und Wetter.
+- Trainings-, Benutzer- und Stammdatenlisten der WebUI bieten Suche und serverseitige Pagination.
+
 ## [0.8.7-Beta] - 2026-08-01
 
 ### Hinzugefügt

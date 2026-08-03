@@ -1,0 +1,15 @@
+Options -Indexes
+
+RewriteEngine On
+
+RewriteRule ^(?:config\.php|config\.example\.php|src/|templates/|tools/) - [F,L,NC]
+
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+RewriteRule ^ index.php [QSA,L]
+
+<FilesMatch "^(?:config\.php|config\.example\.php)$">
+    Require all denied
+</FilesMatch>

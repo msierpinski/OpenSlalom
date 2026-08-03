@@ -110,6 +110,8 @@ public partial class MainWindow
     {
         public required int Id { get; init; }
 
+        public required Guid Uuid { get; init; }
+
         public required int VereinId { get; init; }
 
         public required int DisziplinId { get; init; }
@@ -127,6 +129,10 @@ public partial class MainWindow
         public required bool TrainingAbgeschlossen { get; init; }
 
         public required string TrainingAbgeschlossenText { get; init; }
+
+        public required bool IstVeroeffentlicht { get; init; }
+
+        public required string IstVeroeffentlichtText { get; init; }
 
         public required string VereinName { get; init; }
 
@@ -440,11 +446,29 @@ public partial class MainWindow
     {
         public int DefaultRundenanzahlProStint { get; set; } = 10;
 
+        public bool DefaultSollrundenUeberschreiten { get; set; }
+
+        public bool DefaultZweiteZeitnahme { get; set; }
+
+        public bool DefaultAutomatischZurRemoteDbSynchronisieren { get; set; }
+
+        public string RemoteDbServer { get; set; } = string.Empty;
+
+        public int RemoteDbPort { get; set; } = 3306;
+
+        public string RemoteDbDatabase { get; set; } = string.Empty;
+
+        public string RemoteDbUser { get; set; } = string.Empty;
+
+        public string RemoteDbPassword { get; set; } = string.Empty;
+
         public Dictionary<int, int> TrainingRundenanzahlOverrides { get; set; } = [];
 
         public Dictionary<int, bool> TrainingSollrundenUeberschreitenOverrides { get; set; } = [];
 
         public Dictionary<int, bool> TrainingZweiteZeitnahmeOverrides { get; set; } = [];
+
+        public Dictionary<int, bool> TrainingAutomatischZurRemoteDbSynchronisierenOverrides { get; set; } = [];
     }
 
     public sealed class TrainingDriverSelectionItem

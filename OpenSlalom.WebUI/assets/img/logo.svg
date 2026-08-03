@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title">
+  <title id="title">openSlalom Logo</title>
+  <defs>
+    <linearGradient id="blue" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2c91e7"/>
+      <stop offset="1" stop-color="#1669bb"/>
+    </linearGradient>
+  </defs>
+  <rect x="3" y="3" width="122" height="122" rx="14" fill="url(#blue)"/>
+  <path d="M77 28H46c-13 0-23 9-23 21s10 21 23 21h34c13 0 23 9 23 21s-10 21-23 21H49" fill="none" stroke="#fff" stroke-width="10" stroke-linecap="round"/>
+  <rect x="91" y="14" width="23" height="23" rx="5" fill="#fff"/>
+  <rect x="14" y="91" width="23" height="23" rx="5" fill="#fff"/>
+  <rect x="98" y="21" width="9" height="9" fill="#2586d9"/>
+  <rect x="21" y="98" width="9" height="9" fill="#2586d9"/>
+</svg>

@@ -1047,6 +1047,11 @@ public partial class MainWindow
         await LoadTrainingFastestLapsAsync(trainingId);
         await LoadTrainingStoredStintDriversAsync(trainingId);
         await RefreshSyncStatusAsync();
+
+        if (IsAutomaticRemoteSyncEnabled(trainingId))
+        {
+            await SynchronizeAsync(reloadData: false);
+        }
     }
 
     internal void TrainingStarterFaehrtCheckBox_OnClick(object sender, RoutedEventArgs e)

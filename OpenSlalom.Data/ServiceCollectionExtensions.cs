@@ -26,15 +26,21 @@ public static class ServiceCollectionExtensions
         string localSqliteConnectionString,
         string remoteMySqlConnectionString)
     {
-        services.AddDbContextFactory<OpenSlalomDbContext>(options =>
-            options.UseMySql(remoteMySqlConnectionString, ResolveServerVersion(remoteMySqlConnectionString)));
+        services.AddSingleton(new RemoteDbConnectionSettings(remoteMySqlConnectionString));
+
+        services.AddSingleton<IDbContextFactory<OpenSlalomDbContext>>(serviceProvider =>
+            new RuntimeDbContextFactory<OpenSlalomDbContext>(
+                serviceProvider.GetRequiredService<RemoteDbConnectionSettings>(),
+                options => new OpenSlalomDbContext(options)));
 
         services.AddDbContextFactory<LocalOpenSlalomDbContext>(options =>
             options.UseSqlite(localSqliteConnectionString, sqlite =>
                 sqlite.MigrationsHistoryTable("__EFMigrationsHistory")));
 
-        services.AddDbContextFactory<RemoteOpenSlalomDbContext>(options =>
-            options.UseMySql(remoteMySqlConnectionString, ResolveServerVersion(remoteMySqlConnectionString)));
+        services.AddSingleton<IDbContextFactory<RemoteOpenSlalomDbContext>>(serviceProvider =>
+            new RuntimeDbContextFactory<RemoteOpenSlalomDbContext>(
+                serviceProvider.GetRequiredService<RemoteDbConnectionSettings>(),
+                options => new RemoteOpenSlalomDbContext(options)));
 
         services.AddScoped<DataSyncService>();
 
@@ -52,10 +58,10 @@ public static class ServiceCollectionExtensions
             return;
         }
 
-        options.UseMySql(connectionString, ResolveServerVersion(connectionString));
+        options.UseMySql(connectionString, ResolveServerVersionForRuntime(connectionString));
     }
 
-    private static ServerVersion ResolveServerVersion(string connectionString)
+    internal static ServerVersion ResolveServerVersionForRuntime(string connectionString)
     {
         if (ServerVersionCache.TryGetValue(connectionString, out var cached))
         {

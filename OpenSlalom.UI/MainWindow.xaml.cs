@@ -47,6 +47,7 @@ public partial class MainWindow : Window
     private readonly IDbContextFactory<RemoteOpenSlalomDbContext> _remoteDbContextFactory;
     private readonly DataSyncService _dataSyncService;
     private readonly DatabaseRuntimeInfo _databaseRuntimeInfo;
+    private readonly RemoteDbConnectionSettings _remoteDbConnectionSettings;
     private readonly string _uiSettingsFilePath;
     private string _selectedMenuTag = "Startseite";
     private bool _syncInProgress;
@@ -77,6 +78,7 @@ public partial class MainWindow : Window
     private readonly Dictionary<(int TrainingId, int FahrerId), int?> _trainingKartSelectionByDriver = new();
     private readonly DispatcherTimer _trainingStopwatchTimer = new() { Interval = TimeSpan.FromMilliseconds(100) };
     private readonly DispatcherTimer _trainingSettingsSaveTimer = new() { Interval = TimeSpan.FromMilliseconds(500) };
+    private readonly SemaphoreSlim _syncSemaphore = new(1, 1);
     private readonly Dictionary<(int TrainingId, int FahrerId), TrainingStintState> _trainingStintsByDriver = new();
     private (int TrainingId, int FahrerId)? _trainingStopwatchContext;
     private (int TrainingId, int FahrerId)? _trainingSecondStopwatchContext;
@@ -124,13 +126,15 @@ public partial class MainWindow : Window
         IDbContextFactory<OpenSlalomDbContext> remoteMigrationDbContextFactory,
         IDbContextFactory<RemoteOpenSlalomDbContext> remoteDbContextFactory,
         DataSyncService dataSyncService,
-        DatabaseRuntimeInfo databaseRuntimeInfo)
+        DatabaseRuntimeInfo databaseRuntimeInfo,
+        RemoteDbConnectionSettings remoteDbConnectionSettings)
     {
         _localDbContextFactory = localDbContextFactory;
         _remoteMigrationDbContextFactory = remoteMigrationDbContextFactory;
         _remoteDbContextFactory = remoteDbContextFactory;
         _dataSyncService = dataSyncService;
         _databaseRuntimeInfo = databaseRuntimeInfo;
+        _remoteDbConnectionSettings = remoteDbConnectionSettings;
         _uiSettingsFilePath = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
             "OpenSlalom",

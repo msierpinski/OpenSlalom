@@ -163,10 +163,33 @@ public static class HostMigrationExtensions
         await EnsureColumnAsync(localDbContext, "fahrer", "geburtsdatum", "ALTER TABLE fahrer ADD COLUMN geburtsdatum TEXT NULL;", cancellationToken);
         await EnsureColumnAsync(localDbContext, "fahrer", "geschlecht", "ALTER TABLE fahrer ADD COLUMN geschlecht TEXT NOT NULL DEFAULT '';", cancellationToken);
         await EnsureColumnAsync(localDbContext, "training", "training_abgeschlossen", "ALTER TABLE training ADD COLUMN training_abgeschlossen INTEGER NOT NULL DEFAULT 0;", cancellationToken);
+        await EnsureColumnAsync(localDbContext, "training", "ist_veroeffentlicht", "ALTER TABLE training ADD COLUMN ist_veroeffentlicht INTEGER NOT NULL DEFAULT 0;", cancellationToken);
+        await EnsureColumnAsync(localDbContext, "training", "uuid", "ALTER TABLE training ADD COLUMN uuid TEXT NULL;", cancellationToken);
+        var hasMeisterschaften = await TableExistsAsync(localDbContext, "meisterschaften", cancellationToken);
+        if (hasMeisterschaften)
+        {
+            await EnsureColumnAsync(localDbContext, "meisterschaften", "uuid", "ALTER TABLE meisterschaften ADD COLUMN uuid TEXT NULL;", cancellationToken);
+        }
         await EnsureColumnAsync(localDbContext, "fahrer_im_training", "reihenfolge", "ALTER TABLE fahrer_im_training ADD COLUMN reihenfolge INTEGER NOT NULL DEFAULT 0;", cancellationToken);
         await EnsureColumnAsync(localDbContext, "tstints", "altersklasse_snapshot", "ALTER TABLE tstints ADD COLUMN altersklasse_snapshot TEXT NOT NULL DEFAULT '';", cancellationToken);
 
         await EnsureSyncMetadataColumnsAsync(localDbContext, cancellationToken);
+
+        await localDbContext.Database.ExecuteSqlRawAsync(
+            "UPDATE training SET uuid = lower(hex(randomblob(4))) || '-' || lower(hex(randomblob(2))) || '-4' || substr(lower(hex(randomblob(2))), 2) || '-' || substr('89ab', (random() & 3) + 1, 1) || substr(lower(hex(randomblob(2))), 2) || '-' || lower(hex(randomblob(6))) WHERE uuid IS NULL;",
+            cancellationToken);
+        await localDbContext.Database.ExecuteSqlRawAsync(
+            "CREATE UNIQUE INDEX IF NOT EXISTS IX_training_uuid ON training (uuid);",
+            cancellationToken);
+        if (hasMeisterschaften)
+        {
+            await localDbContext.Database.ExecuteSqlRawAsync(
+                "UPDATE meisterschaften SET uuid = lower(hex(randomblob(4))) || '-' || lower(hex(randomblob(2))) || '-4' || substr(lower(hex(randomblob(2))), 2) || '-' || substr('89ab', (random() & 3) + 1, 1) || substr(lower(hex(randomblob(2))), 2) || '-' || lower(hex(randomblob(6))) WHERE uuid IS NULL;",
+                cancellationToken);
+            await localDbContext.Database.ExecuteSqlRawAsync(
+                "CREATE UNIQUE INDEX IF NOT EXISTS IX_meisterschaften_uuid ON meisterschaften (uuid);",
+                cancellationToken);
+        }
 
         await localDbContext.Database.ExecuteSqlRawAsync(
             "CREATE TABLE IF NOT EXISTS sync_state (id TEXT NOT NULL CONSTRAINT PK_sync_state PRIMARY KEY, last_sync_utc TEXT NOT NULL);",

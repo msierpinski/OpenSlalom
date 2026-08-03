@@ -4,6 +4,8 @@ public sealed class Training : ISyncEntity
 {
     public int Id { get; set; }
 
+    public Guid Uuid { get; set; } = Guid.NewGuid();
+
     public int VereinId { get; set; }
 
     public int DisziplinId { get; set; }
@@ -17,6 +19,8 @@ public sealed class Training : ISyncEntity
     public DateOnly Zeitpunkt { get; set; }
 
     public bool TrainingAbgeschlossen { get; set; }
+
+    public bool IstVeroeffentlicht { get; set; }
 
     public Verein Verein { get; set; } = null!;
 

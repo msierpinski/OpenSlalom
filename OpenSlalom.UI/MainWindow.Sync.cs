@@ -95,8 +95,16 @@ public partial class MainWindow
 
     internal async void ReconnectRemote_OnClick(object sender, RoutedEventArgs e)
     {
+        if (!TryApplyRemoteConnectionSettingsFromUi(out var remoteConnectionError))
+        {
+            EinstellungenView.SettingsFeedbackTextBlock.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#B91C1C"));
+            EinstellungenView.SettingsFeedbackTextBlock.Text = remoteConnectionError;
+            return;
+        }
+
         try
         {
+            await SaveLocalUiSettingsAsync();
             await using var migrationDbContext = await _remoteMigrationDbContextFactory.CreateDbContextAsync();
             if (!await migrationDbContext.Database.CanConnectAsync())
             {
@@ -150,27 +158,37 @@ public partial class MainWindow
 
     private async void SyncNow_OnClick(object sender, RoutedEventArgs e)
     {
-        if (!_syncNeeded)
+        if (!_syncNeeded || _syncInProgress)
         {
             return;
         }
 
-        _syncInProgress = true;
-        UpdateSyncButtonVisualState();
+        await SynchronizeAsync(reloadData: true);
+    }
+
+    private async Task SynchronizeAsync(bool reloadData)
+    {
+        await _syncSemaphore.WaitAsync();
 
         try
         {
+            _syncInProgress = true;
+            UpdateSyncButtonVisualState();
+
             var result = await _dataSyncService.SyncBidirectionalAsync();
             FooterSyncStateTextBlock.Text = result.Message;
             FooterSyncStateTextBlock.ToolTip = result.Message;
 
-            await LoadDisziplinenAsync();
-            await LoadVereineAsync();
-            await LoadTrainingsAsync();
-            await LoadFahrerAsync();
-            await LoadKartsAsync();
-            await LoadWetterAsync();
-            await LoadLookupDataAsync();
+            if (reloadData)
+            {
+                await LoadDisziplinenAsync();
+                await LoadVereineAsync();
+                await LoadTrainingsAsync();
+                await LoadFahrerAsync();
+                await LoadKartsAsync();
+                await LoadWetterAsync();
+                await LoadLookupDataAsync();
+            }
 
             await RefreshSyncStatusAsync();
         }
@@ -186,6 +204,7 @@ public partial class MainWindow
         {
             _syncInProgress = false;
             UpdateSyncButtonVisualState();
+            _syncSemaphore.Release();
         }
     }
 }

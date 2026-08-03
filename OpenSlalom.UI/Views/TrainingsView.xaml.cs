@@ -35,6 +35,7 @@ public partial class TrainingsView : UserControl
     private void TrainingRoundsTextBox_OnTextChanged(object sender, TextChangedEventArgs e) => Host?.TrainingRoundsTextBox_OnTextChanged(sender, e);
     private void TrainingAllowExtraRoundsCheckBox_OnClick(object sender, RoutedEventArgs e) => Host?.TrainingAllowExtraRoundsCheckBox_OnClick(sender, e);
     private void TrainingSecondTimingCheckBox_OnClick(object sender, RoutedEventArgs e) => Host?.TrainingSecondTimingCheckBox_OnClick(sender, e);
+    private void TrainingAutoSyncRemoteDbCheckBox_OnClick(object sender, RoutedEventArgs e) => Host?.TrainingAutoSyncRemoteDbCheckBox_OnClick(sender, e);
     private void TrainingSecondStart_OnClick(object sender, RoutedEventArgs e) => Host?.TrainingSecondStart_OnClick(sender, e);
     private void TrainingSecondLap_OnClick(object sender, RoutedEventArgs e) => Host?.TrainingSecondLap_OnClick(sender, e);
     private void TrainingSecondClear_OnClick(object sender, RoutedEventArgs e) => Host?.TrainingSecondClear_OnClick(sender, e);

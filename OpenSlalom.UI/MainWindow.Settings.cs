@@ -22,6 +22,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shell;
 using System.Windows.Threading;
 using Microsoft.Win32;
+using MySqlConnector;
 
 namespace OpenSlalom.UI;
 
@@ -48,6 +49,7 @@ public partial class MainWindow
             _localUiSettings.TrainingRundenanzahlOverrides ??= new Dictionary<int, int>();
             _localUiSettings.TrainingSollrundenUeberschreitenOverrides ??= new Dictionary<int, bool>();
             _localUiSettings.TrainingZweiteZeitnahmeOverrides ??= new Dictionary<int, bool>();
+            _localUiSettings.TrainingAutomatischZurRemoteDbSynchronisierenOverrides ??= new Dictionary<int, bool>();
 
             ApplySettingsToUi();
         }
@@ -67,6 +69,10 @@ public partial class MainWindow
         }
 
         EinstellungenView.DefaultStintRoundsTextBox.Text = _localUiSettings.DefaultRundenanzahlProStint.ToString();
+        EinstellungenView.DefaultAllowExtraRoundsCheckBox.IsChecked = _localUiSettings.DefaultSollrundenUeberschreiten;
+        EinstellungenView.DefaultSecondTimingCheckBox.IsChecked = _localUiSettings.DefaultZweiteZeitnahme;
+        EinstellungenView.DefaultAutoSyncRemoteDbCheckBox.IsChecked = _localUiSettings.DefaultAutomatischZurRemoteDbSynchronisieren;
+        ApplyRemoteConnectionSettingsToUi();
         EinstellungenView.SettingsFeedbackTextBlock.Text = string.Empty;
 
         ApplyTrainingRoundsToUi();
@@ -84,12 +90,23 @@ public partial class MainWindow
 
     private bool CanExceedRoundsTargetForTraining(int trainingId)
     {
-        return _localUiSettings.TrainingSollrundenUeberschreitenOverrides.TryGetValue(trainingId, out var canExceed) && canExceed;
+        return _localUiSettings.TrainingSollrundenUeberschreitenOverrides.TryGetValue(trainingId, out var canExceed)
+            ? canExceed
+            : _localUiSettings.DefaultSollrundenUeberschreiten;
     }
 
     private bool IsSecondTrainingTimingEnabled(int trainingId)
     {
-        return _localUiSettings.TrainingZweiteZeitnahmeOverrides.TryGetValue(trainingId, out var enabled) && enabled;
+        return _localUiSettings.TrainingZweiteZeitnahmeOverrides.TryGetValue(trainingId, out var enabled)
+            ? enabled
+            : _localUiSettings.DefaultZweiteZeitnahme;
+    }
+
+    private bool IsAutomaticRemoteSyncEnabled(int trainingId)
+    {
+        return _localUiSettings.TrainingAutomatischZurRemoteDbSynchronisierenOverrides.TryGetValue(trainingId, out var enabled)
+            ? enabled
+            : _localUiSettings.DefaultAutomatischZurRemoteDbSynchronisieren;
     }
 
     private void ApplyTrainingRoundsToUi()
@@ -105,9 +122,10 @@ public partial class MainWindow
             if (_selectedTrainingDetailId is null)
             {
                 TrainingsViewControl.TrainingRoundsTextBox.Text = _localUiSettings.DefaultRundenanzahlProStint.ToString();
-                TrainingsViewControl.TrainingAllowExtraRoundsCheckBox.IsChecked = false;
-                TrainingsViewControl.TrainingSecondTimingCheckBox.IsChecked = false;
-                TrainingsViewControl.TrainingSecondStopwatchPanel.Visibility = Visibility.Collapsed;
+                TrainingsViewControl.TrainingAllowExtraRoundsCheckBox.IsChecked = _localUiSettings.DefaultSollrundenUeberschreiten;
+                TrainingsViewControl.TrainingSecondTimingCheckBox.IsChecked = _localUiSettings.DefaultZweiteZeitnahme;
+                TrainingsViewControl.TrainingAutoSyncRemoteDbCheckBox.IsChecked = _localUiSettings.DefaultAutomatischZurRemoteDbSynchronisieren;
+                TrainingsViewControl.TrainingSecondStopwatchPanel.Visibility = _localUiSettings.DefaultZweiteZeitnahme ? Visibility.Visible : Visibility.Collapsed;
                 if (TrainingsViewControl.TrainingRoundsFeedbackTextBlock is not null)
                 {
                     TrainingsViewControl.TrainingRoundsFeedbackTextBlock.Text = string.Empty;
@@ -124,6 +142,7 @@ public partial class MainWindow
             TrainingsViewControl.TrainingAllowExtraRoundsCheckBox.IsChecked = CanExceedRoundsTargetForTraining(_selectedTrainingDetailId.Value);
             var secondTimingEnabled = IsSecondTrainingTimingEnabled(_selectedTrainingDetailId.Value);
             TrainingsViewControl.TrainingSecondTimingCheckBox.IsChecked = secondTimingEnabled;
+            TrainingsViewControl.TrainingAutoSyncRemoteDbCheckBox.IsChecked = IsAutomaticRemoteSyncEnabled(_selectedTrainingDetailId.Value);
             TrainingsViewControl.TrainingSecondStopwatchPanel.Visibility = secondTimingEnabled ? Visibility.Visible : Visibility.Collapsed;
             if (TrainingsViewControl.TrainingRoundsFeedbackTextBlock is not null)
             {
@@ -161,9 +180,19 @@ public partial class MainWindow
             return;
         }
 
+        if (!TryApplyRemoteConnectionSettingsFromUi(out var remoteConnectionError))
+        {
+            EinstellungenView.SettingsFeedbackTextBlock.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#B91C1C"));
+            EinstellungenView.SettingsFeedbackTextBlock.Text = remoteConnectionError;
+            return;
+        }
+
         try
         {
             _localUiSettings.DefaultRundenanzahlProStint = defaultRounds;
+            _localUiSettings.DefaultSollrundenUeberschreiten = EinstellungenView.DefaultAllowExtraRoundsCheckBox.IsChecked == true;
+            _localUiSettings.DefaultZweiteZeitnahme = EinstellungenView.DefaultSecondTimingCheckBox.IsChecked == true;
+            _localUiSettings.DefaultAutomatischZurRemoteDbSynchronisieren = EinstellungenView.DefaultAutoSyncRemoteDbCheckBox.IsChecked == true;
             await SaveLocalUiSettingsAsync();
             ApplyTrainingRoundsToUi();
 
@@ -175,6 +204,77 @@ public partial class MainWindow
             Logger.Error(ex, "Lokale UI-Einstellungen konnten nicht gespeichert werden.");
             EinstellungenView.SettingsFeedbackTextBlock.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#B91C1C"));
             EinstellungenView.SettingsFeedbackTextBlock.Text = "Speichern fehlgeschlagen. Details stehen im Log.";
+        }
+    }
+
+    private void ApplyRemoteConnectionSettingsToUi()
+    {
+        try
+        {
+            var builder = new MySqlConnectionStringBuilder(_remoteDbConnectionSettings.ConnectionString);
+            EinstellungenView.RemoteDbServerTextBox.Text = builder.Server;
+            EinstellungenView.RemoteDbPortTextBox.Text = builder.Port.ToString(CultureInfo.InvariantCulture);
+            EinstellungenView.RemoteDbDatabaseTextBox.Text = builder.Database;
+            EinstellungenView.RemoteDbUserTextBox.Text = builder.UserID;
+            EinstellungenView.RemoteDbPasswordBox.Password = builder.Password;
+
+            _localUiSettings.RemoteDbServer = builder.Server;
+            _localUiSettings.RemoteDbPort = checked((int)builder.Port);
+            _localUiSettings.RemoteDbDatabase = builder.Database;
+            _localUiSettings.RemoteDbUser = builder.UserID;
+            _localUiSettings.RemoteDbPassword = builder.Password;
+        }
+        catch (Exception ex)
+        {
+            Logger.Warn(ex, "Remote-DB-Verbindung konnte nicht in die Einstellungen übernommen werden.");
+        }
+    }
+
+    private bool TryApplyRemoteConnectionSettingsFromUi(out string errorMessage)
+    {
+        var server = EinstellungenView.RemoteDbServerTextBox.Text.Trim();
+        var portText = EinstellungenView.RemoteDbPortTextBox.Text.Trim();
+        var database = EinstellungenView.RemoteDbDatabaseTextBox.Text.Trim();
+        var user = EinstellungenView.RemoteDbUserTextBox.Text.Trim();
+        var password = EinstellungenView.RemoteDbPasswordBox.Password;
+
+        if (string.IsNullOrWhiteSpace(server) || string.IsNullOrWhiteSpace(database) || string.IsNullOrWhiteSpace(user))
+        {
+            errorMessage = "Server, Datenbank und Benutzer dürfen nicht leer sein.";
+            return false;
+        }
+
+        if (!uint.TryParse(portText, NumberStyles.None, CultureInfo.InvariantCulture, out var port) || port == 0 || port > ushort.MaxValue)
+        {
+            errorMessage = "Bitte einen gültigen Port zwischen 1 und 65535 eingeben.";
+            return false;
+        }
+
+        try
+        {
+            var builder = new MySqlConnectionStringBuilder(_remoteDbConnectionSettings.ConnectionString)
+            {
+                Server = server,
+                Port = port,
+                Database = database,
+                UserID = user,
+                Password = password
+            };
+
+            _localUiSettings.RemoteDbServer = server;
+            _localUiSettings.RemoteDbPort = (int)port;
+            _localUiSettings.RemoteDbDatabase = database;
+            _localUiSettings.RemoteDbUser = user;
+            _localUiSettings.RemoteDbPassword = password;
+            _remoteDbConnectionSettings.Update(builder.ConnectionString);
+            errorMessage = string.Empty;
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Logger.Warn(ex, "Remote-DB-Verbindungsdaten sind ungültig.");
+            errorMessage = "Die Remote-Verbindungsdaten sind ungültig.";
+            return false;
         }
     }
 
@@ -312,6 +412,35 @@ public partial class MainWindow
         catch (Exception ex)
         {
             Logger.Error(ex, "Einstellung für die zweite Zeitnahme konnte nicht gespeichert werden.");
+            TrainingsViewControl.TrainingRoundsFeedbackTextBlock.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#B91C1C"));
+            TrainingsViewControl.TrainingRoundsFeedbackTextBlock.Text = "Speichern fehlgeschlagen. Details stehen im Log.";
+        }
+    }
+
+    internal async void TrainingAutoSyncRemoteDbCheckBox_OnClick(object sender, RoutedEventArgs e)
+    {
+        if (_applyingTrainingSettingsToUi || _selectedTrainingDetailId is null || sender is not CheckBox checkBox)
+        {
+            return;
+        }
+
+        var trainingId = _selectedTrainingDetailId.Value;
+        _localUiSettings.TrainingAutomatischZurRemoteDbSynchronisierenOverrides[trainingId] = checkBox.IsChecked == true;
+
+        try
+        {
+            await SaveLocalUiSettingsAsync();
+            if (_selectedTrainingDetailId != trainingId)
+            {
+                return;
+            }
+
+            TrainingsViewControl.TrainingRoundsFeedbackTextBlock.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#166534"));
+            TrainingsViewControl.TrainingRoundsFeedbackTextBlock.Text = "Einstellung automatisch gespeichert.";
+        }
+        catch (Exception ex)
+        {
+            Logger.Error(ex, "Einstellung zur automatischen Remote-Synchronisierung konnte nicht gespeichert werden.");
             TrainingsViewControl.TrainingRoundsFeedbackTextBlock.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#B91C1C"));
             TrainingsViewControl.TrainingRoundsFeedbackTextBlock.Text = "Speichern fehlgeschlagen. Details stehen im Log.";
         }

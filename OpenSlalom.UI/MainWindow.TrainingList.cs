@@ -43,6 +43,7 @@ public partial class MainWindow
                 .Select(x => new TrainingListItem
                 {
                     Id = x.Id,
+                    Uuid = x.Uuid,
                     VereinId = x.VereinId,
                     DisziplinId = x.DisziplinId,
                     WetterId = x.WetterId,
@@ -52,6 +53,8 @@ public partial class MainWindow
                     ZeitpunktText = x.Zeitpunkt.ToString("dd.MM.yyyy"),
                     TrainingAbgeschlossen = x.TrainingAbgeschlossen,
                     TrainingAbgeschlossenText = x.TrainingAbgeschlossen ? "Ja" : "Nein",
+                    IstVeroeffentlicht = x.IstVeroeffentlicht,
+                    IstVeroeffentlichtText = x.IstVeroeffentlicht ? "Ja" : "Nein",
                     VereinName = x.Verein.Vereinsname,
                     DisziplinName = x.Disziplin.Name,
                     WetterName = x.Wetter.Bezeichnung
@@ -79,6 +82,7 @@ public partial class MainWindow
         TrainingsViewControl.CreateTrainingBeschreibungTextBox.Text = string.Empty;
         TrainingsViewControl.CreateTrainingZeitpunktPicker.SelectedDate = DateTime.Today;
         TrainingsViewControl.CreateTrainingAbgeschlossenCheckBox.IsChecked = false;
+        TrainingsViewControl.CreateTrainingIstVeroeffentlichtCheckBox.IsChecked = false;
         TrainingsViewControl.CreateTrainingVereinComboBox.SelectedIndex = -1;
         TrainingsViewControl.CreateTrainingDisziplinComboBox.SelectedIndex = -1;
         TrainingsViewControl.CreateTrainingWetterComboBox.SelectedIndex = -1;
@@ -106,10 +110,12 @@ public partial class MainWindow
             await using var dbContext = await _localDbContextFactory.CreateDbContextAsync();
             dbContext.Trainings.Add(new Training
             {
+                Uuid = Guid.NewGuid(),
                 Name = name,
                 Beschreibung = beschreibung,
                 Zeitpunkt = DateOnly.FromDateTime(TrainingsViewControl.CreateTrainingZeitpunktPicker.SelectedDate.Value),
                 TrainingAbgeschlossen = TrainingsViewControl.CreateTrainingAbgeschlossenCheckBox.IsChecked == true,
+                IstVeroeffentlicht = TrainingsViewControl.CreateTrainingIstVeroeffentlichtCheckBox.IsChecked == true,
                 VereinId = vereinId,
                 DisziplinId = disziplinId,
                 WetterId = wetterId
@@ -157,6 +163,7 @@ public partial class MainWindow
         TrainingsViewControl.EditTrainingBeschreibungTextBox.Text = training.Beschreibung;
         TrainingsViewControl.EditTrainingZeitpunktPicker.SelectedDate = training.Zeitpunkt.ToDateTime(TimeOnly.MinValue);
         TrainingsViewControl.EditTrainingAbgeschlossenCheckBox.IsChecked = training.TrainingAbgeschlossen;
+        TrainingsViewControl.EditTrainingIstVeroeffentlichtCheckBox.IsChecked = training.IstVeroeffentlicht;
         TrainingsViewControl.EditTrainingVereinComboBox.SelectedValue = training.VereinId;
         TrainingsViewControl.EditTrainingDisziplinComboBox.SelectedValue = training.DisziplinId;
         TrainingsViewControl.EditTrainingWetterComboBox.SelectedValue = training.WetterId;
@@ -199,6 +206,7 @@ public partial class MainWindow
             training.Beschreibung = beschreibung;
             training.Zeitpunkt = DateOnly.FromDateTime(TrainingsViewControl.EditTrainingZeitpunktPicker.SelectedDate.Value);
             training.TrainingAbgeschlossen = TrainingsViewControl.EditTrainingAbgeschlossenCheckBox.IsChecked == true;
+            training.IstVeroeffentlicht = TrainingsViewControl.EditTrainingIstVeroeffentlichtCheckBox.IsChecked == true;
             training.VereinId = vereinId;
             training.DisziplinId = disziplinId;
             training.WetterId = wetterId;

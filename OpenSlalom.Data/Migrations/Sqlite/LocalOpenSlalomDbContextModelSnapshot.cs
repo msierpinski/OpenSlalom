@@ -364,6 +364,10 @@ namespace OpenSlalom.Data.Migrations.Sqlite
                         .HasColumnName("updated_at_utc")
                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
+                    b.Property<Guid>("Uuid")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("uuid");
+
                     b.Property<int>("WetterId")
                         .HasColumnType("INTEGER")
                         .HasColumnName("fk_id_wetter");
@@ -377,6 +381,9 @@ namespace OpenSlalom.Data.Migrations.Sqlite
                     b.HasIndex("DisziplinId");
 
                     b.HasIndex("GastgeberId");
+
+                    b.HasIndex("Uuid")
+                        .IsUnique();
 
                     b.HasIndex("WetterId");
 
@@ -540,6 +547,12 @@ namespace OpenSlalom.Data.Migrations.Sqlite
                         .HasDefaultValue(false)
                         .HasColumnName("is_deleted");
 
+                    b.Property<bool>("IstVeroeffentlicht")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasDefaultValue(false)
+                        .HasColumnName("ist_veroeffentlicht");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -558,6 +571,10 @@ namespace OpenSlalom.Data.Migrations.Sqlite
                         .HasColumnName("updated_at_utc")
                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
+                    b.Property<Guid>("Uuid")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("uuid");
+
                     b.Property<int>("VereinId")
                         .HasColumnType("INTEGER")
                         .HasColumnName("fk_id_verein");
@@ -573,6 +590,9 @@ namespace OpenSlalom.Data.Migrations.Sqlite
                     b.HasKey("Id");
 
                     b.HasIndex("DisziplinId");
+
+                    b.HasIndex("Uuid")
+                        .IsUnique();
 
                     b.HasIndex("VereinId");
 
