@@ -30,6 +30,11 @@ bld/
 [Oo]bj/
 [Ll]og/
 [Ll]ogs/
+OpenSlalom.UI/[Bb]in/
+OpenSlalom.UI/[Oo]bj/
+OpenSlalom.Data/[Bb]in/
+OpenSlalom.Data/[Oo]bj/
+
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/
