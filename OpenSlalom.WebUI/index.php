@@ -7,6 +7,7 @@ require __DIR__ . '/src/Database.php';
 require __DIR__ . '/src/TrainingRepository.php';
 require __DIR__ . '/src/TrainingManagementRepository.php';
 require __DIR__ . '/src/MasterDataRepository.php';
+require __DIR__ . '/src/GlobalStatisticsRepository.php';
 require __DIR__ . '/src/TrainingViewBuilder.php';
 require __DIR__ . '/src/UserRepository.php';
 require __DIR__ . '/src/Auth.php';
@@ -58,6 +59,7 @@ $services = static function () use (&$currentUser): array {
         'trainings' => new TrainingRepository($readerConnection),
         'trainingManagement' => new TrainingManagementRepository($writeConnection),
         'masterData' => new MasterDataRepository($writeConnection),
+        'statistics' => new GlobalStatisticsRepository($readerConnection),
         'mailer' => new PasswordResetMailer($config['mail'] ?? ['name' => $config['site']['name'] ?? 'openSlalom']),
         'adminMailer' => new AdminNotificationMailer($config['mail'] ?? ['name' => $config['site']['name'] ?? 'openSlalom']),
     ];
@@ -356,6 +358,30 @@ try {
         ]);
     }
 
+    if ($path === '/statistiken' && $isReadRequest) {
+        requireMasterDataManager($currentUser);
+        try {
+            $period = statistics_period();
+            $statistics = $app['statistics']->build($period['from'], $period['to']);
+            render('statistics', [
+                'pageTitle' => 'Statistiken | openSlalom',
+                'pageDescription' => 'Globale Trainingsstatistik für einen auswählbaren Zeitraum.',
+                'pageClass' => 'statistics-page',
+                'period' => $period,
+                'statistics' => $statistics,
+            ]);
+        } catch (InvalidArgumentException $exception) {
+            render('statistics', [
+                'pageTitle' => 'Statistiken | openSlalom',
+                'pageDescription' => 'Globale Trainingsstatistik für einen auswählbaren Zeitraum.',
+                'pageClass' => 'statistics-page',
+                'period' => ['from' => sprintf('%04d-01-01', (int) date('Y')), 'to' => sprintf('%04d-12-31', (int) date('Y'))],
+                'statistics' => ['summary' => [], 'drivers' => [], 'karts' => []],
+                'statisticsError' => $exception->getMessage(),
+            ], 422);
+        }
+    }
+
     if (preg_match('~^/verwaltung/(vereine|fahrer|disziplinen|karts|wetter)$~', $path, $matches) === 1 && $isReadRequest) {
         requireMasterDataManager($currentUser);
         $type = $matches[1];
@@ -646,7 +672,7 @@ try {
             renderNotFound();
         }
 
-        $view = TrainingViewBuilder::build($trainingData);
+        $view = TrainingViewBuilder::build($trainingData, $currentUser !== null);
         $refreshSeconds = $view['training']['is_finished']
             ? 0
             : max(0, (int) ($app['config']['site']['auto_refresh_seconds'] ?? 15));

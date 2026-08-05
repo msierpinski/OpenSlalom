@@ -49,6 +49,7 @@ $stylesheetVersion = (string) filemtime(dirname(__DIR__) . '/assets/css/app.css'
             <div class="shell internal-menu-inner">
                 <a class="<?= str_starts_with($currentPath, '/training') ? 'active' : '' ?>" href="<?= escape(base_url('trainings')) ?>">Trainings</a>
                 <?php if (Auth::canManageMasterData($currentUser)): ?>
+                    <a class="<?= str_starts_with($currentPath, '/statistiken') ? 'active' : '' ?>" href="<?= escape(base_url('statistiken')) ?>">Statistiken</a>
                     <a class="<?= str_starts_with($currentPath, '/verwaltung/vereine') ? 'active' : '' ?>" href="<?= escape(base_url('verwaltung/vereine')) ?>">Vereine</a>
                     <a class="<?= str_starts_with($currentPath, '/verwaltung/fahrer') ? 'active' : '' ?>" href="<?= escape(base_url('verwaltung/fahrer')) ?>">Fahrer</a>
                     <a class="<?= str_starts_with($currentPath, '/verwaltung/disziplinen') ? 'active' : '' ?>" href="<?= escape(base_url('verwaltung/disziplinen')) ?>">Disziplinen</a>

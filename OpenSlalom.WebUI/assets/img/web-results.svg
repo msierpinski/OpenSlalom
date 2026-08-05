@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 520" role="img" aria-labelledby="title">
+  <title id="title">Illustration der OpenSlalom Web-Ergebnisse</title>
+  <rect width="760" height="520" rx="28" fill="#1e293b"/>
+  <rect x="48" y="42" width="664" height="436" rx="18" fill="#f8fafc"/>
+  <rect x="48" y="42" width="664" height="54" rx="18" fill="#ffffff"/>
+  <circle cx="79" cy="69" r="11" fill="#1f84de"/>
+  <rect x="99" y="61" width="112" height="15" rx="7" fill="#1f84de"/>
+  <rect x="563" y="58" width="116" height="25" rx="12" fill="#1f84de"/>
+  <rect x="80" y="122" width="440" height="16" rx="8" fill="#0f172a"/>
+  <rect x="80" y="152" width="242" height="10" rx="5" fill="#64748b"/>
+  <rect x="80" y="188" width="600" height="54" rx="9" fill="#ffffff" stroke="#e2e8f0"/>
+  <rect x="98" y="205" width="48" height="18" rx="9" fill="#dcfce7"/>
+  <rect x="164" y="205" width="116" height="12" rx="6" fill="#334155"/>
+  <rect x="541" y="203" width="112" height="18" rx="9" fill="#f1f5f9"/>
+  <rect x="80" y="267" width="600" height="35" rx="7" fill="#eaf4fd"/>
+  <rect x="98" y="279" width="24" height="10" rx="5" fill="#1f84de"/>
+  <rect x="151" y="279" width="145" height="10" rx="5" fill="#0f172a"/>
+  <rect x="548" y="276" width="105" height="14" rx="7" fill="#1f84de"/>
+  <rect x="80" y="315" width="600" height="35" rx="7" fill="#ffffff" stroke="#e2e8f0"/>
+  <rect x="98" y="327" width="24" height="10" rx="5" fill="#94a3b8"/>
+  <rect x="151" y="327" width="132" height="10" rx="5" fill="#334155"/>
+  <rect x="548" y="324" width="105" height="14" rx="7" fill="#f1f5f9"/>
+  <rect x="80" y="363" width="600" height="35" rx="7" fill="#ffffff" stroke="#e2e8f0"/>
+  <rect x="98" y="375" width="24" height="10" rx="5" fill="#94a3b8"/>
+  <rect x="151" y="375" width="124" height="10" rx="5" fill="#334155"/>
+  <rect x="548" y="372" width="105" height="14" rx="7" fill="#f1f5f9"/>
+  <rect x="587" y="117" width="93" height="93" rx="8" fill="#ffffff" stroke="#cbd5e1" stroke-width="2"/>
+  <path d="M601 131h16v16h-16zm24 0h10v10h-10zm18 0h23v23h-23zm-42 25h10v10h-10zm18 0h16v16h-16zm26 0h10v10h-10zm-44 18h23v23h-23zm31 0h10v10h-10zm18 0h16v16h-16z" fill="#0f172a"/>
+</svg>

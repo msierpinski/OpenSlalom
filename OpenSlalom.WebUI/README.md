@@ -150,6 +150,7 @@ In produktiven Installationen sollte eine gültige Absenderdomain mit SPF, DKIM 
 - `/trainings` zeigt angemeldeten Benutzern nur die jeweils zugänglichen Trainings.
 - `/trainings/neu` erlaubt Administratoren und Trainingsleitern das Anlegen eines Trainings.
 - `/training/{UUID}/bearbeiten` erlaubt Administratoren und Trainingsleitern das Bearbeiten eines Trainings.
+- `/statistiken` bietet Administratoren und Trainingsleitern eine globale Statistik mit auswählbarem Trainingszeitraum; Standard ist das laufende Kalenderjahr.
 - `/verwaltung/vereine`, `/verwaltung/fahrer`, `/verwaltung/disziplinen`, `/verwaltung/karts` und `/verwaltung/wetter` bieten Administratoren und Trainingsleitern die Stammdaten-CRUD-Verwaltung.
 - `/training/550e8400-e29b-41d4-a716-446655440000` zeigt das zugehörige Training, sofern es veröffentlicht ist oder eine Berechtigung besteht.
 - `/admin/benutzer` und die Benutzer-Bearbeitung sind ausschließlich für Administratoren verfügbar.

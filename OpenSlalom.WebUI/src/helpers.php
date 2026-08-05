@@ -95,6 +95,18 @@ function display_initial(string $name): string
     return preg_match('/^./u', trim($name), $matches) === 1 ? $matches[0] : '?';
 }
 
+function display_masked_name(string $firstName, ?string $lastName): string
+{
+    $firstName = trim($firstName);
+    $lastName = trim((string) $lastName);
+    $lastInitial = $lastName === '' ? null : display_initial($lastName);
+    if ($firstName === '') {
+        $firstName = '?';
+    }
+
+    return $lastInitial === null ? $firstName : $firstName . ' ' . $lastInitial . '.';
+}
+
 function render(string $template, array $data = [], int $status = 200): never
 {
     global $currentUser;
@@ -154,4 +166,18 @@ function list_page_url(string $path, int $page, string $search): string
     }
 
     return base_url($path) . '?' . http_build_query($parameters, '', '&', PHP_QUERY_RFC3986);
+}
+
+function statistics_period(): array
+{
+    $year = (int) date('Y');
+    $from = is_string($_GET['from'] ?? null) ? $_GET['from'] : sprintf('%04d-01-01', $year);
+    $to = is_string($_GET['to'] ?? null) ? $_GET['to'] : sprintf('%04d-12-31', $year);
+    $fromDate = DateTimeImmutable::createFromFormat('!Y-m-d', $from);
+    $toDate = DateTimeImmutable::createFromFormat('!Y-m-d', $to);
+    if ($fromDate === false || $toDate === false || $fromDate->format('Y-m-d') !== $from || $toDate->format('Y-m-d') !== $to || $fromDate > $toDate) {
+        throw new InvalidArgumentException('Bitte einen gültigen Auswertezeitraum eingeben.');
+    }
+
+    return ['from' => $from, 'to' => $to];
 }

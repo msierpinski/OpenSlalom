@@ -6,11 +6,12 @@ $summary = $view['summary'];
 $leaderboard = $view['leaderboard'];
 $statistics = $view['statistics'];
 $trainingScriptVersion = (string) filemtime(dirname(__DIR__) . '/assets/js/training.js');
+$trainingBreadcrumbTarget = $currentUser === null ? '' : 'trainings';
 ?>
 <div class="training-live" data-auto-refresh="<?= (int) $refreshSeconds ?>">
     <section class="training-hero">
         <div class="shell">
-            <div class="training-crumb"><a href="<?= escape(base_url()) ?>">openSlalom</a><span>/</span>Trainingsergebnisse</div>
+            <div class="training-crumb"><a href="<?= escape(base_url($trainingBreadcrumbTarget)) ?>">openSlalom</a><span>/</span>Trainingsergebnisse</div>
             <div class="training-title-row">
                 <div>
                     <div class="live-state <?= $training['is_finished'] ? 'is-finished' : '' ?>">
@@ -214,7 +215,43 @@ $trainingScriptVersion = (string) filemtime(dirname(__DIR__) . '/assets/js/train
                     </div>
                 <?php endif; ?>
             </section>
+
+            <section class="result-section training-kart-statistics">
+                <div class="result-heading compact-heading"><div><p class="eyebrow"><span></span> Karts</p><h2>Kart-Auswertung</h2></div><span class="count-badge"><?= count($view['karts']) ?></span></div>
+                <?php if ($view['karts'] === []): ?>
+                    <div class="empty-state"><strong>Keine Kartdaten für dieses Training.</strong><span>Kartdaten erscheinen, sobald gespeicherte Stints einem Kart zugeordnet sind.</span></div>
+                <?php else: ?>
+                    <div class="table-frame global-kart-statistics-table">
+                        <table>
+                            <thead><tr><th>Kart</th><th>Fahrzeit</th><th>Runden</th><th>Stints</th><th>Fahrer</th><th>PF</th><th>TF</th><th>PF / Runde</th><th>TF / Runde</th></tr></thead>
+                            <tbody>
+                            <?php foreach ($view['karts'] as $kartIndex => $kart): ?>
+                                <tr class="kart-summary-row" data-kart-summary tabindex="0" role="button" aria-expanded="false" aria-controls="training-kart-driver-details-<?= $kartIndex ?>">
+                                    <td data-label="Kart"><strong><?= escape($kart['name']) ?></strong></td>
+                                    <td data-label="Fahrzeit"><strong class="time-value duration-value"><?= escape(format_duration($kart['seconds'])) ?></strong></td>
+                                    <td data-label="Runden"><?= (int) $kart['rounds'] ?></td>
+                                    <td data-label="Stints"><?= (int) $kart['stints'] ?></td>
+                                    <td data-label="Fahrer"><span class="kart-driver-list"><?= count($kart['drivers']) ?> Fahrer</span></td>
+                                    <td data-label="PF"><?= (int) $kart['pf'] ?></td>
+                                    <td data-label="TF"><?= (int) $kart['tf'] ?></td>
+                                    <td data-label="PF / Runde"><?= escape(number_format($kart['average_pf'], 2, '.', '')) ?></td>
+                                    <td data-label="TF / Runde"><?= escape(number_format($kart['average_tf'], 2, '.', '')) ?></td>
+                                </tr>
+                                <tr id="training-kart-driver-details-<?= $kartIndex ?>" class="kart-driver-expansion" data-kart-details hidden>
+                                    <td colspan="9"><div class="kart-driver-expansion-content"><span class="kart-driver-expansion-label">Fahrerbezogene Auswertung</span><div class="table-frame kart-driver-table"><table><thead><tr><th>Fahrer</th><th>Fahrzeit</th><th>Runden</th><th>Stints</th><th>PF</th><th>TF</th><th>PF / Runde</th><th>TF / Runde</th></tr></thead><tbody>
+                                    <?php foreach ($kart['drivers'] as $driver): ?>
+                                        <tr><td data-label="Fahrer"><strong><?= escape($driver['name']) ?></strong></td><td data-label="Fahrzeit"><strong class="time-value duration-value"><?= escape(format_duration($driver['seconds'])) ?></strong></td><td data-label="Runden"><?= (int) $driver['rounds'] ?></td><td data-label="Stints"><?= (int) $driver['stints'] ?></td><td data-label="PF"><?= (int) $driver['pf'] ?></td><td data-label="TF"><?= (int) $driver['tf'] ?></td><td data-label="PF / Runde"><?= escape(number_format($driver['average_pf'], 2, '.', '')) ?></td><td data-label="TF / Runde"><?= escape(number_format($driver['average_tf'], 2, '.', '')) ?></td></tr>
+                                    <?php endforeach; ?>
+                                    </tbody></table></div></div></td>
+                                </tr>
+                            <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                <?php endif; ?>
+            </section>
         </section>
     </section>
 </div>
 <script src="<?= escape(base_url('assets/js/training.js?v=' . $trainingScriptVersion)) ?>" defer></script>
+<script src="<?= escape(base_url('assets/js/statistics.js')) ?>" defer></script>

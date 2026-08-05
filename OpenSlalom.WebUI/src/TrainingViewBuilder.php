@@ -4,16 +4,17 @@ declare(strict_types=1);
 
 final class TrainingViewBuilder
 {
-    public static function build(array $data): array
+    public static function build(array $data, bool $showFullNames): array
     {
         $training = self::normalizeTraining($data['training']);
         $classes = $data['classes'];
-        $starters = self::buildStarters($data['starters'], $classes, $training['date_raw']);
-        $stints = self::attachLaps($data['stints'], $data['laps']);
+        $starters = self::buildStarters($data['starters'], $classes, $training['date_raw'], $showFullNames);
+        $stints = self::attachLaps($data['stints'], $data['laps'], $showFullNames);
         $penaltyTf = (float) $data['training']['torfehler_sekunden'];
         $penaltyPf = (float) $data['training']['pylonen_sekunden'];
 
         [$leaderboard, $drivers] = self::buildResults($stints, $penaltyTf, $penaltyPf);
+        $kartStatistics = self::buildKartStatistics($stints);
         $timestamps = array_column($stints, 'datum');
         $statistics = self::buildStatistics($stints, $starters);
 
@@ -22,6 +23,7 @@ final class TrainingViewBuilder
             'starters' => $starters,
             'leaderboard' => $leaderboard,
             'drivers' => $drivers,
+            'karts' => $kartStatistics,
             'statistics' => $statistics,
             'summary' => [
                 'registered' => count($starters),
@@ -56,14 +58,14 @@ final class TrainingViewBuilder
         ];
     }
 
-    private static function buildStarters(array $starters, array $classes, string $trainingDate): array
+    private static function buildStarters(array $starters, array $classes, string $trainingDate, bool $showFullNames): array
     {
         return array_map(
-            static function (array $starter, int $index) use ($classes, $trainingDate): array {
+            static function (array $starter, int $index) use ($classes, $trainingDate, $showFullNames): array {
                 return [
                     'id' => (int) $starter['fahrer_id'],
                     'position' => $index + 1,
-                    'name' => display_name((string) $starter['vorname'], (string) $starter['nachname']),
+                    'name' => self::displayDriverName((string) $starter['vorname'], (string) $starter['nachname'], $showFullNames),
                     'club' => (string) $starter['vereinsname'],
                     'class' => self::resolveClass($starter['geburtsdatum'], $trainingDate, $classes),
                 ];
@@ -103,7 +105,7 @@ final class TrainingViewBuilder
         return '-';
     }
 
-    private static function attachLaps(array $stints, array $laps): array
+    private static function attachLaps(array $stints, array $laps, bool $showFullNames): array
     {
         $lapsByStint = [];
         foreach ($laps as $lap) {
@@ -121,7 +123,7 @@ final class TrainingViewBuilder
             static fn (array $stint): array => [
                 'id' => (int) $stint['stint_id'],
                 'fahrer_id' => (int) $stint['fahrer_id'],
-                'driver' => display_name((string) $stint['vorname'], (string) $stint['nachname']),
+                'driver' => self::displayDriverName((string) $stint['vorname'], (string) $stint['nachname'], $showFullNames),
                 'class' => trim((string) $stint['altersklasse_snapshot']) ?: '-',
                 'kart' => trim((string) ($stint['kart_name'] ?? '')) ?: '-',
                 'datum' => (string) $stint['datum'],
@@ -308,5 +310,71 @@ final class TrainingViewBuilder
         $stint['valid_laps'] = $validCount;
 
         return $stint;
+    }
+
+    private static function buildKartStatistics(array $stints): array
+    {
+        $karts = [];
+        foreach ($stints as $stint) {
+            $kartKey = $stint['kart'] === '-' ? 'none' : $stint['kart'];
+            $karts[$kartKey] ??= [
+                'name' => $stint['kart'] === '-' ? 'Ohne Kartzuordnung' : $stint['kart'],
+                'stints' => 0,
+                'rounds' => 0,
+                'seconds' => 0.0,
+                'pf' => 0,
+                'tf' => 0,
+                'drivers' => [],
+            ];
+            $karts[$kartKey]['stints']++;
+            $karts[$kartKey]['drivers'][$stint['fahrer_id']] ??= [
+                'name' => $stint['driver'],
+                'stints' => 0,
+                'rounds' => 0,
+                'seconds' => 0.0,
+                'pf' => 0,
+                'tf' => 0,
+            ];
+            $karts[$kartKey]['drivers'][$stint['fahrer_id']]['stints']++;
+
+            foreach ($stint['laps'] as $lap) {
+                if ($lap['time'] === null || $lap['time'] <= 0) {
+                    continue;
+                }
+
+                $karts[$kartKey]['rounds']++;
+                $karts[$kartKey]['seconds'] += $lap['time'];
+                $karts[$kartKey]['pf'] += $lap['pf'];
+                $karts[$kartKey]['tf'] += $lap['tf'];
+                $karts[$kartKey]['drivers'][$stint['fahrer_id']]['rounds']++;
+                $karts[$kartKey]['drivers'][$stint['fahrer_id']]['seconds'] += $lap['time'];
+                $karts[$kartKey]['drivers'][$stint['fahrer_id']]['pf'] += $lap['pf'];
+                $karts[$kartKey]['drivers'][$stint['fahrer_id']]['tf'] += $lap['tf'];
+            }
+        }
+
+        $rows = array_values($karts);
+        foreach ($rows as &$kart) {
+            $kart['average_pf'] = $kart['rounds'] > 0 ? $kart['pf'] / $kart['rounds'] : 0.0;
+            $kart['average_tf'] = $kart['rounds'] > 0 ? $kart['tf'] / $kart['rounds'] : 0.0;
+            $kart['drivers'] = array_values($kart['drivers']);
+            foreach ($kart['drivers'] as &$driver) {
+                $driver['average_pf'] = $driver['rounds'] > 0 ? $driver['pf'] / $driver['rounds'] : 0.0;
+                $driver['average_tf'] = $driver['rounds'] > 0 ? $driver['tf'] / $driver['rounds'] : 0.0;
+            }
+            unset($driver);
+            usort($kart['drivers'], static fn (array $a, array $b): int => strcasecmp($a['name'], $b['name']));
+        }
+        unset($kart);
+        usort($rows, static fn (array $a, array $b): int => strcasecmp($a['name'], $b['name']));
+
+        return $rows;
+    }
+
+    private static function displayDriverName(string $firstName, string $lastName, bool $showFullNames): string
+    {
+        return $showFullNames
+            ? display_name($firstName, $lastName)
+            : display_masked_name($firstName, $lastName);
     }
 }
