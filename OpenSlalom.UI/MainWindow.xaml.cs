@@ -115,6 +115,7 @@ public partial class MainWindow : Window
     public ObservableCollection<DriverStatisticsListItem> DriverStatisticsItems { get; } = new();
     public ObservableCollection<TrainingDriverSelectionItem> TrainingDriverSelectionItems { get; } = new();
     public ObservableCollection<LookupItem> KartLookupItems { get; } = new();
+    public ObservableCollection<LookupItem> AvailableKarts { get; } = new();
     public ObservableCollection<LookupItem> VereinLookupItems { get; } = new();
     public ObservableCollection<LookupItem> DisziplinLookupItems { get; } = new();
     public ObservableCollection<LookupItem> WetterLookupItems { get; } = new();
