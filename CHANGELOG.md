@@ -10,6 +10,8 @@ die Versionsnummern folgen der [semantischen Versionierung](https://semver.org/l
 
 ### Geändert
 
+- Bei der Zuordnung von Karts zu Fahrern werden nur noch Karts angezeigt, die zum jeweiligen Trainingstyp passen (z. B. Bambini-Karts bei JKS-Trainings).
+
 ### Behoben
 
 - Die UUID-Nachrüstung für Trainings und Meisterschaften markiert bestehende Datensätze nicht mehr fälschlich als ausstehende Synchronisierungsänderungen.
