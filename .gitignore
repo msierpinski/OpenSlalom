@@ -457,3 +457,6 @@ $RECYCLE.BIN/
 # and is not needed in source control
 OpenSlalom.UI/open_slalom_local.db
 
+# .NET build output
+bin/
+obj/
