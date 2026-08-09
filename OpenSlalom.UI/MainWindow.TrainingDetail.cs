@@ -149,7 +149,6 @@ public partial class MainWindow
                 AvailableKarts.Add(item);
             }
 
-
             _selectedTrainingTorfehlerPenaltySeconds = training.Disziplin.ZeitstrafeTorfehler;
             _selectedTrainingPylonenfehlerPenaltySeconds = training.Disziplin.ZeitstrafePylonenfehler;
             RecalculateLapPenaltiesForCurrentContext();
