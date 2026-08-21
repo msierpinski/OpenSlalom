@@ -7,6 +7,33 @@
              d:DesignWidth="1050"
              d:DesignHeight="700"
              d:Background="White">
+
+	<UserControl.Resources>
+		<Style x:Key="StandardDataGridTextElementStyle"
+               TargetType="{x:Type TextBlock}">
+			<Setter Property="HorizontalAlignment" Value="Stretch"/>
+			<Setter Property="TextAlignment" Value="Left"/>
+			<Setter Property="VerticalAlignment" Value="Center"/>
+			<Setter Property="Padding" Value="8,0"/>
+		</Style>
+
+		<Style x:Key="StandardDataGridHeaderStyle"
+               TargetType="{x:Type DataGridColumnHeader}">
+			<Setter Property="HorizontalContentAlignment" Value="Left"/>
+			<Setter Property="VerticalContentAlignment" Value="Center"/>
+			<Setter Property="Padding" Value="8,0"/>
+		</Style>
+
+		<Style x:Key="TruncatedDataGridTextElementStyle"
+               TargetType="{x:Type TextBlock}"
+               BasedOn="{StaticResource StandardDataGridTextElementStyle}">
+			<Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+			<Setter Property="TextWrapping" Value="NoWrap"/>
+			<Setter Property="ToolTip" Value="{Binding VereinName}"/>
+			<Setter Property="Padding" Value="8,0"/>
+		</Style>
+	</UserControl.Resources>
+	
     <Grid>
         <Border x:Name="TrainingsPage"
                 x:FieldModifier="internal"
@@ -408,19 +435,7 @@
                                             <DataGridTextColumn Header="Vorname" Binding="{Binding Vorname}" Width="12*" IsReadOnly="True" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
                                             <DataGridTextColumn Header="Nachname" Binding="{Binding Nachname}" Width="12*" IsReadOnly="True" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
                                             <DataGridTextColumn Header="Klasse" Binding="{Binding Altersklasse}" Width="10*" IsReadOnly="True" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
-											<DataGridTextColumn Header="Verein"
-																Binding="{Binding VereinName}"
-																Width="18*"
-																IsReadOnly="True">
-												<DataGridTextColumn.ElementStyle>
-													<Style TargetType="TextBlock"
-														   BasedOn="{StaticResource StandardDataGridTextElementStyle}">
-														<Setter Property="TextTrimming" Value="CharacterEllipsis"/>
-														<Setter Property="TextWrapping" Value="NoWrap"/>
-														<Setter Property="ToolTip" Value="{Binding VereinName}"/>
-													</Style>
-												</DataGridTextColumn.ElementStyle>
-											</DataGridTextColumn>
+											<DataGridTextColumn Header="Verein" Binding="{Binding VereinName}" Width="18*" IsReadOnly="True" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
                                             <DataGridTemplateColumn Header="Fahrer fährt" Width="100">
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
