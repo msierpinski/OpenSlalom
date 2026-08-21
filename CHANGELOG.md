@@ -10,6 +10,10 @@ die Versionsnummern folgen der [semantischen Versionierung](https://semver.org/l
 
 ### Geändert
 
+- Darstellung der Trainingsansicht und DataGrids für kleinere Geräte verbessert.
+- Lange Texte in DataGrids werden gekürzt und können per Tooltip vollständig angezeigt werden.
+- Zeitabstände werden einheitlich und mit passender Genauigkeit dargestellt.
+
 ### Behoben
 
 - Die UUID-Nachrüstung für Trainings und Meisterschaften markiert bestehende Datensätze nicht mehr fälschlich als ausstehende Synchronisierungsänderungen.
