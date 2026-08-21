@@ -61,6 +61,14 @@ public partial class MainWindow
         return $"{(int)elapsed.TotalSeconds:00}.{elapsed.Milliseconds:000}";
     }
 
+    /// <summary>
+    /// Formats a time gap in seconds with the specified number of decimals.
+    /// </summary>
+    private static string FormatGap(TimeSpan time, int decimals = 3)
+    {
+        return time.TotalSeconds.ToString($"F{decimals}").Replace(",", ".");
+    }
+
     private double CalculateLapPenaltySeconds(TrainingLapTimeListItem lap)
     {
         var raw = (lap.Tore * _selectedTrainingTorfehlerPenaltySeconds) + (lap.Pylonen * _selectedTrainingPylonenfehlerPenaltySeconds);
