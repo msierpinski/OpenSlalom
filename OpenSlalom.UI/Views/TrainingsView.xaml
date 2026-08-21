@@ -408,7 +408,19 @@
                                             <DataGridTextColumn Header="Vorname" Binding="{Binding Vorname}" Width="12*" IsReadOnly="True" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
                                             <DataGridTextColumn Header="Nachname" Binding="{Binding Nachname}" Width="12*" IsReadOnly="True" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
                                             <DataGridTextColumn Header="Klasse" Binding="{Binding Altersklasse}" Width="10*" IsReadOnly="True" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
-                                            <DataGridTextColumn Header="Verein" Binding="{Binding VereinName}" Width="18*" IsReadOnly="True" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+											<DataGridTextColumn Header="Verein"
+																Binding="{Binding VereinName}"
+																Width="18*"
+																IsReadOnly="True">
+												<DataGridTextColumn.ElementStyle>
+													<Style TargetType="TextBlock"
+														   BasedOn="{StaticResource StandardDataGridTextElementStyle}">
+														<Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+														<Setter Property="TextWrapping" Value="NoWrap"/>
+														<Setter Property="ToolTip" Value="{Binding VereinName}"/>
+													</Style>
+												</DataGridTextColumn.ElementStyle>
+											</DataGridTextColumn>
                                             <DataGridTemplateColumn Header="Fahrer fährt" Width="100">
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
