@@ -5,4 +5,6 @@ public sealed record DataSyncStatus(
     int PendingFromLocal,
     int PendingFromRemote,
     DateTime? LastSyncUtc,
-    string Message);
+    string Message,
+    bool? LocalConnected = null,
+    bool? RemoteConnected = null);

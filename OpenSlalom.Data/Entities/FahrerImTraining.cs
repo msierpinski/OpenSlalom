@@ -8,6 +8,8 @@ public sealed class FahrerImTraining : ISyncEntity
 
     public int Reihenfolge { get; set; }
 
+    public bool FahrerFaehrt { get; set; } = true;
+
     public Training Training { get; set; } = null!;
 
     public Fahrer Fahrer { get; set; } = null!;

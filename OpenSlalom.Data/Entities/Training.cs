@@ -22,6 +22,14 @@ public sealed class Training : ISyncEntity
 
     public bool IstVeroeffentlicht { get; set; }
 
+    public int? AktiverFahrerZeitnahme1Id { get; set; }
+
+    public int? AktiverFahrerZeitnahme2Id { get; set; }
+
+    public int? NaechsterFahrerZeitnahme1Id { get; set; }
+
+    public int? NaechsterFahrerZeitnahme2Id { get; set; }
+
     public Verein Verein { get; set; } = null!;
 
     public Disziplin Disziplin { get; set; } = null!;

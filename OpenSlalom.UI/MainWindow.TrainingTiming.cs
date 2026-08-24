@@ -165,6 +165,11 @@ public partial class MainWindow
             TrainingLapTimeItems.Add(lap);
         }
 
+        if (state.ActiveLap is not null)
+        {
+            TrainingLapTimeItems.Add(state.ActiveLap);
+        }
+
         UpdateTrainingLapSummaryDisplay();
     }
 
@@ -205,6 +210,7 @@ public partial class MainWindow
         {
             currentState.Stopwatch.Reset();
             currentState.LapRecords.Clear();
+            currentState.ActiveLap = null;
             currentState.LastLapCheckpoint = TimeSpan.Zero;
             currentState.IsFinished = false;
         }
@@ -266,9 +272,11 @@ public partial class MainWindow
         {
             state.Stopwatch.Stop();
             state.IsFinished = true;
+            state.ActiveLap = null;
             StopTrainingStopwatchTimerIfIdle();
 
             UpdateTrainingStopwatchDisplay();
+            RefreshTrainingLapTimesTable();
             UpdateTrainingStopwatchButtonsState();
             UpdateTrainingDriverButtonsState();
             return;
@@ -280,6 +288,8 @@ public partial class MainWindow
         }
 
         state.Stopwatch.Start();
+        state.ActiveLap ??= CreateActiveLap(state);
+        RefreshTrainingLapTimesTable();
         if (!_trainingStopwatchTimer.IsEnabled)
         {
             _trainingStopwatchTimer.Start();
@@ -311,17 +321,11 @@ public partial class MainWindow
             return;
         }
 
-        state.LapRecords.Add(new TrainingLapTimeListItem
-        {
-            Nummer = state.LapRecords.Count + 1,
-            Rundenzeit = lapTime,
-            RundenzeitText = FormatTrainingTime(lapTime),
-            ZeitstrafeSekunden = 0d,
-            Pylonen = 0,
-            Tore = 0,
-            Ungueltig = false
-        });
-        var lastLap = state.LapRecords[^1];
+        var lastLap = state.ActiveLap ?? CreateActiveLap(state);
+        lastLap.Rundenzeit = lapTime;
+        lastLap.RundenzeitText = FormatTrainingTime(lapTime);
+        state.LapRecords.Add(lastLap);
+        state.ActiveLap = null;
         lastLap.ZeitstrafeSekunden = CalculateLapPenaltySeconds(lastLap);
         state.LastLapCheckpoint = elapsed;
 
@@ -335,6 +339,10 @@ public partial class MainWindow
             state.Stopwatch.Stop();
             state.IsFinished = true;
             StopTrainingStopwatchTimerIfIdle();
+        }
+        else
+        {
+            state.ActiveLap = CreateActiveLap(state);
         }
 
         RefreshTrainingLapTimesTable();
@@ -355,6 +363,7 @@ public partial class MainWindow
         {
             state.Stopwatch.Reset();
             state.LapRecords.Clear();
+            state.ActiveLap = null;
             state.LastLapCheckpoint = TimeSpan.Zero;
             state.IsFinished = false;
         }
@@ -384,6 +393,11 @@ public partial class MainWindow
         }
 
         TrainingsViewControl.TrainingStopwatchTextBlock.Text = FormatTrainingTime(currentLapElapsed);
+        if (state.ActiveLap is not null && state.Stopwatch.IsRunning)
+        {
+            state.ActiveLap.Rundenzeit = currentLapElapsed;
+            state.ActiveLap.RundenzeitText = FormatTrainingTime(currentLapElapsed);
+        }
         UpdateTrainingLapProgressDisplay();
     }
 
@@ -508,6 +522,20 @@ public partial class MainWindow
                 UpdateTrainingLapSummaryDisplay();
                 break;
         }
+    }
+
+    private static TrainingLapTimeListItem CreateActiveLap(TrainingStintState state)
+    {
+        return new TrainingLapTimeListItem
+        {
+            Nummer = state.LapRecords.Count + 1,
+            Rundenzeit = TimeSpan.Zero,
+            RundenzeitText = "läuft ...",
+            ZeitstrafeSekunden = 0d,
+            Pylonen = 0,
+            Tore = 0,
+            Ungueltig = false
+        };
     }
 
     internal void LapInvalidCheckBox_OnClick(object sender, RoutedEventArgs e)

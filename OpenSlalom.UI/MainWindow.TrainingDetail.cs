@@ -35,8 +35,9 @@ public partial class MainWindow
             return "-";
         }
 
-        var age = trainingDate.Value.Year - geburtsdatum.Value.Year;
-        if (trainingDate.Value < geburtsdatum.Value.AddYears(age))
+        var ageReferenceDate = new DateOnly(trainingDate.Value.Year - 1, 12, 31);
+        var age = ageReferenceDate.Year - geburtsdatum.Value.Year;
+        if (ageReferenceDate < geburtsdatum.Value.AddYears(age))
         {
             age--;
         }
@@ -200,8 +201,9 @@ public partial class MainWindow
                 .ThenBy(x => x.Fahrer.Nachname)
                 .Select(x => new
                 {
-                    FahrerId = x.FahrerId,
-                    Reihenfolge = x.Reihenfolge,
+                     FahrerId = x.FahrerId,
+                     Reihenfolge = x.Reihenfolge,
+                     FahrerFaehrt = x.FahrerFaehrt,
                     Vorname = x.Fahrer.Vorname,
                     Nachname = x.Fahrer.Nachname ?? string.Empty,
                     VereinName = x.Fahrer.Verein.Vereinsname,
@@ -216,8 +218,9 @@ public partial class MainWindow
                     Reihenfolge = x.Reihenfolge,
                     Vorname = x.Vorname,
                     Nachname = x.Nachname,
-                    VereinName = x.VereinName,
-                    Altersklasse = ResolveAltersklasse(x.Geburtsdatum, trainingDate, altersklassen)
+                     VereinName = x.VereinName,
+                     FahrerFaehrt = x.FahrerFaehrt,
+                     Altersklasse = ResolveAltersklasse(x.Geburtsdatum, trainingDate, altersklassen)
                 })
                 .ToList();
 
@@ -289,6 +292,7 @@ public partial class MainWindow
                 TrainingStarterListItems.Add(item);
             }
 
+            UpdateNextTrainingDriverIndicators();
             UpdateTrainingDriverButtonsState();
         }
         catch (Exception ex)
@@ -631,7 +635,11 @@ public partial class MainWindow
             }
 
             await dbContext.SaveChangesAsync();
-            await RefreshSyncStatusAsync();
+            QueueAutomaticTrainingSync(trainingId);
+            if (!IsAutomaticRemoteSyncEnabled(trainingId))
+            {
+                _ = RefreshSyncStatusAsync();
+            }
         }
         catch (Exception ex)
         {
@@ -976,6 +984,7 @@ public partial class MainWindow
             }
 
             TrainingsViewControl.TrainingStarterDataGrid.Items.Refresh();
+            UpdateNextTrainingDriverIndicators();
         }
         catch (Exception ex)
         {
@@ -1083,13 +1092,25 @@ public partial class MainWindow
         }
 
         await dbContext.SaveChangesAsync();
-        await LoadTrainingFastestLapsAsync(trainingId);
-        await LoadTrainingStoredStintDriversAsync(trainingId);
-        await RefreshSyncStatusAsync();
+        _ = RefreshTrainingAfterStintSaveAsync(trainingId);
+    }
 
-        if (IsAutomaticRemoteSyncEnabled(trainingId))
+    private async Task RefreshTrainingAfterStintSaveAsync(int trainingId)
+    {
+        try
         {
-            await SynchronizeAsync(reloadData: false);
+            await LoadTrainingFastestLapsAsync(trainingId);
+            await LoadTrainingStoredStintDriversAsync(trainingId);
+            await RefreshSyncStatusAsync();
+
+            if (IsAutomaticRemoteSyncEnabled(trainingId))
+            {
+                await SynchronizeAsync(reloadData: false);
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.Error(ex, "Trainingsdaten konnten nach dem Speichern des Stints nicht aktualisiert werden.");
         }
     }
 
@@ -1112,6 +1133,7 @@ public partial class MainWindow
 
         selected.FahrerFaehrt = willDrive;
         _trainingDriverEnabledByDriver[(_selectedTrainingDetailId.Value, selected.FahrerId)] = selected.FahrerFaehrt;
+        _ = SaveTrainingDriverEnabledAsync(_selectedTrainingDetailId.Value, selected.FahrerId, willDrive);
         if (!selected.FahrerFaehrt && selected.IsAktivZweiteZeitnahme)
         {
             _trainingSecondActiveDriverByTrainingId.Remove(_selectedTrainingDetailId.Value);
@@ -1180,6 +1202,7 @@ public partial class MainWindow
 
     private void UpdateTrainingDriverButtonsState()
     {
+        UpdateNextTrainingDriverIndicators();
         var hasStarter = TrainingStarterListItems.Count > 0;
         var hasEnabled = TrainingStarterListItems.Any(x => x.FahrerFaehrt);
         var stopwatchRunning = IsCurrentTrainingStopwatchRunning();
@@ -1211,6 +1234,116 @@ public partial class MainWindow
 
         UpdateActiveDriverDisplay();
         UpdateSecondTrainingStopwatchContextWithActiveDriver();
+    }
+
+    private void UpdateNextTrainingDriverIndicators()
+    {
+        if (_selectedTrainingDetailId is null || TrainingStarterListItems.Count == 0)
+        {
+            return;
+        }
+
+        var firstNextDriverId = FindNextTrainingDriverId(1);
+        var excludedForSecond = firstNextDriverId.HasValue
+            ? new HashSet<int> { firstNextDriverId.Value }
+            : [];
+        var secondNextDriverId = IsSecondTrainingTimingEnabled(_selectedTrainingDetailId.Value)
+            ? FindNextTrainingDriverId(2, excludedForSecond)
+            : null;
+        var changed = false;
+
+        foreach (var item in TrainingStarterListItems)
+        {
+            var nextFirst = item.FahrerId == firstNextDriverId && !item.IsAktiv && !item.IsAktivZweiteZeitnahme;
+            var nextSecond = item.FahrerId == secondNextDriverId && !item.IsAktiv && !item.IsAktivZweiteZeitnahme;
+            if (item.IsNaechsterFahrerErsteZeitnahme != nextFirst || item.IsNaechsterFahrerZweiteZeitnahme != nextSecond)
+            {
+                changed = true;
+                item.IsNaechsterFahrerErsteZeitnahme = nextFirst;
+                item.IsNaechsterFahrerZweiteZeitnahme = nextSecond;
+            }
+        }
+
+        if (changed)
+        {
+            TrainingsViewControl.TrainingStarterDataGrid.Items.Refresh();
+            QueueTrainingTimingStateSave();
+        }
+    }
+
+    private void QueueTrainingTimingStateSave()
+    {
+        if (_selectedTrainingDetailId is null)
+        {
+            return;
+        }
+
+        _ = SaveTrainingTimingStateAsync(_selectedTrainingDetailId.Value);
+    }
+
+    private async Task SaveTrainingTimingStateAsync(int trainingId)
+    {
+        await _trainingTimingStateSaveSemaphore.WaitAsync();
+        try
+        {
+            var activeFirst = _trainingActiveDriverByTrainingId.TryGetValue(trainingId, out var activeFirstId) ? activeFirstId : (int?)null;
+            var activeSecond = _trainingSecondActiveDriverByTrainingId.TryGetValue(trainingId, out var activeSecondId) ? activeSecondId : (int?)null;
+            var nextFirst = TrainingStarterListItems.FirstOrDefault(x => x.IsNaechsterFahrerErsteZeitnahme)?.FahrerId;
+            var nextSecond = TrainingStarterListItems.FirstOrDefault(x => x.IsNaechsterFahrerZweiteZeitnahme)?.FahrerId;
+
+            await using var dbContext = await _localDbContextFactory.CreateDbContextAsync();
+            var training = await dbContext.Trainings.FirstOrDefaultAsync(x => x.Id == trainingId);
+            if (training is null)
+            {
+                return;
+            }
+
+            training.AktiverFahrerZeitnahme1Id = activeFirst;
+            training.AktiverFahrerZeitnahme2Id = activeSecond;
+            training.NaechsterFahrerZeitnahme1Id = nextFirst;
+            training.NaechsterFahrerZeitnahme2Id = nextSecond;
+            await dbContext.SaveChangesAsync();
+            QueueAutomaticTrainingSync(trainingId);
+        }
+        catch (Exception ex)
+        {
+            Logger.Error(ex, "Aktueller Zeitnahmezustand konnte nicht gespeichert werden.");
+        }
+        finally
+        {
+            _trainingTimingStateSaveSemaphore.Release();
+        }
+    }
+
+    private int? FindNextTrainingDriverId(int station, IReadOnlySet<int>? excludedDriverIds = null)
+    {
+        var ordered = TrainingStarterListItems
+            .Where(x => x.FahrerFaehrt)
+            .OrderBy(x => x.Reihenfolge)
+            .ThenBy(x => x.FahrerId)
+            .ToList();
+        if (ordered.Count == 0)
+        {
+            return null;
+        }
+
+        var referenceDriverId = GetTimingStationReferenceDriver(station)?.FahrerId;
+        var referenceIndex = referenceDriverId.HasValue
+            ? ordered.FindIndex(x => x.FahrerId == referenceDriverId.Value)
+            : -1;
+
+        for (var offset = 1; offset <= ordered.Count; offset++)
+        {
+            var candidate = ordered[(referenceIndex + offset) % ordered.Count];
+            if (candidate.IsAktiv || candidate.IsAktivZweiteZeitnahme || candidate.FahrerId == referenceDriverId || excludedDriverIds?.Contains(candidate.FahrerId) == true)
+            {
+                continue;
+            }
+
+            return candidate.FahrerId;
+        }
+
+        return null;
     }
 
     private bool IsCurrentTrainingStopwatchRunning()
@@ -1260,6 +1393,12 @@ public partial class MainWindow
                 .ToListAsync();
 
             var assignedOrderMap = assignedDrivers.ToDictionary(x => x.FahrerId, x => x.Reihenfolge);
+            var recentParticipantIds = await dbContext.Tstints
+                .AsNoTracking()
+                .Where(x => x.Datum >= DateTime.Now.AddDays(-42))
+                .Select(x => x.FahrerId)
+                .Distinct()
+                .ToListAsync();
 
             var availableDrivers = await dbContext.Fahrer
                 .AsNoTracking()
@@ -1283,16 +1422,19 @@ public partial class MainWindow
                     FahrerId = driver.Id,
                     DisplayName = driver.DisplayName,
                     IsSelected = assignedOrderMap.ContainsKey(driver.Id),
+                    IsRecentTrainingParticipant = recentParticipantIds.Contains(driver.Id),
                     SelectionOrder = assignedOrderMap.TryGetValue(driver.Id, out var reihenfolge) ? reihenfolge : 0
                 });
             }
 
             _trainingDriverSearchTerm = string.Empty;
+            _showAllTrainingDrivers = false;
             _trainingDriverSelectionOrderCounter = TrainingDriverSelectionItems
                 .Select(x => x.SelectionOrder)
                 .DefaultIfEmpty(0)
                 .Max();
             TrainingsViewControl.TrainingFahrerSearchTextBox.Text = string.Empty;
+            TrainingsViewControl.TrainingShowAllDriversCheckBox.IsChecked = false;
             ApplyTrainingDriverSelectionFilter();
             TrainingsViewControl.TrainingFahrerDialogOverlay.Visibility = Visibility.Visible;
         }
@@ -1338,7 +1480,8 @@ public partial class MainWindow
                     {
                         TrainingId = _selectedTrainingDetailId.Value,
                         FahrerId = selected.FahrerId,
-                        Reihenfolge = reihenfolge
+                        Reihenfolge = reihenfolge,
+                        FahrerFaehrt = true
                     });
                     reihenfolge++;
                     continue;
@@ -1371,12 +1514,46 @@ public partial class MainWindow
 
             CloseTrainingDriverSelectionDialog();
             await LoadTrainingStarterListAsync(_selectedTrainingDetailId.Value);
-            await RefreshSyncStatusAsync();
+            QueueAutomaticTrainingSync(_selectedTrainingDetailId.Value);
+            if (!IsAutomaticRemoteSyncEnabled(_selectedTrainingDetailId.Value))
+            {
+                _ = RefreshSyncStatusAsync();
+            }
         }
         catch (Exception ex)
         {
             Logger.Error(ex, "Fehler beim Hinzufuegen von Fahrern zum Training.");
             MessageBox.Show("Fahrer konnten nicht zum Training hinzugefuegt werden. Details stehen im Log.", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
+    private async Task SaveTrainingDriverEnabledAsync(int trainingId, int fahrerId, bool fahrerFaehrt)
+    {
+        await _trainingTimingStateSaveSemaphore.WaitAsync();
+        try
+        {
+            await using var dbContext = await _localDbContextFactory.CreateDbContextAsync();
+            var assignment = await dbContext.FahrerImTrainings.FirstOrDefaultAsync(x => x.TrainingId == trainingId && x.FahrerId == fahrerId);
+            if (assignment is null)
+            {
+                return;
+            }
+
+            assignment.FahrerFaehrt = fahrerFaehrt;
+            await dbContext.SaveChangesAsync();
+            QueueAutomaticTrainingSync(trainingId);
+            if (!IsAutomaticRemoteSyncEnabled(trainingId))
+            {
+                _ = RefreshSyncStatusAsync();
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.Error(ex, "Fahrerstatus im Training konnte nicht gespeichert werden.");
+        }
+        finally
+        {
+            _trainingTimingStateSaveSemaphore.Release();
         }
     }
 
@@ -1389,6 +1566,15 @@ public partial class MainWindow
     {
         _trainingDriverSearchTerm = TrainingsViewControl.TrainingFahrerSearchTextBox.Text.Trim();
         ApplyTrainingDriverSelectionFilter();
+    }
+
+    internal void TrainingShowAllDriversCheckBox_OnClick(object sender, RoutedEventArgs e)
+    {
+        if (sender is CheckBox checkBox)
+        {
+            _showAllTrainingDrivers = checkBox.IsChecked == true;
+            ApplyTrainingDriverSelectionFilter();
+        }
     }
 
     internal void TrainingDriverSelectionCheckBox_OnClick(object sender, RoutedEventArgs e)
@@ -1423,13 +1609,6 @@ public partial class MainWindow
             return;
         }
 
-        if (string.IsNullOrWhiteSpace(_trainingDriverSearchTerm))
-        {
-            view.Filter = null;
-            view.Refresh();
-            return;
-        }
-
         var term = _trainingDriverSearchTerm;
         view.Filter = item =>
         {
@@ -1438,7 +1617,12 @@ public partial class MainWindow
                 return false;
             }
 
-            return driver.DisplayName.Contains(term, StringComparison.OrdinalIgnoreCase);
+            if (!_showAllTrainingDrivers && !driver.IsRecentTrainingParticipant && !driver.IsSelected)
+            {
+                return false;
+            }
+
+            return string.IsNullOrWhiteSpace(term) || driver.DisplayName.Contains(term, StringComparison.OrdinalIgnoreCase);
         };
         view.Refresh();
     }
@@ -1446,6 +1630,7 @@ public partial class MainWindow
     private void CloseTrainingDriverSelectionDialog()
     {
         _trainingDriverSearchTerm = string.Empty;
+        _showAllTrainingDrivers = false;
         _trainingDriverSelectionOrderCounter = 0;
         if (TrainingsViewControl.TrainingFahrerSearchTextBox is not null)
         {

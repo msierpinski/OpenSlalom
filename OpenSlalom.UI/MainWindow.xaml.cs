@@ -69,6 +69,7 @@ public partial class MainWindow : Window
     private int? _deleteTrainingId;
     private int? _selectedTrainingDetailId;
     private string _trainingDriverSearchTerm = string.Empty;
+    private bool _showAllTrainingDrivers;
     private int _trainingDriverSelectionOrderCounter;
     private readonly List<Button> _dynamicTrainingMenuButtons = [];
     private readonly Dictionary<int, int> _trainingActiveDriverByTrainingId = new();
@@ -79,6 +80,8 @@ public partial class MainWindow : Window
     private readonly DispatcherTimer _trainingStopwatchTimer = new() { Interval = TimeSpan.FromMilliseconds(100) };
     private readonly DispatcherTimer _trainingSettingsSaveTimer = new() { Interval = TimeSpan.FromMilliseconds(500) };
     private readonly SemaphoreSlim _syncSemaphore = new(1, 1);
+    private readonly SemaphoreSlim _trainingTimingStateSaveSemaphore = new(1, 1);
+    private CancellationTokenSource? _trainingAutoSyncDebounceCts;
     private readonly Dictionary<(int TrainingId, int FahrerId), TrainingStintState> _trainingStintsByDriver = new();
     private (int TrainingId, int FahrerId)? _trainingStopwatchContext;
     private (int TrainingId, int FahrerId)? _trainingSecondStopwatchContext;

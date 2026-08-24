@@ -258,6 +258,11 @@ public class OpenSlalomDbContext : DbContext
                 .HasDefaultValue(0)
                 .IsRequired();
 
+            entity.Property(x => x.FahrerFaehrt)
+                .HasColumnName("fahrer_faehrt")
+                .HasDefaultValue(true)
+                .IsRequired();
+
             entity.HasOne(x => x.Training)
                 .WithMany(x => x.FahrerImTrainings)
                 .HasForeignKey(x => x.TrainingId)
@@ -369,6 +374,18 @@ public class OpenSlalomDbContext : DbContext
                 .HasColumnName("ist_veroeffentlicht")
                 .HasDefaultValue(false)
                 .IsRequired();
+
+            entity.Property(x => x.AktiverFahrerZeitnahme1Id)
+                .HasColumnName("aktiver_fahrer_zeitnahme_1_id");
+
+            entity.Property(x => x.AktiverFahrerZeitnahme2Id)
+                .HasColumnName("aktiver_fahrer_zeitnahme_2_id");
+
+            entity.Property(x => x.NaechsterFahrerZeitnahme1Id)
+                .HasColumnName("naechster_fahrer_zeitnahme_1_id");
+
+            entity.Property(x => x.NaechsterFahrerZeitnahme2Id)
+                .HasColumnName("naechster_fahrer_zeitnahme_2_id");
 
             ConfigureSyncEntity(entity);
 
@@ -739,6 +756,8 @@ public class OpenSlalomDbContext : DbContext
             .HasColumnType("datetime")
             .HasDefaultValueSql("CURRENT_TIMESTAMP")
             .IsRequired();
+
+        entity.HasIndex(x => x.UpdatedAtUtc);
 
         entity.Property(x => x.IsDeleted)
             .HasColumnName("is_deleted")

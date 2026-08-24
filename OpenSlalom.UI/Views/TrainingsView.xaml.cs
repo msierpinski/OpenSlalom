@@ -54,6 +54,7 @@ public partial class TrainingsView : UserControl
     private void LapInvalidCheckBox_OnClick(object sender, RoutedEventArgs e) => Host?.LapInvalidCheckBox_OnClick(sender, e);
     private void TrainingDriverSelectionCheckBox_OnClick(object sender, RoutedEventArgs e) => Host?.TrainingDriverSelectionCheckBox_OnClick(sender, e);
     private void TrainingFahrerSearchTextBox_OnTextChanged(object sender, TextChangedEventArgs e) => Host?.TrainingFahrerSearchTextBox_OnTextChanged(sender, e);
+    private void TrainingShowAllDriversCheckBox_OnClick(object sender, RoutedEventArgs e) => Host?.TrainingShowAllDriversCheckBox_OnClick(sender, e);
     private void CancelAddTrainingFahrerDialog_OnClick(object sender, RoutedEventArgs e) => Host?.CancelAddTrainingFahrerDialog_OnClick(sender, e);
     private void SaveAddTrainingFahrerDialog_OnClick(object sender, RoutedEventArgs e) => Host?.SaveAddTrainingFahrerDialog_OnClick(sender, e);
 }

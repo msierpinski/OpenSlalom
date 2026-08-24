@@ -83,11 +83,15 @@ public partial class MainWindow
         {
             state.Stopwatch.Stop();
             state.IsFinished = true;
+            state.ActiveLap = null;
             StopTrainingStopwatchTimerIfIdle();
+            RefreshSecondTrainingLapTimesTable();
         }
         else if (!state.IsFinished)
         {
             state.Stopwatch.Start();
+            state.ActiveLap ??= CreateActiveLap(state);
+            RefreshSecondTrainingLapTimesTable();
             if (!_trainingStopwatchTimer.IsEnabled) _trainingStopwatchTimer.Start();
         }
         UpdateSecondTrainingStopwatchDisplay();
@@ -104,18 +108,12 @@ public partial class MainWindow
         var elapsed = state.Stopwatch.Elapsed;
         var lapTime = elapsed - state.LastLapCheckpoint;
         if (lapTime <= TimeSpan.Zero) return;
-        var lap = new TrainingLapTimeListItem
-        {
-            Nummer = state.LapRecords.Count + 1,
-            Rundenzeit = lapTime,
-            RundenzeitText = FormatTrainingTime(lapTime),
-            ZeitstrafeSekunden = 0d,
-            Pylonen = 0,
-            Tore = 0,
-            Ungueltig = false
-        };
+        var lap = state.ActiveLap ?? CreateActiveLap(state);
+        lap.Rundenzeit = lapTime;
+        lap.RundenzeitText = FormatTrainingTime(lapTime);
         lap.ZeitstrafeSekunden = CalculateLapPenaltySeconds(lap);
         state.LapRecords.Add(lap);
+        state.ActiveLap = null;
         state.LastLapCheckpoint = elapsed;
         var trainingId = _trainingSecondStopwatchContext.Value.TrainingId;
         var target = GetRoundsTargetForTraining(trainingId);
@@ -124,6 +122,10 @@ public partial class MainWindow
             state.Stopwatch.Stop();
             state.IsFinished = true;
             StopTrainingStopwatchTimerIfIdle();
+        }
+        else
+        {
+            state.ActiveLap = CreateActiveLap(state);
         }
         RefreshSecondTrainingLapTimesTable();
         UpdateSecondTrainingStopwatchDisplay();
@@ -138,6 +140,7 @@ public partial class MainWindow
         var state = GetOrCreateTrainingStintState(_trainingSecondStopwatchContext.Value);
         state.Stopwatch.Reset();
         state.LapRecords.Clear();
+        state.ActiveLap = null;
         state.LastLapCheckpoint = TimeSpan.Zero;
         state.IsFinished = false;
         StopTrainingStopwatchTimerIfIdle();
@@ -151,7 +154,10 @@ public partial class MainWindow
     {
         TrainingSecondLapTimeItems.Clear();
         if (_trainingSecondStopwatchContext is not null && _trainingStintsByDriver.TryGetValue(_trainingSecondStopwatchContext.Value, out var state))
+        {
             foreach (var lap in state.LapRecords) TrainingSecondLapTimeItems.Add(lap);
+            if (state.ActiveLap is not null) TrainingSecondLapTimeItems.Add(state.ActiveLap);
+        }
         UpdateSecondTrainingLapSummaryDisplay();
     }
 
@@ -198,6 +204,12 @@ public partial class MainWindow
         var state = GetOrCreateTrainingStintState(_trainingSecondStopwatchContext.Value);
         var elapsed = state.Stopwatch.Elapsed - state.LastLapCheckpoint;
         TrainingsViewControl.TrainingSecondStopwatchTextBlock.Text = FormatTrainingTime(elapsed < TimeSpan.Zero ? TimeSpan.Zero : elapsed);
+        if (state.ActiveLap is not null && state.Stopwatch.IsRunning)
+        {
+            var currentLapElapsed = elapsed < TimeSpan.Zero ? TimeSpan.Zero : elapsed;
+            state.ActiveLap.Rundenzeit = currentLapElapsed;
+            state.ActiveLap.RundenzeitText = FormatTrainingTime(currentLapElapsed);
+        }
         UpdateSecondTrainingLapProgressDisplay();
     }
 

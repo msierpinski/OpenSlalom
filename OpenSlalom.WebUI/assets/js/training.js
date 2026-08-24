@@ -24,7 +24,7 @@
         tab.addEventListener('click', () => selectTab(tab.dataset.trainingTab));
     });
     if (tabs.length > 0) {
-        selectTab(window.sessionStorage.getItem(tabStorageKey) || 'results');
+        selectTab(window.sessionStorage.getItem(tabStorageKey) || tabs[0].dataset.trainingTab);
     }
 
     if (!root || !toggle) return;

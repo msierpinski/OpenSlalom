@@ -17,6 +17,9 @@ final class TrainingViewBuilder
         $kartStatistics = self::buildKartStatistics($stints);
         $timestamps = array_column($stints, 'datum');
         $statistics = self::buildStatistics($stints, $starters);
+        $status = $training['is_finished']
+            ? null
+            : self::buildStatus($starters, $stints, $data['training'], $penaltyTf, $penaltyPf);
 
         return [
             'training' => $training,
@@ -25,6 +28,7 @@ final class TrainingViewBuilder
             'drivers' => $drivers,
             'karts' => $kartStatistics,
             'statistics' => $statistics,
+            'status' => $status,
             'summary' => [
                 'registered' => count($starters),
                 'participants' => count(array_unique(array_map(
@@ -68,6 +72,7 @@ final class TrainingViewBuilder
                     'name' => self::displayDriverName((string) $starter['vorname'], (string) $starter['nachname'], $showFullNames),
                     'club' => (string) $starter['vereinsname'],
                     'class' => self::resolveClass($starter['geburtsdatum'], $trainingDate, $classes),
+                    'can_drive' => (bool) $starter['fahrer_faehrt'],
                 ];
             },
             $starters,
@@ -88,11 +93,12 @@ final class TrainingViewBuilder
             return '-';
         }
 
-        if ($date < $birth) {
+        $ageReferenceDate = new DateTimeImmutable(($date->format('Y') - 1) . '-12-31');
+        if ($ageReferenceDate < $birth) {
             return '-';
         }
 
-        $age = $birth->diff($date)->y;
+        $age = $birth->diff($ageReferenceDate)->y;
         foreach ($classes as $class) {
             $minimum = (int) $class['alter_von'];
             $maximum = $class['alter_bis'] === null ? null : (int) $class['alter_bis'];
@@ -287,10 +293,97 @@ final class TrainingViewBuilder
         ];
     }
 
+    private static function buildStatus(array $starters, array $stints, array $training, float $penaltyTf, float $penaltyPf): array
+    {
+        $driverById = [];
+        foreach ($starters as $starter) {
+            $driverById[$starter['id']] = $starter;
+        }
+
+        $stationOne = [
+            'current' => self::findStarter($driverById, $training['aktiver_fahrer_zeitnahme_1_id'] ?? null),
+            'next' => self::findStarter($driverById, $training['naechster_fahrer_zeitnahme_1_id'] ?? null),
+        ];
+        $stationTwo = [
+            'current' => self::findStarter($driverById, $training['aktiver_fahrer_zeitnahme_2_id'] ?? null),
+            'next' => self::findStarter($driverById, $training['naechster_fahrer_zeitnahme_2_id'] ?? null),
+        ];
+
+        $activeFirstId = $stationOne['current']['id'] ?? null;
+        $activeSecondId = $stationTwo['current']['id'] ?? null;
+        $nextFirstId = $stationOne['next']['id'] ?? null;
+        $nextSecondId = $stationTwo['next']['id'] ?? null;
+
+        foreach ($starters as &$starter) {
+            $starter['status'] = !$starter['can_drive'] ? 'inactive' : 'ready';
+            if ($starter['id'] === $activeFirstId) {
+                $starter['status'] = 'active-first';
+            } elseif ($starter['id'] === $activeSecondId) {
+                $starter['status'] = 'active-second';
+            } elseif ($starter['id'] === $nextFirstId) {
+                $starter['status'] = 'next-first';
+            } elseif ($starter['id'] === $nextSecondId) {
+                $starter['status'] = 'next-second';
+            }
+        }
+        unset($starter);
+
+        $calculatedStints = array_map(
+            static fn (array $stint): array => self::calculateStint($stint, $penaltyTf, $penaltyPf),
+            $stints
+        );
+        $bestLap = null;
+        $bestTotal = null;
+        foreach ($calculatedStints as $stint) {
+            if ($stint['best_lap'] !== null) {
+                $bestLap = $bestLap === null ? $stint['best_lap'] : min($bestLap, $stint['best_lap']);
+            }
+            if ($stint['total'] !== null) {
+                $bestTotal = $bestTotal === null ? $stint['total'] : min($bestTotal, $stint['total']);
+            }
+        }
+
+        usort($calculatedStints, static fn (array $a, array $b): int =>
+            strcmp($b['datum'], $a['datum']) ?: ($b['id'] <=> $a['id'])
+        );
+        $recentStints = array_slice($calculatedStints, 0, 10);
+        foreach ($recentStints as &$stint) {
+            $stint['best_lap_difference'] = $stint['best_lap'] === null || $bestLap === null
+                ? null
+                : $stint['best_lap'] - $bestLap;
+            $stint['total_difference'] = $stint['total'] === null || $bestTotal === null
+                ? null
+                : $stint['total'] - $bestTotal;
+        }
+        unset($stint);
+
+        return [
+            'stations' => [
+                array_merge(['name' => 'Zeitnahme 1'], $stationOne),
+                array_merge(['name' => 'Zeitnahme 2'], $stationTwo),
+            ],
+            'has_second_station' => $activeSecondId !== null || $nextSecondId !== null,
+            'drivers' => $starters,
+            'recent_stints' => $recentStints,
+        ];
+    }
+
+    private static function findStarter(array $driverById, mixed $driverId): ?array
+    {
+        if ($driverId === null || $driverId === '' || (int) $driverId <= 0) {
+            return null;
+        }
+
+        return $driverById[(int) $driverId] ?? null;
+    }
+
     private static function calculateStint(array $stint, float $penaltyTf, float $penaltyPf): array
     {
         $validTotal = 0.0;
         $validCount = 0;
+        $bestLap = null;
+        $totalPf = 0;
+        $totalTf = 0;
         foreach ($stint['laps'] as &$lap) {
             $lap['ranking_penalty'] = max(0.0, ($lap['tf'] * $penaltyTf) + ($lap['pf'] * $penaltyPf));
             $lap['penalty'] = round(
@@ -298,9 +391,13 @@ final class TrainingViewBuilder
                 3,
                 PHP_ROUND_HALF_UP
             );
+            $totalPf += max(0, $lap['pf']);
+            $totalTf += max(0, $lap['tf']);
             if (!$lap['invalid'] && $lap['time'] !== null && $lap['time'] > 0) {
-                $validTotal += $lap['time'] + $lap['penalty'];
+                $effectiveTime = $lap['time'] + $lap['penalty'];
+                $validTotal += $effectiveTime;
                 $validCount++;
+                $bestLap = $bestLap === null ? $effectiveTime : min($bestLap, $effectiveTime);
             }
         }
         unset($lap);
@@ -308,6 +405,9 @@ final class TrainingViewBuilder
         $stint['total'] = $validCount > 0 ? $validTotal : null;
         $stint['average'] = $validCount > 0 ? $validTotal / $validCount : null;
         $stint['valid_laps'] = $validCount;
+        $stint['best_lap'] = $bestLap;
+        $stint['pf'] = $totalPf;
+        $stint['tf'] = $totalTf;
 
         return $stint;
     }

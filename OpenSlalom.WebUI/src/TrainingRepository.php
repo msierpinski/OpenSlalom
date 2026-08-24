@@ -20,6 +20,10 @@ final class TrainingRepository
                 t.beschreibung,
                 t.zeitpunkt,
                 t.training_abgeschlossen,
+                t.aktiver_fahrer_zeitnahme_1_id,
+                t.aktiver_fahrer_zeitnahme_2_id,
+                t.naechster_fahrer_zeitnahme_1_id,
+                t.naechster_fahrer_zeitnahme_2_id,
                 t.fk_id_disziplin AS disziplin_id,
                 v.vereinsname,
                 d.disziplin,
@@ -50,6 +54,7 @@ final class TrainingRepository
                 SELECT
                     fit.fk_id_fahrer AS fahrer_id,
                     fit.reihenfolge,
+                    fit.fahrer_faehrt,
                     f.vorname,
                     COALESCE(f.nachname, '') AS nachname,
                     f.geburtsdatum,

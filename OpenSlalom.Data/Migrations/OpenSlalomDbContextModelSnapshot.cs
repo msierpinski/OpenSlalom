@@ -67,6 +67,8 @@ namespace OpenSlalom.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("UpdatedAtUtc");
+
                     b.ToTable("disziplin", (string)null);
                 });
 
@@ -116,6 +118,8 @@ namespace OpenSlalom.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("DisziplinId");
+
+                    b.HasIndex("UpdatedAtUtc");
 
                     b.ToTable("disziplin_altersklassen", (string)null);
                 });
@@ -182,6 +186,8 @@ namespace OpenSlalom.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("UpdatedAtUtc");
+
                     b.HasIndex("VereinId");
 
                     b.ToTable("fahrer", (string)null);
@@ -200,6 +206,12 @@ namespace OpenSlalom.Data.Migrations
                     b.Property<DateTime?>("DeletedAtUtc")
                         .HasColumnType("datetime")
                         .HasColumnName("deleted_at_utc");
+
+                    b.Property<bool>("FahrerFaehrt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(true)
+                        .HasColumnName("fahrer_faehrt");
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
@@ -222,6 +234,8 @@ namespace OpenSlalom.Data.Migrations
                     b.HasKey("TrainingId", "FahrerId");
 
                     b.HasIndex("FahrerId");
+
+                    b.HasIndex("UpdatedAtUtc");
 
                     b.ToTable("fahrer_im_training", (string)null);
                 });
@@ -261,6 +275,8 @@ namespace OpenSlalom.Data.Migrations
                     b.HasKey("MeisterschaftId", "FahrerId");
 
                     b.HasIndex("FahrerId");
+
+                    b.HasIndex("UpdatedAtUtc");
 
                     b.ToTable("fahrer_inder_meisterschaft", (string)null);
                 });
@@ -316,6 +332,8 @@ namespace OpenSlalom.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("DisziplinId");
+
+                    b.HasIndex("UpdatedAtUtc");
 
                     b.HasIndex("VereinId");
 
@@ -397,6 +415,8 @@ namespace OpenSlalom.Data.Migrations
 
                     b.HasIndex("GastgeberId");
 
+                    b.HasIndex("UpdatedAtUtc");
+
                     b.HasIndex("Uuid")
                         .IsUnique();
 
@@ -460,6 +480,8 @@ namespace OpenSlalom.Data.Migrations
 
                     b.HasIndex("MstintId");
 
+                    b.HasIndex("UpdatedAtUtc");
+
                     b.ToTable("mrunden", (string)null);
                 });
 
@@ -520,6 +542,8 @@ namespace OpenSlalom.Data.Migrations
 
                     b.HasIndex("MeisterschaftId");
 
+                    b.HasIndex("UpdatedAtUtc");
+
                     b.ToTable("mstints", (string)null);
                 });
 
@@ -548,6 +572,14 @@ namespace OpenSlalom.Data.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("AktiverFahrerZeitnahme1Id")
+                        .HasColumnType("int")
+                        .HasColumnName("aktiver_fahrer_zeitnahme_1_id");
+
+                    b.Property<int?>("AktiverFahrerZeitnahme2Id")
+                        .HasColumnType("int")
+                        .HasColumnName("aktiver_fahrer_zeitnahme_2_id");
+
                     b.Property<string>("Beschreibung")
                         .IsRequired()
                         .HasMaxLength(250)
@@ -573,6 +605,14 @@ namespace OpenSlalom.Data.Migrations
                         .HasColumnType("tinyint(1)")
                         .HasDefaultValue(false)
                         .HasColumnName("ist_veroeffentlicht");
+
+                    b.Property<int?>("NaechsterFahrerZeitnahme1Id")
+                        .HasColumnType("int")
+                        .HasColumnName("naechster_fahrer_zeitnahme_1_id");
+
+                    b.Property<int?>("NaechsterFahrerZeitnahme2Id")
+                        .HasColumnType("int")
+                        .HasColumnName("naechster_fahrer_zeitnahme_2_id");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -611,6 +651,8 @@ namespace OpenSlalom.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("DisziplinId");
+
+                    b.HasIndex("UpdatedAtUtc");
 
                     b.HasIndex("Uuid")
                         .IsUnique();
@@ -677,6 +719,8 @@ namespace OpenSlalom.Data.Migrations
 
                     b.HasIndex("TstintId");
 
+                    b.HasIndex("UpdatedAtUtc");
+
                     b.ToTable("trunden", (string)null);
                 });
 
@@ -736,6 +780,8 @@ namespace OpenSlalom.Data.Migrations
                     b.HasIndex("KartId");
 
                     b.HasIndex("TrainingId");
+
+                    b.HasIndex("UpdatedAtUtc");
 
                     b.ToTable("tstints", (string)null);
                 });
@@ -811,6 +857,8 @@ namespace OpenSlalom.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("UpdatedAtUtc");
+
                     b.ToTable("vereine", (string)null);
                 });
 
@@ -846,6 +894,8 @@ namespace OpenSlalom.Data.Migrations
                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UpdatedAtUtc");
 
                     b.ToTable("wetter", (string)null);
                 });

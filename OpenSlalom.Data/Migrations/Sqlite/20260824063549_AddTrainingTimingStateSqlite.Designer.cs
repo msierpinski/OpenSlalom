@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OpenSlalom.Data;
 
@@ -10,9 +11,11 @@ using OpenSlalom.Data;
 namespace OpenSlalom.Data.Migrations.Sqlite
 {
     [DbContext(typeof(LocalOpenSlalomDbContext))]
-    partial class LocalOpenSlalomDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260824063549_AddTrainingTimingStateSqlite")]
+    partial class AddTrainingTimingStateSqlite
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.2");
@@ -195,12 +198,6 @@ namespace OpenSlalom.Data.Migrations.Sqlite
                     b.Property<DateTime?>("DeletedAtUtc")
                         .HasColumnType("datetime")
                         .HasColumnName("deleted_at_utc");
-
-                    b.Property<bool>("FahrerFaehrt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER")
-                        .HasDefaultValue(true)
-                        .HasColumnName("fahrer_faehrt");
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()

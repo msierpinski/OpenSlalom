@@ -30,6 +30,7 @@ return [
     ],
     'site' => [
         'name' => 'openSlalom',
+        'version' => '0.8.9-Beta',
         'auto_refresh_seconds' => 15,
     ],
     'mail' => [

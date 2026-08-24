@@ -10,10 +10,34 @@ die Versionsnummern folgen der [semantischen Versionierung](https://semver.org/l
 
 ### Geändert
 
+### Behoben
+
+## [0.8.9-Beta] - 2026-08-24
+
+### Hinzugefügt
+
+- Die PHP-WebUI enthält eine globale Statistikseite mit standardmäßiger Auswertung des laufenden Jahres und frei wählbarem Datumszeitraum.
+- Die globale Statistik zeigt zusätzlich eine Kart-Auswertung mit Fahrzeit, Runden, Stints, Fahrern sowie PF- und TF-Werten.
+- Die Kart-Auswertung kann pro Kart um eine direkt eingerückte Fahrerunterauswertung erweitert werden.
+- Auch die Statistik eines einzelnen Trainings enthält eine Kart-Auswertung mit fahrerbezogenen Detailwerten.
+
+### Geändert
+
 - Darstellung der Trainingsansicht und DataGrids für kleinere Geräte verbessert.
 - Lange Texte in DataGrids werden gekürzt und können per Tooltip vollständig angezeigt werden.
 - Zeitabstände werden einheitlich und mit passender Genauigkeit dargestellt.
 - Bei der Zuordnung von Karts zu Fahrern werden nur noch Karts angezeigt, die zum jeweiligen Trainingstyp passen (z. B. Bambini-Karts bei JKS-Trainings).
+- Der Synchronisierungsablauf führt Migrationen nur noch beim Programmstart oder beim manuellen Neuaufbau der Remote-Verbindung aus.
+- Der normale Sync verarbeitet bei unverändertem Schlüsselbestand nur seit dem letzten Sync geänderte Datensätze.
+- Synchronisationszeitstempel werden über Datenbankindizes schneller ausgewertet.
+- Der Fahrerwechsel wartet nach einem abgeschlossenen Stint nicht mehr auf Nachladen, Sync-Status oder automatische Remote-Synchronisierung.
+- Die aktuell gefahrene Runde wird in beiden Rundenlisten live angezeigt und erlaubt die PF-/TF-Erfassung während der Fahrt.
+- Der jeweils nächste Fahrer wird in der Starterliste stationsbezogen grün beziehungsweise orange schraffiert angekündigt.
+- Der angezeigte Verbindungsstatus von SQLite und Remote-MySQL wird nach Statusprüfung und Synchronisierung mit dem tatsächlichen Zustand aktualisiert.
+- Im Dialog zum Hinzufügen von Trainingsfahrern werden standardmäßig nur Teilnehmer der letzten sechs Wochen angezeigt; alle Fahrer können optional eingeblendet werden.
+- Der aktuelle Fahrer- und Vorschauzustand beider Zeitnahmestationen wird je Training ohne Historie in beiden Datenbanken vorgehalten.
+- Starterlistenänderungen und der Status „Fahrer fährt“ können bei aktivierter Auto-Synchronisierung automatisch nach MySQL übertragen werden.
+- Altersklassen werden für das gesamte Trainingsjahr anhand des 31.12. des Vorjahres als Stichtag berechnet.
 
 ### Behoben
 

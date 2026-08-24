@@ -4,6 +4,22 @@
     <local:GreaterThanZeroConverter x:Key="GreaterThanZeroConverter" />
     <local:SvgResourceToImageSourceConverter x:Key="SvgResourceToImageSourceConverter" />
     <local:ZeitstrafeConverter x:Key="ZeitstrafeConverter" />
+    <DrawingBrush x:Key="NextFirstTimingBrush" TileMode="Tile" Viewport="0,0,10,10" ViewportUnits="Absolute">
+        <DrawingBrush.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#E8F5E9" Geometry="M 0,0 L 10,0 10,10 0,10 Z" />
+                <GeometryDrawing Brush="#66BB6A" Geometry="M 0,10 L 2,10 10,2 10,0 Z" />
+            </DrawingGroup>
+        </DrawingBrush.Drawing>
+    </DrawingBrush>
+    <DrawingBrush x:Key="NextSecondTimingBrush" TileMode="Tile" Viewport="0,0,10,10" ViewportUnits="Absolute">
+        <DrawingBrush.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#FFF3E0" Geometry="M 0,0 L 10,0 10,10 0,10 Z" />
+                <GeometryDrawing Brush="#FFB74D" Geometry="M 0,10 L 2,10 10,2 10,0 Z" />
+            </DrawingGroup>
+        </DrawingBrush.Drawing>
+    </DrawingBrush>
     <Style x:Key="MenuButtonStyle" TargetType="Button">
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="Foreground" Value="#0F172A" />

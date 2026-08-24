@@ -51,6 +51,7 @@ public partial class MainWindow
         try
         {
             var status = await _dataSyncService.GetSyncStatusAsync();
+            UpdateRuntimeConnectionStatus(status.LocalConnected, status.RemoteConnected);
             _syncNeeded = status.IsSyncNeeded;
 
             FooterSyncStateTextBlock.Text = status.Message;
@@ -176,6 +177,7 @@ public partial class MainWindow
             UpdateSyncButtonVisualState();
 
             var result = await _dataSyncService.SyncBidirectionalAsync();
+            UpdateRuntimeConnectionStatus(result.LocalConnected, result.RemoteConnected);
             FooterSyncStateTextBlock.Text = result.Message;
             FooterSyncStateTextBlock.ToolTip = result.Message;
 
@@ -206,5 +208,54 @@ public partial class MainWindow
             UpdateSyncButtonVisualState();
             _syncSemaphore.Release();
         }
+    }
+
+    private void QueueAutomaticTrainingSync(int trainingId)
+    {
+        if (!IsAutomaticRemoteSyncEnabled(trainingId))
+        {
+            return;
+        }
+
+        var cancellation = new CancellationTokenSource();
+        var previous = Interlocked.Exchange(ref _trainingAutoSyncDebounceCts, cancellation);
+        previous?.Cancel();
+        _ = RunAutomaticTrainingSyncAsync(cancellation);
+    }
+
+    private async Task RunAutomaticTrainingSyncAsync(CancellationTokenSource cancellation)
+    {
+        try
+        {
+            await Task.Delay(TimeSpan.FromMilliseconds(350), cancellation.Token);
+            await SynchronizeAsync(reloadData: false);
+        }
+        catch (OperationCanceledException) when (cancellation.IsCancellationRequested)
+        {
+        }
+        catch (Exception ex)
+        {
+            Logger.Error(ex, "Automatische Trainingssynchronisierung fehlgeschlagen.");
+        }
+        finally
+        {
+            Interlocked.CompareExchange(ref _trainingAutoSyncDebounceCts, null, cancellation);
+            cancellation.Dispose();
+        }
+    }
+
+    private void UpdateRuntimeConnectionStatus(bool? localConnected, bool? remoteConnected)
+    {
+        if (localConnected is null && remoteConnected is null)
+        {
+            return;
+        }
+
+        _databaseRuntimeInfo.Set(
+            localConnected ?? _databaseRuntimeInfo.LocalSqliteConnected,
+            remoteConnected ?? _databaseRuntimeInfo.RemoteMySqlConnected,
+            localConnected == false ? "Lokale SQLite ist nicht erreichbar." : null,
+            remoteConnected == false ? "Remote-MySQL ist nicht erreichbar." : null);
+        UpdateConnectionStatus();
     }
 }

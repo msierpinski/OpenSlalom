@@ -153,6 +153,10 @@ public partial class MainWindow
 
         public bool IsAktivZweiteZeitnahme { get; set; }
 
+        public bool IsNaechsterFahrerErsteZeitnahme { get; set; }
+
+        public bool IsNaechsterFahrerZweiteZeitnahme { get; set; }
+
         public bool IsBeingDragged { get; set; }
 
         public bool FahrerFaehrt { get; set; }
@@ -170,6 +174,8 @@ public partial class MainWindow
 
     public sealed class TrainingLapTimeListItem : INotifyPropertyChanged
     {
+        private TimeSpan _rundenzeit;
+        private string _rundenzeitText = string.Empty;
         private double _zeitstrafeSekunden;
         private int _pylonen;
         private int _tore;
@@ -177,9 +183,27 @@ public partial class MainWindow
 
         public int Nummer { get; set; }
 
-        public required TimeSpan Rundenzeit { get; init; }
+        public TimeSpan Rundenzeit
+        {
+            get => _rundenzeit;
+            set
+            {
+                if (_rundenzeit == value) return;
+                _rundenzeit = value;
+                OnPropertyChanged();
+            }
+        }
 
-        public required string RundenzeitText { get; init; }
+        public string RundenzeitText
+        {
+            get => _rundenzeitText;
+            set
+            {
+                if (_rundenzeitText == value) return;
+                _rundenzeitText = value;
+                OnPropertyChanged();
+            }
+        }
 
         public double ZeitstrafeSekunden
         {
@@ -381,6 +405,8 @@ public partial class MainWindow
 
         public List<TrainingLapTimeListItem> LapRecords { get; } = [];
 
+        public TrainingLapTimeListItem? ActiveLap { get; set; }
+
         public TimeSpan LastLapCheckpoint { get; set; } = TimeSpan.Zero;
 
         public bool IsFinished { get; set; }
@@ -478,6 +504,8 @@ public partial class MainWindow
         public required string DisplayName { get; init; }
 
         public bool IsSelected { get; set; }
+
+        public bool IsRecentTrainingParticipant { get; init; }
 
         public int SelectionOrder { get; set; }
     }

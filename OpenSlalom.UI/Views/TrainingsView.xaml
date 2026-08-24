@@ -416,10 +416,16 @@
                                                          <Setter Property="Background" Value="#00BB00" />
                                                          <Setter Property="FontWeight" Value="SemiBold" />
                                                      </DataTrigger>
-                                                     <DataTrigger Binding="{Binding IsAktivZweiteZeitnahme}" Value="True">
-                                                         <Setter Property="Background" Value="#F59E0B" />
-                                                         <Setter Property="FontWeight" Value="SemiBold" />
-                                                     </DataTrigger>
+                                                      <DataTrigger Binding="{Binding IsAktivZweiteZeitnahme}" Value="True">
+                                                          <Setter Property="Background" Value="#F59E0B" />
+                                                          <Setter Property="FontWeight" Value="SemiBold" />
+                                                      </DataTrigger>
+                                                      <DataTrigger Binding="{Binding IsNaechsterFahrerErsteZeitnahme}" Value="True">
+                                                          <Setter Property="Background" Value="{StaticResource NextFirstTimingBrush}" />
+                                                      </DataTrigger>
+                                                      <DataTrigger Binding="{Binding IsNaechsterFahrerZweiteZeitnahme}" Value="True">
+                                                          <Setter Property="Background" Value="{StaticResource NextSecondTimingBrush}" />
+                                                      </DataTrigger>
                                                      <DataTrigger Binding="{Binding IsBeingDragged}" Value="True">
                                                          <Setter Property="Background" Value="#BFDBFE" />
                                                          <Setter Property="BorderBrush" Value="#1F84DE" />
@@ -921,6 +927,8 @@
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="10" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="10" />
                                     <RowDefinition Height="*" />
                                     <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
@@ -928,7 +936,9 @@
                                 <TextBlock FontSize="20" FontWeight="Bold" Text="Fahrer zum Training hinzufügen" />
                                 <TextBlock Grid.Row="0" Margin="0,28,0,0" Foreground="#475569" Text="Wähle einen oder mehrere Fahrer aus (auch zum Abwählen)." />
 
-                                <Border Grid.Row="2" BorderBrush="#CBD5E1" BorderThickness="1" CornerRadius="8" Padding="10">
+                                <CheckBox x:Name="TrainingShowAllDriversCheckBox" x:FieldModifier="internal" Grid.Row="2" Content="Alle Fahrer anzeigen (auch ohne Teilnahme in den letzten 6 Wochen)" Click="TrainingShowAllDriversCheckBox_OnClick" />
+
+                                <Border Grid.Row="4" BorderBrush="#CBD5E1" BorderThickness="1" CornerRadius="8" Padding="10">
                                     <ListBox x:Name="TrainingFahrerSelectionListBox" x:FieldModifier="internal"
                                              ItemsSource="{Binding TrainingDriverSelectionItems}"
                                              BorderThickness="0"
@@ -944,7 +954,7 @@
                                     </ListBox>
                                 </Border>
 
-                                <Grid Grid.Row="3" Margin="0,14,0,0">
+                                <Grid Grid.Row="5" Margin="0,14,0,0">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="Auto" />

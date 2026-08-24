@@ -74,6 +74,7 @@ public static class HostMigrationExtensions
         {
             await using var localDbContext = await localFactory.CreateDbContextAsync(cancellationToken);
             await EnsureLocalDatabaseMigratedAsync(localDbContext, cancellationToken);
+            await EnsureCurrentLocalSchemaAsync(localDbContext, cancellationToken);
             var connected = await localDbContext.Database.CanConnectAsync(cancellationToken);
             return connected
                 ? InitializationState.Connected()
@@ -107,6 +108,7 @@ public static class HostMigrationExtensions
 
             await RepairPartiallyAppliedRemoteSyncMetadataMigrationAsync(migrationDbContext, cancellationToken);
             await migrationDbContext.Database.MigrateAsync(cancellationToken);
+            await EnsureCurrentRemoteSchemaAsync(migrationDbContext, cancellationToken);
 
             await using var remoteDbContext = await remoteFactory.CreateDbContextAsync(cancellationToken);
             if (!await remoteDbContext.Database.CanConnectAsync(cancellationToken))
@@ -150,6 +152,74 @@ public static class HostMigrationExtensions
         await localDbContext.Database.MigrateAsync(cancellationToken);
     }
 
+    private static async Task EnsureCurrentLocalSchemaAsync(
+        LocalOpenSlalomDbContext localDbContext,
+        CancellationToken cancellationToken)
+    {
+        if (await TableExistsAsync(localDbContext, "training", cancellationToken))
+        {
+            await EnsureColumnAsync(localDbContext, "training", "uuid", "ALTER TABLE training ADD COLUMN uuid TEXT NULL;", cancellationToken);
+            await EnsureColumnAsync(localDbContext, "training", "ist_veroeffentlicht", "ALTER TABLE training ADD COLUMN ist_veroeffentlicht INTEGER NOT NULL DEFAULT 0;", cancellationToken);
+            await EnsureColumnAsync(localDbContext, "training", "aktiver_fahrer_zeitnahme_1_id", "ALTER TABLE training ADD COLUMN aktiver_fahrer_zeitnahme_1_id INTEGER NULL;", cancellationToken);
+            await EnsureColumnAsync(localDbContext, "training", "aktiver_fahrer_zeitnahme_2_id", "ALTER TABLE training ADD COLUMN aktiver_fahrer_zeitnahme_2_id INTEGER NULL;", cancellationToken);
+            await EnsureColumnAsync(localDbContext, "training", "naechster_fahrer_zeitnahme_1_id", "ALTER TABLE training ADD COLUMN naechster_fahrer_zeitnahme_1_id INTEGER NULL;", cancellationToken);
+            await EnsureColumnAsync(localDbContext, "training", "naechster_fahrer_zeitnahme_2_id", "ALTER TABLE training ADD COLUMN naechster_fahrer_zeitnahme_2_id INTEGER NULL;", cancellationToken);
+            await localDbContext.Database.ExecuteSqlRawAsync(
+                "UPDATE training SET uuid = lower(hex(randomblob(4))) || '-' || lower(hex(randomblob(2))) || '-4' || substr(lower(hex(randomblob(2))), 2) || '-' || substr('89ab', (random() & 3) + 1, 1) || substr(lower(hex(randomblob(2))), 2) || '-' || lower(hex(randomblob(6))) WHERE uuid IS NULL;",
+                cancellationToken);
+            await EnsureLocalIndexAsync(localDbContext, "training", "IX_training_uuid", "uuid", true, cancellationToken);
+        }
+
+        if (await TableExistsAsync(localDbContext, "meisterschaften", cancellationToken))
+        {
+            await EnsureColumnAsync(localDbContext, "meisterschaften", "uuid", "ALTER TABLE meisterschaften ADD COLUMN uuid TEXT NULL;", cancellationToken);
+            await localDbContext.Database.ExecuteSqlRawAsync(
+                "UPDATE meisterschaften SET uuid = lower(hex(randomblob(4))) || '-' || lower(hex(randomblob(2))) || '-4' || substr(lower(hex(randomblob(2))), 2) || '-' || substr('89ab', (random() & 3) + 1, 1) || substr(lower(hex(randomblob(2))), 2) || '-' || lower(hex(randomblob(6))) WHERE uuid IS NULL;",
+                cancellationToken);
+            await EnsureLocalIndexAsync(localDbContext, "meisterschaften", "IX_meisterschaften_uuid", "uuid", true, cancellationToken);
+        }
+
+        foreach (var tableName in SyncTables)
+        {
+            if (await TableExistsAsync(localDbContext, tableName, cancellationToken))
+            {
+                await EnsureLocalIndexAsync(localDbContext, tableName, $"IX_{tableName}_updated_at_utc", "updated_at_utc", false, cancellationToken);
+            }
+        }
+    }
+
+    private static async Task EnsureCurrentRemoteSchemaAsync(
+        OpenSlalomDbContext remoteDbContext,
+        CancellationToken cancellationToken)
+    {
+        if (await RemoteTableExistsAsync(remoteDbContext, "training", cancellationToken))
+        {
+            await EnsureRemoteColumnAsync(remoteDbContext, "training", "uuid", "ALTER TABLE `{0}` ADD COLUMN `uuid` char(36) COLLATE ascii_general_ci NULL;", cancellationToken);
+            await EnsureRemoteColumnAsync(remoteDbContext, "training", "ist_veroeffentlicht", "ALTER TABLE `{0}` ADD COLUMN `ist_veroeffentlicht` tinyint(1) NOT NULL DEFAULT 0;", cancellationToken);
+            await EnsureRemoteColumnAsync(remoteDbContext, "training", "aktiver_fahrer_zeitnahme_1_id", "ALTER TABLE `{0}` ADD COLUMN `aktiver_fahrer_zeitnahme_1_id` int NULL;", cancellationToken);
+            await EnsureRemoteColumnAsync(remoteDbContext, "training", "aktiver_fahrer_zeitnahme_2_id", "ALTER TABLE `{0}` ADD COLUMN `aktiver_fahrer_zeitnahme_2_id` int NULL;", cancellationToken);
+            await EnsureRemoteColumnAsync(remoteDbContext, "training", "naechster_fahrer_zeitnahme_1_id", "ALTER TABLE `{0}` ADD COLUMN `naechster_fahrer_zeitnahme_1_id` int NULL;", cancellationToken);
+            await EnsureRemoteColumnAsync(remoteDbContext, "training", "naechster_fahrer_zeitnahme_2_id", "ALTER TABLE `{0}` ADD COLUMN `naechster_fahrer_zeitnahme_2_id` int NULL;", cancellationToken);
+            await remoteDbContext.Database.ExecuteSqlRawAsync("UPDATE `training` SET `uuid` = UUID() WHERE `uuid` IS NULL;", cancellationToken);
+            await EnsureRemoteIndexAsync(remoteDbContext, "training", "IX_training_uuid", "uuid", true, cancellationToken);
+        }
+
+        if (await RemoteTableExistsAsync(remoteDbContext, "meisterschaften", cancellationToken))
+        {
+            await EnsureRemoteColumnAsync(remoteDbContext, "meisterschaften", "uuid", "ALTER TABLE `{0}` ADD COLUMN `uuid` char(36) COLLATE ascii_general_ci NULL;", cancellationToken);
+            await remoteDbContext.Database.ExecuteSqlRawAsync("UPDATE `meisterschaften` SET `uuid` = UUID() WHERE `uuid` IS NULL;", cancellationToken);
+            await EnsureRemoteIndexAsync(remoteDbContext, "meisterschaften", "IX_meisterschaften_uuid", "uuid", true, cancellationToken);
+        }
+
+        foreach (var tableName in SyncTables)
+        {
+            if (await RemoteTableExistsAsync(remoteDbContext, tableName, cancellationToken))
+            {
+                await EnsureRemoteIndexAsync(remoteDbContext, tableName, $"IX_{tableName}_updated_at_utc", "updated_at_utc", false, cancellationToken);
+            }
+        }
+    }
+
     private static async Task ApplyLegacyLocalSchemaPatchesAsync(
         LocalOpenSlalomDbContext localDbContext,
         CancellationToken cancellationToken)
@@ -164,6 +234,10 @@ public static class HostMigrationExtensions
         await EnsureColumnAsync(localDbContext, "fahrer", "geschlecht", "ALTER TABLE fahrer ADD COLUMN geschlecht TEXT NOT NULL DEFAULT '';", cancellationToken);
         await EnsureColumnAsync(localDbContext, "training", "training_abgeschlossen", "ALTER TABLE training ADD COLUMN training_abgeschlossen INTEGER NOT NULL DEFAULT 0;", cancellationToken);
         await EnsureColumnAsync(localDbContext, "training", "ist_veroeffentlicht", "ALTER TABLE training ADD COLUMN ist_veroeffentlicht INTEGER NOT NULL DEFAULT 0;", cancellationToken);
+        await EnsureColumnAsync(localDbContext, "training", "aktiver_fahrer_zeitnahme_1_id", "ALTER TABLE training ADD COLUMN aktiver_fahrer_zeitnahme_1_id INTEGER NULL;", cancellationToken);
+        await EnsureColumnAsync(localDbContext, "training", "aktiver_fahrer_zeitnahme_2_id", "ALTER TABLE training ADD COLUMN aktiver_fahrer_zeitnahme_2_id INTEGER NULL;", cancellationToken);
+        await EnsureColumnAsync(localDbContext, "training", "naechster_fahrer_zeitnahme_1_id", "ALTER TABLE training ADD COLUMN naechster_fahrer_zeitnahme_1_id INTEGER NULL;", cancellationToken);
+        await EnsureColumnAsync(localDbContext, "training", "naechster_fahrer_zeitnahme_2_id", "ALTER TABLE training ADD COLUMN naechster_fahrer_zeitnahme_2_id INTEGER NULL;", cancellationToken);
         await EnsureColumnAsync(localDbContext, "training", "uuid", "ALTER TABLE training ADD COLUMN uuid TEXT NULL;", cancellationToken);
         var hasMeisterschaften = await TableExistsAsync(localDbContext, "meisterschaften", cancellationToken);
         if (hasMeisterschaften)
@@ -171,9 +245,22 @@ public static class HostMigrationExtensions
             await EnsureColumnAsync(localDbContext, "meisterschaften", "uuid", "ALTER TABLE meisterschaften ADD COLUMN uuid TEXT NULL;", cancellationToken);
         }
         await EnsureColumnAsync(localDbContext, "fahrer_im_training", "reihenfolge", "ALTER TABLE fahrer_im_training ADD COLUMN reihenfolge INTEGER NOT NULL DEFAULT 0;", cancellationToken);
+        await EnsureColumnAsync(localDbContext, "fahrer_im_training", "fahrer_faehrt", "ALTER TABLE fahrer_im_training ADD COLUMN fahrer_faehrt INTEGER NOT NULL DEFAULT 1;", cancellationToken);
         await EnsureColumnAsync(localDbContext, "tstints", "altersklasse_snapshot", "ALTER TABLE tstints ADD COLUMN altersklasse_snapshot TEXT NOT NULL DEFAULT '';", cancellationToken);
 
         await EnsureSyncMetadataColumnsAsync(localDbContext, cancellationToken);
+
+        foreach (var tableName in SyncTables)
+        {
+            if (await TableExistsAsync(localDbContext, tableName, cancellationToken))
+            {
+#pragma warning disable EF1002 // Table names come exclusively from the fixed SyncTables allowlist.
+                await localDbContext.Database.ExecuteSqlRawAsync(
+                    $"CREATE INDEX IF NOT EXISTS IX_{tableName}_updated_at_utc ON {tableName} (updated_at_utc);",
+                    cancellationToken);
+#pragma warning restore EF1002
+            }
+        }
 
         await localDbContext.Database.ExecuteSqlRawAsync(
             "UPDATE training SET uuid = lower(hex(randomblob(4))) || '-' || lower(hex(randomblob(2))) || '-4' || substr(lower(hex(randomblob(2))), 2) || '-' || substr('89ab', (random() & 3) + 1, 1) || substr(lower(hex(randomblob(2))), 2) || '-' || lower(hex(randomblob(6))) WHERE uuid IS NULL;",
@@ -360,6 +447,98 @@ public static class HostMigrationExtensions
 
 #pragma warning disable EF1002
         await remoteDbContext.Database.ExecuteSqlRawAsync(string.Format(alterStatementFormat, tableName), cancellationToken);
+#pragma warning restore EF1002
+}
+
+    private static async Task EnsureLocalIndexAsync(
+        LocalOpenSlalomDbContext localDbContext,
+        string tableName,
+        string indexName,
+        string columnName,
+        bool unique,
+        CancellationToken cancellationToken)
+    {
+#pragma warning disable EF1002
+        var matchingIndex = await localDbContext.Database.SqlQueryRaw<int>(
+                $"SELECT COUNT(1) AS Value FROM pragma_index_list('{tableName}') il INNER JOIN pragma_index_info(il.name) ii ON 1 = 1 WHERE il.name = '{indexName}' AND il.\"unique\" = {(unique ? 1 : 0)} AND ii.name = '{columnName}'")
+            .SingleAsync(cancellationToken);
+#pragma warning restore EF1002
+
+        if (matchingIndex > 0)
+        {
+            return;
+        }
+
+        if (await LocalIndexExistsAsync(localDbContext, tableName, indexName, cancellationToken))
+        {
+#pragma warning disable EF1002
+            await localDbContext.Database.ExecuteSqlRawAsync($"DROP INDEX IF EXISTS {indexName};", cancellationToken);
+#pragma warning restore EF1002
+        }
+
+#pragma warning disable EF1002
+        await localDbContext.Database.ExecuteSqlRawAsync(
+            $"CREATE {(unique ? "UNIQUE " : string.Empty)}INDEX {indexName} ON {tableName} ({columnName});",
+            cancellationToken);
+#pragma warning restore EF1002
+    }
+
+    private static async Task<bool> LocalIndexExistsAsync(
+        LocalOpenSlalomDbContext localDbContext,
+        string tableName,
+        string indexName,
+        CancellationToken cancellationToken)
+    {
+#pragma warning disable EF1002
+        return await localDbContext.Database.SqlQueryRaw<int>(
+                $"SELECT COUNT(1) AS Value FROM pragma_index_list('{tableName}') WHERE name = '{indexName}'")
+            .SingleAsync(cancellationToken) > 0;
+#pragma warning restore EF1002
+    }
+
+    private static async Task EnsureRemoteIndexAsync(
+        OpenSlalomDbContext remoteDbContext,
+        string tableName,
+        string indexName,
+        string columnName,
+        bool unique,
+        CancellationToken cancellationToken)
+    {
+#pragma warning disable EF1002
+        var matchingIndex = await remoteDbContext.Database.SqlQueryRaw<int>(
+                $"SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.STATISTICS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = '{tableName}' AND INDEX_NAME = '{indexName}' AND COLUMN_NAME = '{columnName}' AND NON_UNIQUE = {(unique ? 0 : 1)}")
+            .SingleAsync(cancellationToken);
+#pragma warning restore EF1002
+
+        if (matchingIndex > 0)
+        {
+            return;
+        }
+
+        if (await RemoteIndexExistsAsync(remoteDbContext, tableName, indexName, cancellationToken))
+        {
+#pragma warning disable EF1002
+            await remoteDbContext.Database.ExecuteSqlRawAsync($"DROP INDEX `{indexName}` ON `{tableName}`;", cancellationToken);
+#pragma warning restore EF1002
+        }
+
+#pragma warning disable EF1002
+        await remoteDbContext.Database.ExecuteSqlRawAsync(
+            $"CREATE {(unique ? "UNIQUE " : string.Empty)}INDEX `{indexName}` ON `{tableName}` (`{columnName}`);",
+            cancellationToken);
+#pragma warning restore EF1002
+    }
+
+    private static async Task<bool> RemoteIndexExistsAsync(
+        OpenSlalomDbContext remoteDbContext,
+        string tableName,
+        string indexName,
+        CancellationToken cancellationToken)
+    {
+#pragma warning disable EF1002
+        return await remoteDbContext.Database.SqlQueryRaw<int>(
+                $"SELECT COUNT(1) AS Value FROM INFORMATION_SCHEMA.STATISTICS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = '{tableName}' AND INDEX_NAME = '{indexName}'")
+            .SingleAsync(cancellationToken) > 0;
 #pragma warning restore EF1002
     }
 

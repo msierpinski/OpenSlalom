@@ -11,6 +11,7 @@ public sealed class DataSyncService(
 {
     private const string SyncScopeId = "global";
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+    private DateTime? _lastSyncUtc;
 
     public async Task<DataSyncStatus> GetSyncStatusAsync(CancellationToken cancellationToken = default)
     {
@@ -22,12 +23,12 @@ public sealed class DataSyncService(
 
         if (!localConnected)
         {
-            return new DataSyncStatus(false, 0, 0, null, "Lokale SQLite ist nicht erreichbar.");
+            return new DataSyncStatus(false, 0, 0, null, "Lokale SQLite ist nicht erreichbar.", false, null);
         }
 
         if (!remoteConnected)
         {
-            return new DataSyncStatus(false, 0, 0, null, "Remote-MySQL ist nicht erreichbar.");
+            return new DataSyncStatus(false, 0, 0, null, "Remote-MySQL ist nicht erreichbar.", true, false);
         }
 
         var localState = await localDb.SyncStates.AsNoTracking().FirstOrDefaultAsync(x => x.Id == SyncScopeId, cancellationToken);
@@ -36,7 +37,7 @@ public sealed class DataSyncService(
 
         if (lastSyncUtc is null)
         {
-            return new DataSyncStatus(true, 1, 1, null, "Synchronisierung noch nie ausgefuehrt.");
+            return new DataSyncStatus(true, 1, 1, null, "Synchronisierung noch nie ausgefuehrt.", true, true);
         }
 
         var localPending = await CountPendingChangesAsync(localDb, lastSyncUtc.Value, cancellationToken);
@@ -56,7 +57,7 @@ public sealed class DataSyncService(
                 : $"Synchronisierung noetig (Lokal: {localPending}, Remote: {remotePending})."
             : "Alle Datenbanken sind synchron.";
 
-        return new DataSyncStatus(needed, localPending, remotePending, lastSyncUtc, message);
+        return new DataSyncStatus(needed, localPending, remotePending, lastSyncUtc, message, true, true);
     }
 
     public async Task<DataSyncResult> SyncBidirectionalAsync(CancellationToken cancellationToken = default)
@@ -69,16 +70,17 @@ public sealed class DataSyncService(
 
         if (!await localDb.Database.CanConnectAsync(cancellationToken))
         {
-            return new DataSyncResult(false, "Lokale SQLite ist nicht erreichbar.");
+            return new DataSyncResult(false, "Lokale SQLite ist nicht erreichbar.", false, null);
         }
 
         if (!await remoteDb.Database.CanConnectAsync(cancellationToken))
         {
-            return new DataSyncResult(false, "Remote-MySQL ist aktuell nicht erreichbar.");
+            return new DataSyncResult(false, "Remote-MySQL ist aktuell nicht erreichbar.", true, false);
         }
 
-        await localDb.Database.MigrateAsync(cancellationToken);
-        await remoteDb.Database.MigrateAsync(cancellationToken);
+        var localState = await localDb.SyncStates.AsNoTracking().FirstOrDefaultAsync(x => x.Id == SyncScopeId, cancellationToken);
+        var remoteState = await remoteDb.SyncStates.AsNoTracking().FirstOrDefaultAsync(x => x.Id == SyncScopeId, cancellationToken);
+        _lastSyncUtc = MinNullable(localState?.LastSyncUtc, remoteState?.LastSyncUtc);
 
         await using var txLocal = await localDb.Database.BeginTransactionAsync(cancellationToken);
         await using var txRemote = await remoteDb.Database.BeginTransactionAsync(cancellationToken);
@@ -212,6 +214,10 @@ public sealed class DataSyncService(
                     Zeitpunkt = x.Zeitpunkt,
                     TrainingAbgeschlossen = x.TrainingAbgeschlossen,
                     IstVeroeffentlicht = x.IstVeroeffentlicht,
+                    AktiverFahrerZeitnahme1Id = x.AktiverFahrerZeitnahme1Id,
+                    AktiverFahrerZeitnahme2Id = x.AktiverFahrerZeitnahme2Id,
+                    NaechsterFahrerZeitnahme1Id = x.NaechsterFahrerZeitnahme1Id,
+                    NaechsterFahrerZeitnahme2Id = x.NaechsterFahrerZeitnahme2Id,
                     UpdatedAtUtc = x.UpdatedAtUtc,
                     IsDeleted = x.IsDeleted,
                     DeletedAtUtc = x.DeletedAtUtc
@@ -227,6 +233,10 @@ public sealed class DataSyncService(
                     target.Zeitpunkt = source.Zeitpunkt;
                     target.TrainingAbgeschlossen = source.TrainingAbgeschlossen;
                     target.IstVeroeffentlicht = source.IstVeroeffentlicht;
+                    target.AktiverFahrerZeitnahme1Id = source.AktiverFahrerZeitnahme1Id;
+                    target.AktiverFahrerZeitnahme2Id = source.AktiverFahrerZeitnahme2Id;
+                    target.NaechsterFahrerZeitnahme1Id = source.NaechsterFahrerZeitnahme1Id;
+                    target.NaechsterFahrerZeitnahme2Id = source.NaechsterFahrerZeitnahme2Id;
                     CopySyncFields(target, source);
                 }, cancellationToken);
 
@@ -406,14 +416,14 @@ public sealed class DataSyncService(
             await txRemote.CommitAsync(cancellationToken);
 
             Logger.Info("Bidirektionale Synchronisierung erfolgreich beendet.");
-            return new DataSyncResult(true, "Bidirektionale Synchronisierung abgeschlossen.");
+            return new DataSyncResult(true, "Bidirektionale Synchronisierung abgeschlossen.", true, true);
         }
         catch (Exception ex)
         {
             await txLocal.RollbackAsync(cancellationToken);
             await txRemote.RollbackAsync(cancellationToken);
             Logger.Error(ex, "Bidirektionale Synchronisierung fehlgeschlagen.");
-            return new DataSyncResult(false, $"Synchronisierung fehlgeschlagen: {ex.Message}");
+            return new DataSyncResult(false, $"Synchronisierung fehlgeschlagen: {ex.Message}", true, true);
         }
         finally
         {
@@ -604,22 +614,48 @@ public sealed class DataSyncService(
         state.LastSyncUtc = syncTimeUtc;
     }
 
-    private static async Task SyncByIntKeyAsync<TEntity>(
+    private async Task SyncByIntKeyAsync<TEntity>(
         LocalOpenSlalomDbContext localDb,
         RemoteOpenSlalomDbContext remoteDb,
         DbSet<TEntity> localSet,
         DbSet<TEntity> remoteSet,
-        Func<TEntity, int> keySelector,
+        Expression<Func<TEntity, int>> keySelector,
         Func<TEntity, TEntity> clone,
         Action<TEntity, TEntity> apply,
         CancellationToken cancellationToken)
         where TEntity : class, ISyncEntity
     {
-        var localItems = await localSet.IgnoreQueryFilters().ToListAsync(cancellationToken);
-        var remoteItems = await remoteSet.IgnoreQueryFilters().ToListAsync(cancellationToken);
+        var localKeys = await localSet.IgnoreQueryFilters().Select(keySelector).ToListAsync(cancellationToken);
+        var remoteKeys = await remoteSet.IgnoreQueryFilters().Select(keySelector).ToListAsync(cancellationToken);
+        var sameKeys = localKeys.Count == remoteKeys.Count && localKeys.ToHashSet().SetEquals(remoteKeys);
+        List<TEntity> localItems;
+        List<TEntity> remoteItems;
 
-        var localMap = localItems.ToDictionary(keySelector);
-        var remoteMap = remoteItems.ToDictionary(keySelector);
+        if (_lastSyncUtc is null || !sameKeys)
+        {
+            localItems = await localSet.IgnoreQueryFilters().ToListAsync(cancellationToken);
+            remoteItems = await remoteSet.IgnoreQueryFilters().ToListAsync(cancellationToken);
+        }
+        else
+        {
+            var changedLocalKeys = await localSet.IgnoreQueryFilters()
+                .Where(x => x.UpdatedAtUtc > _lastSyncUtc.Value)
+                .Select(keySelector)
+                .ToListAsync(cancellationToken);
+            var changedRemoteKeys = await remoteSet.IgnoreQueryFilters()
+                .Where(x => x.UpdatedAtUtc > _lastSyncUtc.Value)
+                .Select(keySelector)
+                .ToListAsync(cancellationToken);
+            changedLocalKeys.AddRange(changedRemoteKeys);
+            var changedKeys = changedLocalKeys.ToHashSet();
+            var changedPredicate = BuildKeySetPredicate(keySelector, changedKeys);
+            localItems = await localSet.IgnoreQueryFilters().Where(changedPredicate).ToListAsync(cancellationToken);
+            remoteItems = await remoteSet.IgnoreQueryFilters().Where(changedPredicate).ToListAsync(cancellationToken);
+        }
+
+        var compiledKeySelector = keySelector.Compile();
+        var localMap = localItems.ToDictionary(compiledKeySelector);
+        var remoteMap = remoteItems.ToDictionary(compiledKeySelector);
 
         var allKeys = new HashSet<int>(localMap.Keys);
         allKeys.UnionWith(remoteMap.Keys);
@@ -655,6 +691,21 @@ public sealed class DataSyncService(
         }
     }
 
+    private static Expression<Func<TEntity, bool>> BuildKeySetPredicate<TEntity>(
+        Expression<Func<TEntity, int>> keySelector,
+        IReadOnlySet<int> keys)
+        where TEntity : class
+    {
+        var contains = Expression.Call(
+            typeof(Enumerable),
+            nameof(Enumerable.Contains),
+            [typeof(int)],
+            Expression.Constant(keys),
+            keySelector.Body);
+
+        return Expression.Lambda<Func<TEntity, bool>>(contains, keySelector.Parameters);
+    }
+
     private static async Task SyncCompositeFahrerImTrainingAsync(
         LocalOpenSlalomDbContext localDb,
         RemoteOpenSlalomDbContext remoteDb,
@@ -687,6 +738,7 @@ public sealed class DataSyncService(
                     TrainingId = winner.TrainingId,
                     FahrerId = winner.FahrerId,
                     Reihenfolge = winner.Reihenfolge,
+                    FahrerFaehrt = winner.FahrerFaehrt,
                     UpdatedAtUtc = winner.UpdatedAtUtc,
                     IsDeleted = winner.IsDeleted,
                     DeletedAtUtc = winner.DeletedAtUtc
@@ -695,6 +747,7 @@ public sealed class DataSyncService(
             else
             {
                 localItem.Reihenfolge = winner.Reihenfolge;
+                localItem.FahrerFaehrt = winner.FahrerFaehrt;
                 CopySyncFields(localItem, winner);
             }
 
@@ -705,6 +758,7 @@ public sealed class DataSyncService(
                     TrainingId = winner.TrainingId,
                     FahrerId = winner.FahrerId,
                     Reihenfolge = winner.Reihenfolge,
+                    FahrerFaehrt = winner.FahrerFaehrt,
                     UpdatedAtUtc = winner.UpdatedAtUtc,
                     IsDeleted = winner.IsDeleted,
                     DeletedAtUtc = winner.DeletedAtUtc
@@ -713,6 +767,7 @@ public sealed class DataSyncService(
             else
             {
                 remoteItem.Reihenfolge = winner.Reihenfolge;
+                remoteItem.FahrerFaehrt = winner.FahrerFaehrt;
                 CopySyncFields(remoteItem, winner);
             }
         }

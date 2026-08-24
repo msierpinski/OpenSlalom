@@ -5,6 +5,7 @@ $training = $view['training'];
 $summary = $view['summary'];
 $leaderboard = $view['leaderboard'];
 $statistics = $view['statistics'];
+$status = $view['status'];
 $trainingScriptVersion = (string) filemtime(dirname(__DIR__) . '/assets/js/training.js');
 $trainingBreadcrumbTarget = $currentUser === null ? '' : 'trainings';
 ?>
@@ -42,11 +43,108 @@ $trainingBreadcrumbTarget = $currentUser === null ? '' : 'trainings';
 
     <section class="shell result-content">
         <div class="training-tabs" role="tablist" aria-label="Trainingsansicht">
-            <button id="results-tab" type="button" role="tab" aria-selected="true" aria-controls="results-panel" data-training-tab="results">Ergebnisse</button>
+            <?php if (!$training['is_finished']): ?>
+                <button id="status-tab" type="button" role="tab" aria-selected="true" aria-controls="status-panel" data-training-tab="status">Status</button>
+            <?php endif; ?>
+            <button id="results-tab" type="button" role="tab" aria-selected="<?= $training['is_finished'] ? 'true' : 'false' ?>" aria-controls="results-panel" data-training-tab="results">Ergebnisse</button>
             <button id="statistics-tab" type="button" role="tab" aria-selected="false" aria-controls="statistics-panel" data-training-tab="statistics">Statistik</button>
         </div>
 
-        <div id="results-panel" role="tabpanel" aria-labelledby="results-tab" data-training-panel="results">
+        <?php if ($status !== null): ?>
+            <section id="status-panel" class="status-tab-panel" role="tabpanel" aria-labelledby="status-tab" data-training-panel="status">
+                <div class="result-heading status-heading">
+                    <div>
+                        <p class="eyebrow"><span></span> Live-Status</p>
+                        <h2>Fahrerstatus</h2>
+                    </div>
+                    <p>Die Anzeige entspricht dem zuletzt gespeicherten Status der Zeitnahme.</p>
+                </div>
+
+                <div class="status-stations">
+                    <?php foreach ($status['stations'] as $stationIndex => $station): ?>
+                        <?php if ($stationIndex === 0 || $status['has_second_station']): ?>
+                            <section class="status-station status-station-<?= $stationIndex + 1 ?>">
+                                <span><?= escape($station['name']) ?></span>
+                                <div><small>Fährt gerade</small><strong><?= escape($station['current']['name'] ?? 'Kein Fahrer aktiv') ?></strong></div>
+                                <div><small>Als Nächstes</small><strong><?= escape($station['next']['name'] ?? 'Kein nächster Fahrer') ?></strong></div>
+                            </section>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
+                </div>
+
+                <div class="result-columns status-columns">
+                    <section class="result-section starters-section status-driver-section">
+                        <div class="result-heading compact-heading">
+                            <div><p class="eyebrow"><span></span> Startreihenfolge</p><h2>Fahrerliste</h2></div>
+                            <span class="count-badge"><?= count($status['drivers']) ?></span>
+                        </div>
+                        <?php if ($status['drivers'] === []): ?>
+                            <div class="empty-state small"><span>Noch keine Fahrer zugeordnet.</span></div>
+                        <?php else: ?>
+                            <ol class="starter-list status-driver-list">
+                                <?php foreach ($status['drivers'] as $driver): ?>
+                                    <li class="driver-status-<?= escape($driver['status']) ?>">
+                                        <span><?= (int) $driver['position'] ?></span>
+                                        <div><strong><?= escape($driver['name']) ?></strong><small><?= escape($driver['club']) ?></small></div>
+                                        <b><?= $driver['status'] === 'active-first' ? 'FÄHRT ZN 1' : ($driver['status'] === 'active-second' ? 'FÄHRT ZN 2' : ($driver['status'] === 'next-first' ? 'NÄCHSTE ZN 1' : ($driver['status'] === 'next-second' ? 'NÄCHSTE ZN 2' : ($driver['status'] === 'inactive' ? 'PAUSIERT' : escape($driver['class']))))) ?></b>
+                                    </li>
+                                <?php endforeach; ?>
+                            </ol>
+                        <?php endif; ?>
+                    </section>
+
+                    <section class="result-section stint-section status-stint-section">
+                        <div class="result-heading compact-heading">
+                            <div><p class="eyebrow"><span></span> Zuletzt gespeichert</p><h2>Letzte zehn Stints</h2></div>
+                        </div>
+                        <?php if ($status['recent_stints'] === []): ?>
+                            <div class="empty-state small"><span>Noch keine Stints gespeichert.</span></div>
+                        <?php else: ?>
+                            <div class="driver-stints status-stints">
+                                <?php foreach ($status['recent_stints'] as $stint): ?>
+                                    <details class="stint-detail" data-detail-id="status-stint-<?= (int) $stint['id'] ?>">
+                                        <summary>
+                                            <span><strong><?= escape($stint['driver']) ?></strong><small>Stint vom <?= escape(format_date($stint['datum'], 'd.m.Y · H:i:s')) ?> · <?= escape($stint['kart']) ?> · <?= escape($stint['class']) ?></small></span>
+                                            <span class="status-stint-summary">
+                                                <span><small>Bestzeit</small><strong><?= escape(format_training_time($stint['best_lap'])) ?></strong></span>
+                                                <span><small>Δ Bestzeit</small><strong><?= $stint['best_lap_difference'] === null ? '-' : '+' . escape(format_training_time($stint['best_lap_difference'])) ?></strong></span>
+                                                <span><small>PF</small><strong><?= (int) $stint['pf'] ?></strong></span>
+                                                <span><small>TF</small><strong><?= (int) $stint['tf'] ?></strong></span>
+                                                <span><small>Gesamt</small><strong><?= escape(format_training_time($stint['total'])) ?></strong></span>
+                                                <span><small>Δ Gesamt</small><strong><?= $stint['total_difference'] === null ? '-' : '+' . escape(format_training_time($stint['total_difference'])) ?></strong></span>
+                                            </span>
+                                        </summary>
+                                        <div class="stint-metrics">
+                                            <span>Gültige Runden <strong><?= (int) $stint['valid_laps'] ?></strong></span>
+                                            <span>Durchschnitt <strong><?= escape(format_training_time($stint['average'])) ?></strong></span>
+                                        </div>
+                                        <div class="table-frame lap-table">
+                                            <table>
+                                                <thead><tr><th>Runde</th><th>Zeit</th><th>Strafe</th><th>PF</th><th>TF</th><th>Status</th></tr></thead>
+                                                <tbody>
+                                                <?php foreach ($stint['laps'] as $lap): ?>
+                                                    <tr class="<?= $lap['invalid'] ? 'invalid-lap' : '' ?>">
+                                                        <td data-label="Runde"><?= (int) $lap['number'] ?></td>
+                                                        <td data-label="Zeit"><strong><?= escape(format_training_time($lap['time'])) ?></strong></td>
+                                                        <td data-label="Strafe"><?= escape(format_penalty($lap['penalty'])) ?></td>
+                                                        <td data-label="PF"><?= (int) $lap['pf'] ?></td>
+                                                        <td data-label="TF"><?= (int) $lap['tf'] ?></td>
+                                                        <td data-label="Status"><span class="lap-state <?= $lap['invalid'] ? 'invalid' : '' ?>"><?= $lap['invalid'] ? 'Ungültig' : 'Gewertet' ?></span></td>
+                                                    </tr>
+                                                <?php endforeach; ?>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </details>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php endif; ?>
+                    </section>
+                </div>
+            </section>
+        <?php endif; ?>
+
+        <div id="results-panel" role="tabpanel" aria-labelledby="results-tab" data-training-panel="results"<?= $training['is_finished'] ? '' : ' hidden' ?>>
         <div class="summary-rail" aria-label="Trainingsübersicht">
             <div><strong><?= (int) $summary['participants'] ?></strong><span>Fahrer mit Stint</span></div>
             <div><strong><?= (int) $summary['stints'] ?></strong><span>Gespeicherte Stints</span></div>
