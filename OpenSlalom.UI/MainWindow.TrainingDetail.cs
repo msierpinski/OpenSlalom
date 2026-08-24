@@ -130,6 +130,25 @@ public partial class MainWindow
             TrainingsViewControl.TrainingDetailWetterTextBlock.Text = $"Wetter: {training.Wetter.Bezeichnung}";
             TrainingsViewControl.TrainingDetailBeschreibungTextBlock.Text = $"Beschreibung: {training.Beschreibung}";
             TrainingsViewControl.TrainingDetailQrCodeImage.Source = CreateTrainingQrCodeImage(training.Uuid);
+
+            var availableKarts = await dbContext.Karts
+                .Where(x => x.DisziplinId == training.DisziplinId)
+                .Select(x => new LookupItem
+                {
+                    Id = x.Id,
+                    Name = string.IsNullOrWhiteSpace(x.Name)
+                        ? $"Kart #{x.Id}"
+                        : x.Name
+                })
+                .ToListAsync();
+
+            AvailableKarts.Clear();
+
+            foreach (var item in availableKarts)
+            {
+                AvailableKarts.Add(item);
+            }
+
             _selectedTrainingTorfehlerPenaltySeconds = training.Disziplin.ZeitstrafeTorfehler;
             _selectedTrainingPylonenfehlerPenaltySeconds = training.Disziplin.ZeitstrafePylonenfehler;
             RecalculateLapPenaltiesForCurrentContext();
