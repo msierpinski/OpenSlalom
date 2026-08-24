@@ -13,6 +13,7 @@ die Versionsnummern folgen der [semantischen Versionierung](https://semver.org/l
 - Darstellung der Trainingsansicht und DataGrids für kleinere Geräte verbessert.
 - Lange Texte in DataGrids werden gekürzt und können per Tooltip vollständig angezeigt werden.
 - Zeitabstände werden einheitlich und mit passender Genauigkeit dargestellt.
+- Bei der Zuordnung von Karts zu Fahrern werden nur noch Karts angezeigt, die zum jeweiligen Trainingstyp passen (z. B. Bambini-Karts bei JKS-Trainings).
 
 ### Behoben
 

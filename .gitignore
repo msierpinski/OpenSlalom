@@ -452,3 +452,11 @@ $RECYCLE.BIN/
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+
+# The database can be regenerated from the application 
+# and is not needed in source control
+OpenSlalom.UI/open_slalom_local.db
+
+# .NET build output
+bin/
+obj/

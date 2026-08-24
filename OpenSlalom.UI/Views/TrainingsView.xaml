@@ -448,7 +448,7 @@
                                             <DataGridTemplateColumn Header="Kart" Width="16*">
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
-                                                        <ComboBox ItemsSource="{Binding DataContext.KartLookupItems, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                        <ComboBox ItemsSource="{Binding DataContext.AvailableKarts, RelativeSource={RelativeSource AncestorType=Window}}"
                                                                   DisplayMemberPath="Name"
                                                                   SelectedValuePath="Id"
                                                                   SelectedValue="{Binding KartId, Mode=TwoWay}"
