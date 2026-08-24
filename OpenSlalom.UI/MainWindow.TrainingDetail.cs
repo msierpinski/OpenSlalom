@@ -404,7 +404,7 @@ public partial class MainWindow
                     Altersklasse = row.Altersklasse,
                     Kart = row.Kart,
                     RundenzeitText = row.RundenzeitText,
-                    DiffText = i == 0 ? "-" : $"+{FormatTrainingTime(TimeSpan.FromSeconds(diff))}",
+                    DiffText = i == 0 ? "-" : $"+{FormatGap(TimeSpan.FromSeconds(diff), 2)}",
                     StrafenText = row.StrafenText,
                     ZeitpunktText = row.ZeitpunktText,
                     Runden = row.Runden

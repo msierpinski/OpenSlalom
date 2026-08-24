@@ -56,7 +56,16 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTextColumn Header="Verein" Binding="{Binding VereinName}" Width="28*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+						<DataGridTextColumn Header="Verein" Binding="{Binding VereinName}" Width="28*">
+							<DataGridTextColumn.ElementStyle>
+								<Style TargetType="TextBlock"
+									   BasedOn="{StaticResource StandardDataGridTextElementStyle}">
+									<Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+									<Setter Property="TextWrapping" Value="NoWrap"/>
+									<Setter Property="ToolTip" Value="{Binding VereinName}"/>
+								</Style>
+							</DataGridTextColumn.ElementStyle>
+						</DataGridTextColumn>
                         <DataGridTemplateColumn Header="Aktionen" Width="140">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>

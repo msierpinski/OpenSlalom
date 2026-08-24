@@ -42,7 +42,16 @@
                           CellStyle="{StaticResource StandardDataGridCellStyle}"
                           RowStyle="{StaticResource StandardDataGridRowStyle}">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Vereinsname" Binding="{Binding Vereinsname}" Width="20*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+						<DataGridTextColumn Header="Vereinsname" Binding="{Binding Vereinsname}" Width="20*">
+							<DataGridTextColumn.ElementStyle>
+								<Style TargetType="TextBlock"
+									   BasedOn="{StaticResource StandardDataGridTextElementStyle}">
+									<Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+									<Setter Property="TextWrapping" Value="NoWrap"/>
+									<Setter Property="ToolTip" Value="{Binding VereinName}"/>
+								</Style>
+							</DataGridTextColumn.ElementStyle>
+						</DataGridTextColumn>
                         <DataGridTextColumn Header="PLZ" Binding="{Binding Postleitzahl}" Width="6*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
                         <DataGridTextColumn Header="Ort" Binding="{Binding Ort}" Width="20*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
                         <DataGridTextColumn Header="Adresse" Binding="{Binding Adresse}" Width="20*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />

@@ -159,7 +159,7 @@ public partial class MainWindow
                     Fahrer = row.Fahrer,
                     Kart = row.Kart,
                     Bestzeit = FormatTrainingTime(TimeSpan.FromSeconds(row.BestSeconds)),
-                    Abstand = i == 0 ? "-" : $"+{FormatTrainingTime(TimeSpan.FromSeconds(diff))}",
+                    Abstand = i == 0 ? "-" : $"+{FormatGap(TimeSpan.FromSeconds(diff))}",
                     Durchschnittszeit = FormatTrainingTime(TimeSpan.FromSeconds(row.AverageSeconds)),
                     GefahreneRunden = row.GefahreneRunden,
                     ZeitpunktLetzteFahrt = row.LastDriveTime.ToString("HH:mm:ss")

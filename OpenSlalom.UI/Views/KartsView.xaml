@@ -45,7 +45,16 @@
                         <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="160" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
                         <DataGridTextColumn Header="Motor" Binding="{Binding Motor}" Width="160" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
                         <DataGridTextColumn Header="Chassis" Binding="{Binding Chassis}" Width="160" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
-                        <DataGridTextColumn Header="Verein" Binding="{Binding VereinName}" Width="*" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
+						<DataGridTextColumn Header="Verein" Binding="{Binding VereinName}" Width="*">
+							<DataGridTextColumn.ElementStyle>
+								<Style TargetType="TextBlock"
+									   BasedOn="{StaticResource StandardDataGridTextElementStyle}">
+									<Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+									<Setter Property="TextWrapping" Value="NoWrap"/>
+									<Setter Property="ToolTip" Value="{Binding VereinName}"/>
+								</Style>
+							</DataGridTextColumn.ElementStyle>
+						</DataGridTextColumn>
                         <DataGridTextColumn Header="Disziplin" Binding="{Binding DisziplinName}" Width="140" ElementStyle="{StaticResource StandardDataGridTextElementStyle}" />
                         <DataGridTemplateColumn Header="Aktionen" Width="140">
                             <DataGridTemplateColumn.CellTemplate>
