@@ -10,6 +10,8 @@ die Versionsnummern folgen der [semantischen Versionierung](https://semver.org/l
 
 ### Geändert
 
+- Die Trainings-Stoppuhren zeigen die aktuelle Rundenzeit nur noch mit einer Nachkommastelle an, um die Lesbarkeit zu verbessern. Die genaue Rundenzeit mit drei Nachkommastellen wird weiterhin in der Rundenliste angezeigt.
+
 ### Behoben
 
 ## [0.8.9-Beta] - 2026-08-24

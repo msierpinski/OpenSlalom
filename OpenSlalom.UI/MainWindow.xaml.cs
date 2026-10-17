@@ -77,7 +77,7 @@ public partial class MainWindow : Window
     private readonly Dictionary<(int TrainingId, int Station), int> _trainingLastDriverByTimingStation = new();
     private readonly Dictionary<(int TrainingId, int FahrerId), bool> _trainingDriverEnabledByDriver = new();
     private readonly Dictionary<(int TrainingId, int FahrerId), int?> _trainingKartSelectionByDriver = new();
-    private readonly DispatcherTimer _trainingStopwatchTimer = new() { Interval = TimeSpan.FromMilliseconds(100) };
+    private readonly DispatcherTimer _trainingStopwatchTimer = new() { Interval = TimeSpan.FromMilliseconds(50) };
     private readonly DispatcherTimer _trainingSettingsSaveTimer = new() { Interval = TimeSpan.FromMilliseconds(500) };
     private readonly SemaphoreSlim _syncSemaphore = new(1, 1);
     private readonly SemaphoreSlim _trainingTimingStateSaveSemaphore = new(1, 1);

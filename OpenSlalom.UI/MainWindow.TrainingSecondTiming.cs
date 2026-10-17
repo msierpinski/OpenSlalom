@@ -36,7 +36,7 @@ public partial class MainWindow
         {
             TrainingSecondLapTimeItems.Clear();
             TrainingsViewControl.TrainingSecondActiveDriverTextBlock.Text = "-";
-            TrainingsViewControl.TrainingSecondStopwatchTextBlock.Text = "00.000";
+            SetTextIfChanged(TrainingsViewControl.TrainingSecondStopwatchTextBlock, InitialTrainingStopwatchText);
             UpdateSecondTrainingLapSummaryDisplay();
             UpdateSecondTrainingLapProgressDisplay();
             UpdateSecondTrainingStopwatchButtonsState();
@@ -66,7 +66,7 @@ public partial class MainWindow
         if (TrainingsViewControl.TrainingSecondStopwatchTextBlock is not null)
         {
             TrainingsViewControl.TrainingSecondActiveDriverTextBlock.Text = "-";
-            TrainingsViewControl.TrainingSecondStopwatchTextBlock.Text = "00.000";
+            SetTextIfChanged(TrainingsViewControl.TrainingSecondStopwatchTextBlock, InitialTrainingStopwatchText);
             UpdateSecondTrainingLapSummaryDisplay();
             UpdateSecondTrainingLapProgressDisplay();
             UpdateSecondTrainingStopwatchButtonsState();
@@ -185,30 +185,38 @@ public partial class MainWindow
     {
         if (_trainingSecondStopwatchContext is null)
         {
-            TrainingsViewControl.TrainingSecondLapCounterTextBlock.Text = "Runde: -/-";
+            SetTextIfChanged(TrainingsViewControl.TrainingSecondLapCounterTextBlock, "Runde: -/-");
             return;
         }
         var state = GetOrCreateTrainingStintState(_trainingSecondStopwatchContext.Value);
         var target = GetRoundsTargetForTraining(_trainingSecondStopwatchContext.Value.TrainingId);
         var current = target > 0 && state.LapRecords.Count >= target ? state.LapRecords.Count : state.LapRecords.Count + 1;
-        TrainingsViewControl.TrainingSecondLapCounterTextBlock.Text = target > 0 ? $"Runde: {current}/{target}" : $"Runde: {current}/-";
+        var progressText = target > 0 ? $"Runde: {current}/{target}" : $"Runde: {current}/-";
+        SetTextIfChanged(TrainingsViewControl.TrainingSecondLapCounterTextBlock, progressText);
     }
 
     private void UpdateSecondTrainingStopwatchDisplay()
     {
         if (_trainingSecondStopwatchContext is null)
         {
-            if (TrainingsViewControl.TrainingSecondStopwatchTextBlock is not null) TrainingsViewControl.TrainingSecondStopwatchTextBlock.Text = "00.000";
+            if (TrainingsViewControl.TrainingSecondStopwatchTextBlock is not null)
+            {
+                SetTextIfChanged(TrainingsViewControl.TrainingSecondStopwatchTextBlock, InitialTrainingStopwatchText);
+            }
             return;
         }
         var state = GetOrCreateTrainingStintState(_trainingSecondStopwatchContext.Value);
         var elapsed = state.Stopwatch.Elapsed - state.LastLapCheckpoint;
-        TrainingsViewControl.TrainingSecondStopwatchTextBlock.Text = FormatTrainingTime(elapsed < TimeSpan.Zero ? TimeSpan.Zero : elapsed);
+        var currentLapElapsed = elapsed < TimeSpan.Zero ? TimeSpan.Zero : elapsed;
+        SetTextIfChanged(TrainingsViewControl.TrainingSecondStopwatchTextBlock, GetTrainingStopwatchDisplayText(state, currentLapElapsed));
         if (state.ActiveLap is not null && state.Stopwatch.IsRunning)
         {
-            var currentLapElapsed = elapsed < TimeSpan.Zero ? TimeSpan.Zero : elapsed;
             state.ActiveLap.Rundenzeit = currentLapElapsed;
-            state.ActiveLap.RundenzeitText = FormatTrainingTime(currentLapElapsed);
+            var activeLapDisplay = FormatRunningTrainingTime(currentLapElapsed);
+            if (!string.Equals(state.ActiveLap.RundenzeitText, activeLapDisplay, StringComparison.Ordinal))
+            {
+                state.ActiveLap.RundenzeitText = activeLapDisplay;
+            }
         }
         UpdateSecondTrainingLapProgressDisplay();
     }
