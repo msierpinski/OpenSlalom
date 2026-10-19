@@ -21,7 +21,7 @@ public class ZeitstrafeConverter : IValueConverter
         }
         catch
         {
-            return value.ToString();
+            return value.ToString() ?? string.Empty;
         }
 
         // Optionaler Präfix aus XAML, sonst Standardtext:
