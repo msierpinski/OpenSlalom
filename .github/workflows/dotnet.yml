@@ -2,42 +2,41 @@ name: .NET
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
   build:
-
     runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v7.0.1
 
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 8.0.x
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 8.0.x
 
-    - name: Restore dependencies
-      run: dotnet restore
+      - name: Restore dependencies
+        run: dotnet restore
 
-    - name: Build
-      run: dotnet build --no-restore -c Release
+      - name: Build
+        run: dotnet build --no-restore -c Release
 
-    - name: Test
-      run: dotnet test --no-build -c Release --verbosity normal
+      - name: Test
+        run: dotnet test --no-build -c Release --verbosity normal
 
-    - name: Publish
-      run: |
-        dotnet publish OpenSlalom.UI/OpenSlalom.UI.csproj `
-          -c Release `
-          -o publish
+      - name: Publish
+        run: |
+          dotnet publish OpenSlalom.UI/OpenSlalom.UI.csproj `
+            -c Release `
+            -o publish
 
-    - name: Upload Artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: OpenSlalom.UI
-        path: publish
-        if-no-files-found: error
-        retention-days: 30
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: OpenSlalom.UI
+          path: publish
+          if-no-files-found: error
+          retention-days: 30
