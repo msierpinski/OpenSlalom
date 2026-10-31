@@ -1,0 +1,24 @@
+# Converted files to Bootstrap 5
+
+- [x] account-deleted.php
+- [x] account.php
+- [x] admin-user-form.php
+- [x] admin-users.php
+- [x] error.php
+- [x] forgot-password.php
+- [x] home.php
+- [x] imprint.php
+- [x] layout.php
+- [x] list-controls.php
+- [x] login.php
+- [x] master-data-delete.php
+- [x] master-data-form.php
+- [x] master-data-list.php
+- [x] not-found.php
+- [x] privacy.php
+- [x] register.php
+- [x] reset-password.php
+- [x] statistics.php
+- [x] training-form.php
+- [x] training.php
+- [x] trainings.php

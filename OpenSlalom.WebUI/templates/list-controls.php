@@ -1,21 +1,38 @@
-<?php declare(strict_types=1); ?>
-<?php $showSearch ??= true; $showPagination ??= true; ?>
+<?php
+
+declare(strict_types=1);
+
+$showSearch ??= true;
+$showPagination ??= true;
+
+?>
+
 <?php if ($showSearch): ?>
-    <div class="list-controls">
-        <form class="list-search" action="<?= escape(base_url($listPath)) ?>" method="get">
-            <label><span class="visually-hidden">Liste durchsuchen</span><input name="q" value="<?= escape($search) ?>" maxlength="100" placeholder="Suchen ..."></label>
-            <button class="button button-primary rounded-action" type="submit">Suchen</button>
-            <?php if ($search !== ''): ?><a class="button button-secondary rounded-action" href="<?= escape(base_url($listPath)) ?>">Zurücksetzen</a><?php endif; ?>
-        </form>
-        <span class="list-count"><?= (int) $pagination['total'] ?> Eintrag<?= (int) $pagination['total'] === 1 ? '' : 'e' ?></span>
-    </div>
+    <form class="row g-2" action="<?= escape(base_url($listPath)) ?>" method="get">
+        <label for="search-input" class="visually-hidden">
+            Liste durchsuchen
+        </label>
+        <div class="col-12 col-sm">
+            <input class="form-control" id="search-input" name="q" value="<?= escape($search) ?>" maxlength="100" placeholder="Suchen ...">
+        </div>
+        <div class="col-12 col-sm-auto">
+            <button class="btn btn-primary w-100" type="submit">
+            <i class="bi bi-search"></i> Suchen
+            </button>
+        </div>
+
+        <?php if ($search !== ''): ?><div class="col-12 col-sm-auto"><a class="btn btn-secondary w-100" href="<?= escape(base_url($listPath)) ?>">Zurücksetzen</a></div><?php endif; ?>
+    </form>
 <?php endif; ?>
+
 <?php if ($showPagination && $pagination['pages'] > 1): ?>
-    <nav class="pagination" aria-label="Seitennavigation">
-        <?php if ($pagination['page'] > 1): ?><a href="<?= escape(list_page_url($listPath, $pagination['page'] - 1, $search)) ?>">← Zurück</a><?php endif; ?>
-        <?php for ($page = max(1, $pagination['page'] - 2); $page <= min($pagination['pages'], $pagination['page'] + 2); $page++): ?>
-            <a class="<?= $page === $pagination['page'] ? 'active' : '' ?>" href="<?= escape(list_page_url($listPath, $page, $search)) ?>"><?= $page ?></a>
-        <?php endfor; ?>
-        <?php if ($pagination['page'] < $pagination['pages']): ?><a href="<?= escape(list_page_url($listPath, $pagination['page'] + 1, $search)) ?>">Weiter →</a><?php endif; ?>
+    <nav aria-label="Seitennavigation">
+        <ul class="pagination flex-wrap mb-0">
+            <?php if ($pagination['page'] > 1): ?><li class="page-item"><a class="page-link" href="<?= escape(list_page_url($listPath, $pagination['page'] - 1, $search)) ?>">← Zurück</a></li><?php endif; ?>
+            <?php for ($page = max(1, $pagination['page'] - 2); $page <= min($pagination['pages'], $pagination['page'] + 2); $page++): ?>
+                <li class="page-item <?= $page === $pagination['page'] ? 'active' : '' ?>"><a class="page-link" href="<?= escape(list_page_url($listPath, $page, $search)) ?>"><?= $page ?></a></li>
+            <?php endfor; ?>
+            <?php if ($pagination['page'] < $pagination['pages']): ?><li class="page-item"><a class="page-link" href="<?= escape(list_page_url($listPath, $pagination['page'] + 1, $search)) ?>">Weiter →</a></li><?php endif; ?>
+        </ul>
     </nav>
 <?php endif; ?>

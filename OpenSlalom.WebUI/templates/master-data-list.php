@@ -1,36 +1,64 @@
-<?php declare(strict_types=1); ?>
-<section class="shell listing-page master-data-page">
-    <div class="page-heading-row">
-        <div><p class="eyebrow"><span></span> Stammdatenverwaltung</p><h1><?= escape($masterTitle) ?></h1></div>
-        <a class="button button-primary rounded-action" href="<?= escape(base_url('verwaltung/' . $masterType . '/neu')) ?>">+ <?= escape(rtrim($masterTitle, 'e')) ?> anlegen</a>
+<?php
+
+declare(strict_types=1);
+
+?>
+
+<section class="vstack gap-5">
+
+    <header>
+        <p class="text-muted mb-0">Verwaltung</p>
+        <h1 class="text-body-emphasis display-5 fw-bold mb-0"><?= escape($masterTitle) ?></h1>
+    </header>
+
+    <div class="d-flex flex-wrap gap-3 align-items-start justify-content-between">
+        <a class="btn btn-primary" href="<?= escape(base_url('verwaltung/' . $masterType . '/neu')) ?>"><i class="bi bi-plus me-1" aria-hidden="true"></i><?= escape($masterTitle) ?> anlegen</a>
+
+        <div class="flex-grow-1">
+            <?php $listPath = 'verwaltung/' . $masterType;
+            $showSearch = true;
+            $showPagination = false;
+            require_once __DIR__ . '/list-controls.php'; ?>
+        </div>
     </div>
-    <?php $listPath = 'verwaltung/' . $masterType; $showSearch = true; $showPagination = false; require __DIR__ . '/list-controls.php'; ?>
+
     <?php if ($items === []): ?>
-        <div class="empty-state"><strong>Keine <?= escape(strtolower($masterTitle)) ?> vorhanden.</strong><span>Lege den ersten Datensatz über den Button oben rechts an.</span></div>
+        <div class="alert alert-info"><strong>Keine <?= escape($masterTitle) ?> vorhanden.</strong> Lege den ersten Datensatz über den Button oben rechts an.</div>
     <?php else: ?>
-        <div class="table-frame master-data-table">
-            <table>
-                <thead>
-                    <?php if ($masterType === 'vereine'): ?><tr><th>Verein</th><th>Mitgliedsnummer</th><th>Ort</th><th>Logo</th><th>Aktionen</th></tr><?php endif; ?>
-                    <?php if ($masterType === 'fahrer'): ?><tr><th>Fahrer</th><th>Verein</th><th>Mitgliedsnummer</th><th>Geburtsdatum</th><th>Geschlecht</th><th>Aktionen</th></tr><?php endif; ?>
-                    <?php if ($masterType === 'disziplinen'): ?><tr><th>Disziplin</th><th>TF-Strafe</th><th>PF-Strafe</th><th>Aktionen</th></tr><?php endif; ?>
-                    <?php if ($masterType === 'karts'): ?><tr><th>Kart</th><th>Verein</th><th>Disziplin</th><th>Motor</th><th>Chassis</th><th>Aktionen</th></tr><?php endif; ?>
-                    <?php if ($masterType === 'wetter'): ?><tr><th>Bezeichnung</th><th>Aktionen</th></tr><?php endif; ?>
-                </thead>
-                <tbody>
-                <?php foreach ($items as $item): ?>
-                    <tr>
-                        <?php if ($masterType === 'vereine'): ?><td data-label="Verein"><strong><?= escape($item['vereinsname']) ?></strong></td><td data-label="Mitgliedsnummer"><?= escape($item['mitglieds_nummer']) ?: '-' ?></td><td data-label="Ort"><?= escape(trim($item['postleitzahl'] . ' ' . $item['ort'])) ?: '-' ?></td><td data-label="Logo"><?= $item['has_logo'] ? 'Vorhanden' : '-' ?></td><?php endif; ?>
-                        <?php if ($masterType === 'fahrer'): ?><td data-label="Fahrer"><strong><?= escape(display_name($item['vorname'], $item['nachname'])) ?></strong></td><td data-label="Verein"><?= escape($item['vereinsname']) ?></td><td data-label="Mitgliedsnummer"><?= escape($item['mitglieds_nummer']) ?: '-' ?></td><td data-label="Geburtsdatum"><?= escape(format_date($item['geburtsdatum'])) ?></td><td data-label="Geschlecht"><?= escape(['m' => 'Männlich', 'w' => 'Weiblich', 'd' => 'Divers'][$item['geschlecht']] ?? '-') ?></td><?php endif; ?>
-                        <?php if ($masterType === 'disziplinen'): ?><td data-label="Disziplin"><strong><?= escape($item['name']) ?></strong></td><td data-label="TF-Strafe"><?= escape(format_penalty((float) $item['tf'])) ?></td><td data-label="PF-Strafe"><?= escape(format_penalty((float) $item['pf'])) ?></td><?php endif; ?>
-                        <?php if ($masterType === 'karts'): ?><td data-label="Kart"><strong><?= escape($item['name'] ?? '-') ?></strong></td><td data-label="Verein"><?= escape($item['vereinsname']) ?></td><td data-label="Disziplin"><?= escape($item['disziplin']) ?></td><td data-label="Motor"><?= escape($item['motor'] ?? '-') ?></td><td data-label="Chassis"><?= escape($item['chassis'] ?? '-') ?></td><?php endif; ?>
-                        <?php if ($masterType === 'wetter'): ?><td data-label="Bezeichnung"><strong><?= escape($item['name']) ?></strong></td><?php endif; ?>
-                        <td data-label="Aktionen" class="row-actions"><a class="table-action" href="<?= escape(base_url('verwaltung/' . $masterType . '/' . $item['id'] . '/bearbeiten')) ?>">Bearbeiten</a><a class="table-action danger" href="<?= escape(base_url('verwaltung/' . $masterType . '/' . $item['id'] . '/loeschen')) ?>">Löschen</a></td>
-                    </tr>
-                <?php endforeach; ?>
-                </tbody>
-            </table>
+        <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-3">
+            <?php foreach ($items as $item): ?>
+                <div class="col">
+                    <article class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <?php if ($masterType === 'vereine'): ?>
+                                <h2 class="h5"><?= escape($item['vereinsname']) ?></h2>
+                                <dl class="small mb-0"><dt class="text-body-secondary">Mitgliedsnummer</dt><dd><?= escape($item['mitglieds_nummer']) ?: '-' ?></dd><dt class="text-body-secondary">Ort</dt><dd><?= escape(trim($item['postleitzahl'] . ' ' . $item['ort'])) ?: '-' ?></dd><dt class="text-body-secondary">Logo</dt><dd><?= $item['has_logo'] ? 'Vorhanden' : '-' ?></dd></dl>
+                            <?php elseif ($masterType === 'fahrer'): ?>
+                                <h2 class="h5"><?= escape(display_name($item['vorname'], $item['nachname'])) ?></h2>
+                                <dl class="small mb-0"><dt class="text-body-secondary">Verein</dt><dd><?= escape($item['vereinsname']) ?></dd><dt class="text-body-secondary">Mitgliedsnummer</dt><dd><?= escape($item['mitglieds_nummer']) ?: '-' ?></dd><dt class="text-body-secondary">Geburtsdatum</dt><dd><?= escape(format_date($item['geburtsdatum'])) ?></dd><dt class="text-body-secondary">Geschlecht</dt><dd><?= escape(['m' => 'Männlich', 'w' => 'Weiblich', 'd' => 'Divers'][$item['geschlecht']] ?? '-') ?></dd></dl>
+                            <?php elseif ($masterType === 'disziplinen'): ?>
+                                <h2 class="h5"><?= escape($item['name']) ?></h2>
+                                <dl class="small mb-0"><dt class="text-body-secondary">TF-Strafe</dt><dd><?= escape(format_penalty((float) $item['tf'])) ?></dd><dt class="text-body-secondary">PF-Strafe</dt><dd><?= escape(format_penalty((float) $item['pf'])) ?></dd></dl>
+                            <?php elseif ($masterType === 'karts'): ?>
+                                <h2 class="h5"><?= escape($item['name'] ?? '-') ?></h2>
+                                <dl class="small mb-0"><dt class="text-body-secondary">Verein</dt><dd><?= escape($item['vereinsname']) ?></dd><dt class="text-body-secondary">Disziplin</dt><dd><?= escape($item['disziplin']) ?></dd><dt class="text-body-secondary">Motor</dt><dd><?= escape($item['motor'] ?? '-') ?></dd><dt class="text-body-secondary">Chassis</dt><dd><?= escape($item['chassis'] ?? '-') ?></dd></dl>
+                            <?php else: ?>
+                                <h2 class="h5 mb-0"><?= escape($item['name']) ?></h2>
+                            <?php endif; ?>
+                        </div>
+                        <div class="card-footer bg-transparent d-flex gap-2">
+                            <a class="btn btn-primary" href="<?= escape(base_url('verwaltung/' . $masterType . '/' . $item['id'] . '/bearbeiten')) ?>"><i class="bi bi-pencil me-1" aria-hidden="true"></i>Bearbeiten</a>
+                            <a class="btn btn-outline-danger" href="<?= escape(base_url('verwaltung/' . $masterType . '/' . $item['id'] . '/loeschen')) ?>"><i class="bi bi-trash me-1" aria-hidden="true"></i>Löschen</a>
+                        </div>
+                    </article>
+                </div>
+            <?php endforeach; ?>
         </div>
     <?php endif; ?>
-    <?php if ($items !== []): ?><?php $listPath = 'verwaltung/' . $masterType; $showSearch = false; $showPagination = true; require __DIR__ . '/list-controls.php'; ?><?php endif; ?>
+    <?php if ($items !== []): ?>
+        <?php $listPath = 'verwaltung/' . $masterType;
+        $showSearch = false;
+        $showPagination = true;
+        require_once __DIR__ . '/list-controls.php'; ?>
+    <?php endif; ?>
 </section>

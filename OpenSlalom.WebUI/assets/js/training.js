@@ -4,6 +4,7 @@
     const tabs = [...document.querySelectorAll('[data-training-tab]')];
     const panels = [...document.querySelectorAll('[data-training-panel]')];
     const tabStorageKey = `openslalom-tab:${window.location.pathname}`;
+    let selectedTabName = null;
 
     const selectTab = (name) => {
         const selectedTab = tabs.find((tab) => tab.dataset.trainingTab === name) || tabs[0];
@@ -11,13 +12,15 @@
 
         tabs.forEach((tab) => {
             const selected = tab === selectedTab;
+            tab.classList.toggle('active', selected);
             tab.setAttribute('aria-selected', selected ? 'true' : 'false');
             tab.tabIndex = selected ? 0 : -1;
         });
         panels.forEach((panel) => {
             panel.hidden = panel.dataset.trainingPanel !== selectedTab.dataset.trainingTab;
         });
-        window.sessionStorage.setItem(tabStorageKey, selectedTab.dataset.trainingTab);
+        selectedTabName = selectedTab.dataset.trainingTab;
+        window.sessionStorage.setItem(tabStorageKey, selectedTabName);
     };
 
     tabs.forEach((tab) => {
@@ -50,14 +53,14 @@
                 const detail = document.querySelector(`[data-detail-id="${CSS.escape(id)}"]`);
                 if (detail) detail.open = true;
             });
-        } catch (_) {
+        } catch {
             window.sessionStorage.removeItem(detailKey);
         }
     };
 
     const updateToggle = () => {
         toggle.setAttribute('aria-pressed', enabled ? 'true' : 'false');
-        toggle.querySelector('span').textContent = enabled
+        toggle.querySelector('[data-refresh-label]').textContent = enabled
             ? `Live-Aktualisierung an · ${seconds}s`
             : 'Live-Aktualisierung aus';
         toggle.classList.toggle('is-paused', !enabled);
@@ -68,6 +71,9 @@
         if (!enabled) return;
         timerId = window.setTimeout(() => {
             saveOpenDetails();
+            if (selectedTabName !== null) {
+                window.sessionStorage.setItem(tabStorageKey, selectedTabName);
+            }
             window.location.reload();
         }, seconds * 1000);
     };

@@ -49,6 +49,13 @@ function format_training_time(?float $seconds): string
     $wholeSeconds = (int) floor($seconds);
     $milliseconds = (int) floor((($seconds - $wholeSeconds) * 1000) + 0.000001);
 
+    // If the time is more than 59 seconds, we format it as mm:ss.mmm instead of ss.mmm
+    if ($wholeSeconds > 59) {
+        $minutes = (int) floor($wholeSeconds / 60);
+        $remainingSeconds = $wholeSeconds % 60;
+        return sprintf('%02d:%02d.%03d', $minutes, $remainingSeconds, $milliseconds);
+    }
+
     return sprintf('%02d.%03d', $wholeSeconds, $milliseconds);
 }
 
@@ -67,6 +74,11 @@ function format_duration(float $seconds): string
     $hours = (int) floor($seconds / 3600);
     $minutes = (int) floor(($seconds % 3600) / 60);
     $remainingSeconds = (int) floor($seconds % 60);
+
+    // If the duration is less than 1 hour, we format it as mm:ss instead of hh:mm:ss
+    if ($hours === 0) {
+        return sprintf('%02d:%02d', $minutes, $remainingSeconds);
+    }
 
     return sprintf('%02d:%02d:%02d', $hours, $minutes, $remainingSeconds);
 }
